@@ -47,7 +47,7 @@
     "react:start": "react-scripts start",
     "electron:start": "wait-on http://localhost:3000 && electron --inspect=5858 .",
     "react:build": "react-scripts build",
-    "build": "npm run react:build && electron-builder -m",
+    "build": "npm run react:build && electron-builder -mw",
     "release": "npm run react:build && electron-builder -mw --publish=always"
   },
   "build": {
