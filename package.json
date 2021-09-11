@@ -3,10 +3,10 @@
   "author": "rudaks",
   "license": "spectra",
   "main": "public/electron.js",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "private": true,
   "homepage": ".",
-  "repository": "https://github.com/rudaks-han/my-dashboard",
+  "repository": "https://github.com/rudaks-han/mydashboard",
   "devDependencies": {
     "concurrently": "^6.2.1",
     "electron": "^13.1.8",
