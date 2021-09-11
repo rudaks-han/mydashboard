@@ -1,19 +1,30 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import jiraIcon from '../static/image/icons8-jira-100.png';
 import { Card, Icon, Dropdown, List, Tab, Button, Segment, Header } from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
+import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
 
 function Jira() {
     const [list, setList] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
+    const tickTime = useContext(TimerContext);
 
     useEffect(() => {
         findList();
     }, []);
 
     useEffect(() => {
+        if (tickTime == null) return;
+        const { minute } = UiShare.getTimeFormat(tickTime);
+        if (minute === 0) {
+            console.log('[jira] scheduler ==> findList ' + UiShare.getCurrTime())
+            findList();
+        }
+    }, [tickTime]);
+
+   /* useEffect(() => {
         const timer = setIntervalAsync(
             async () => {
                 console.log('[jira] scheduler ==> findList ' + UiShare.getCurrTime())
@@ -28,7 +39,7 @@ function Jira() {
                 }
             })();
         };
-    }, [])
+    }, [])*/
 
     const findList = () => {
         setList(null);

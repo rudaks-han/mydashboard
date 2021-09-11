@@ -1,18 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import victoryPortalIcon from '../static/image/victory-portal.ico';
 import { Card, Icon, List, Tab, Button } from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
+import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
 
 function VictoryPortal() {
     const [list, setList] = useState(null);
+    const tickTime = useContext(TimerContext);
 
     useEffect(() => {
         findList();
     }, []);
 
     useEffect(() => {
+        if (tickTime == null) return;
+        const { minute } = UiShare.getTimeFormat(tickTime);
+        if (minute === 0) {
+            console.log('[jira] sonarqube ==> findList ' + UiShare.getCurrTime())
+            findList();
+        }
+    }, [tickTime]);
+
+    /*useEffect(() => {
         const timer = setIntervalAsync(
             async () => {
                 console.log('[victoryPortal] scheduler ==> findList ' + UiShare.getCurrTime())
@@ -27,7 +38,7 @@ function VictoryPortal() {
                 }
             })();
         };
-    }, [])
+    }, [])*/
 
     const findList = () => {
         setList(null);

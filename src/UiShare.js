@@ -139,6 +139,15 @@ class UiShare {
 
         return second;
     }
+
+    static getTimeFormat(time) {
+        const arTime = time.split(':');
+        return {
+            hour: Number(arTime[0]),
+            minute: Number(arTime[1]),
+            second: Number(arTime[2])
+        }
+    }
 }
 
 export default UiShare;

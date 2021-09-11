@@ -1,21 +1,33 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import outlookIcon from '../static/image/outlook.png';
 import {Card, Icon, Dropdown, List, Tab, Button, Segment, Header, Label, Menu} from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
+import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
 
 function Outlook() {
     const [list, setList] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
-    const [pollingCount, setPollingCount] = useState(0);
+    const tickTime = useContext(TimerContext);
 
     useEffect(() => {
         findList();
     }, []);
 
     useEffect(() => {
+        if (tickTime == null) return;
+        if (authenticated) {
+            const { minute } = UiShare.getTimeFormat(tickTime);
+            if (minute%10 === 0) {
+                console.log('[outlook] scheduler ==> findList ' + UiShare.getCurrTime())
+                findList();
+            }
+        }
+    }, [tickTime]);
+
+    /*useEffect(() => {
         const timer = setIntervalAsync(
             async () => {
                 console.log('[outlook] scheduler ==> findList ' + UiShare.getCurrTime())
@@ -39,7 +51,7 @@ function Outlook() {
                 }
             })();
         };
-    }, [authenticated])
+    }, [authenticated])*/
 
     const findList = () => {
         setList(null);

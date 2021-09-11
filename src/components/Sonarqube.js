@@ -1,20 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import sonarqubeIcon from '../static/image/sonarqube-logo.png';
 import { Card, Icon, List, Button, Label, Statistic } from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import ModuleList from "./sonarqube/ModuleList";
 import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
+import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
 
 function Sonarqube() {
     const [list, setList] = useState(null);
     const [clickedSetting, setClickSetting] = useState(false);
+    const tickTime = useContext(TimerContext);
 
     useEffect(() => {
         findList();
     }, []);
 
     useEffect(() => {
+        if (tickTime == null) return;
+        const { minute } = UiShare.getTimeFormat(tickTime);
+        if (minute === 0) {
+            console.log('[jira] sonarqube ==> findList ' + UiShare.getCurrTime())
+            findList();
+        }
+    }, [tickTime]);
+
+    /*useEffect(() => {
         const timer = setIntervalAsync(
             async () => {
                 console.log('[sonarqube] scheduler ==> findList ' + UiShare.getCurrTime())
@@ -29,7 +40,7 @@ function Sonarqube() {
                 }
             })();
         };
-    }, [])
+    }, [])*/
 
     const findList = () => {
         setList(null);

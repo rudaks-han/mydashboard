@@ -3,35 +3,67 @@ import './App.css';
 import {MainLayout} from "./layouts/MainLayout";
 import UserContext from "./UserContext";
 import FirebaseApp from './firebaseApp';
+import UiShare from "./UiShare";
+import { setIntervalAsync, clearIntervalAsync } from 'set-interval-async/dynamic'
+import TimerContext from "./TimerContext";
 
 const { ipcRenderer } = window.require('electron');
 const firebaseApp = new FirebaseApp();
 
 function App() {
-  const [userInfo, setUserInfo] = useState({});
-
-  useEffect(() => {
-    getUserInfo();
-  }, []);
+    const [userInfo, setUserInfo] = useState({});
+    const [tickTime, setTickTime] = useState(null);
 
 
-  const getUserInfo = () => {
-    ipcRenderer.send('findStore', { key: 'userInfo'});
-    ipcRenderer.on('findStoreCallback', (e, data) => {
-      const {id, employeeNumber, name, position, deptName} = data;
-      setUserInfo(data);
-      firebaseApp.updateActiveUserStatus({id, employeeNumber, name, position, deptName});
-      firebaseApp.addAccessLog(name);
-      ipcRenderer.removeAllListeners('findStoreCallback');
-    });
+    useEffect(() => {
+        getUserInfo();
+    }, []);
 
-  }
+    useEffect(() => {
+        startTimer();
+    }, []);
 
-  return (
-      <UserContext.Provider value={userInfo}>
-        <MainLayout />
-      </UserContext.Provider>
-  );
+    const getUserInfo = () => {
+        ipcRenderer.send('findStore', { key: 'userInfo'});
+        ipcRenderer.on('findStoreCallback', (e, data) => {
+            //console.log(data);
+            const {id, employeeNumber, name, position, deptName} = data;
+            setUserInfo(data);
+            firebaseApp.updateActiveUserStatus({id, employeeNumber, name, position, deptName});
+            firebaseApp.addAccessLog(name);
+
+            return () => {
+                ipcRenderer.removeAllListeners('findStoreCallback');
+            }
+        });
+    }
+
+    const startTimer = () => {
+        const timer = setIntervalAsync(
+            async () => {
+                //console.log('[timer] ' + UiShare.getCurrTime())
+                const time = UiShare.getCurrTime();
+                setTickTime(time);
+            },
+            1000 * 10
+        );
+
+        return () => {
+            (async () => {
+                if (timer) {
+                await clearIntervalAsync(timer);
+            }
+        })();
+        };
+    }
+
+    return (
+        <UserContext.Provider value={userInfo}>
+            <TimerContext.Provider value={tickTime}>
+            <MainLayout />
+            </TimerContext.Provider>
+        </UserContext.Provider>
+    );
 }
 
 export default App;

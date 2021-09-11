@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import daouofficeIcon from '../static/image/daouoffice.ico';
 import { Card, Icon, Dropdown, List, Tab, Button, Segment, Header, Menu, Label, Popup } from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import { setIntervalAsync, clearIntervalAsync } from 'set-interval-async/dynamic'
+import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
 
 function Daouoffice() {
@@ -13,7 +14,7 @@ function Daouoffice() {
     const [useAlarmClock, setUseAlarmClock] = useState({clockIn: true, clockOut: true});
     const [clickedSetting, setClickSetting] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
-    let findListTimer;
+    const tickTime = useContext(TimerContext);
 
     useEffect(() => {
         findList();
@@ -21,6 +22,21 @@ function Daouoffice() {
         findNotificationCount();
         findStore();
     }, []);
+
+    useEffect(() => {
+        if (!userInfo) return;
+        if (tickTime == null) return;
+        if (authenticated) {
+            const {hour, minute} = UiShare.getTimeFormat(tickTime);
+            if (minute === 0) {
+                console.log('[daouoffice] scheduler ==> findList ' + UiShare.getCurrTime())
+                findList();
+                findNotificationCount();
+            }
+
+            notifyClockCheck({hour, minute});
+        }
+    }, [tickTime, userInfo, authenticated]);
 
     useEffect(() => {
         if (!userInfo) return;

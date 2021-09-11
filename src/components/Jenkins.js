@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import jenkinsIcon from '../static/image/jenkins.png';
 import { Card, Icon, List, Button, Label, Checkbox } from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
+import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
 
 function Jenkins() {
@@ -10,14 +11,23 @@ function Jenkins() {
     const [checkedModuleNameList, setCheckedModuleNameList] = useState([]);
     const [jobList, setJobList] = useState([]);
     const [clickedSetting, setClickSetting] = useState(false);
+    const tickTime = useContext(TimerContext);
 
     useEffect(() => {
         findList();
         findModuleList();
     }, []);
 
-
     useEffect(() => {
+        if (tickTime == null) return;
+        const { minute } = UiShare.getTimeFormat(tickTime);
+        if (minute === 0) {
+            console.log('[jenkins] scheduler ==> findList ' + UiShare.getCurrTime())
+            findList();
+        }
+    }, [tickTime]);
+
+    /*useEffect(() => {
         const timer = setIntervalAsync(
             async () => {
                 console.log('[jenkins] scheduler ==> findList ' + UiShare.getCurrTime())
@@ -32,7 +42,7 @@ function Jenkins() {
                 }
             })();
         };
-    }, [])
+    }, [])*/
 
     const findModuleList = () => {
         ipcRenderer.send('jenkins.findModuleList');

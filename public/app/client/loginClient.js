@@ -14,18 +14,16 @@ class LoginClient extends BaseClientComponent {
         return authenticated;
     }
 
-    async getUserInfo() {
+    getUserInfo() {
         const _this = this;
 
         try {
-            const response = await axios.get(`https://spectra.daouoffice.com/api/home/noti/new`, this.getAxiosConfig(CookieConst.daouoffice_for_app));
+            const response = axios.get(`https://spectra.daouoffice.com/api/user/today`, this.getAxiosConfig(CookieConst.daouoffice_for_app));
             const data = response.data.data;
             const { id, employeeNumber, name, position, deptMembers} = data.profile; // id: 7667, employeeNumber: 2014001
             const deptName = deptMembers[0].deptName;
 
             const userInfo = {id, employeeNumber, name, position, deptName};
-            console.log(userInfo)
-
             this.getStore().set('userInfo', userInfo);
             _this.mainWindowSender.send('getUserInfoCallback', userInfo);
         } catch (e) {
