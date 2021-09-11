@@ -51,8 +51,8 @@
     "release": "npm run react:build && electron-builder -mw --publish=always"
   },
   "build": {
-    "appId": "kr.co.spectra.mydashboard",
-    "copyright": "spectra",
+    "appId": "kr.pe.rudaks.mydashboard",
+    "copyright": "rudaks",
     "publish": {
       "provider": "github"
     },
