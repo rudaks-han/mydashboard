@@ -1,5 +1,5 @@
 {
-  "name": "my-dashboard",
+  "name": "MyDashboard",
   "author": "rudaks",
   "license": "spectra",
   "main": "public/electron.js",
