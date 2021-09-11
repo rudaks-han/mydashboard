@@ -1,0 +1,85 @@
+{
+  "name": "my-dashboard",
+  "author": "rudaks",
+  "license": "spectra",
+  "main": "public/electron.js",
+  "version": "0.0.2",
+  "private": true,
+  "homepage": ".",
+  "repository": "https://github.com/rudaks-han/my-dashboard",
+  "devDependencies": {
+    "concurrently": "^6.2.1",
+    "electron": "^13.1.8",
+    "electron-builder": "^22.11.7",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.25.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "nodemon": "^2.0.0"
+  },
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "axios": "^0.21.1",
+    "electron-log": "^4.4.1",
+    "electron-store": "^8.0.0",
+    "electron-updater": "^4.3.9",
+    "firebase": "^8.10.0",
+    "node-notifier": "^10.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router": "^5.2.1",
+    "react-router-dom": "^5.2.1",
+    "react-scripts": "4.0.3",
+    "react-sortablejs": "^6.0.0",
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.3",
+    "set-interval-async": "^2.0.3",
+    "sortablejs": "^1.14.0",
+    "wait-on": "^6.0.0",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "start": "concurrently \"npm run react:start\" \"npm run electron:start\"",
+    "start_dev": "concurrently \"npm run react:start\" \"mode=dev npm run electron:start\"",
+    "watch": "concurrently \"npm run react:start\" \"nodemon --exec mode=dev electron --inspect=5858 .\"",
+    "electron:watch": "nodemon --exec mode=dev electron --inspect=5858 .",
+    "react:start": "react-scripts start",
+    "electron:start": "wait-on http://localhost:3000 && electron --inspect=5858 .",
+    "react:build": "react-scripts build",
+    "build": "npm run react:build && electron-builder -m",
+    "release": "npm run react:build && electron-builder -mw --publish=always"
+  },
+  "build": {
+    "appId": "kr.co.spectra.mydashboard",
+    "copyright": "spectra",
+    "publish": {
+      "provider": "github"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "static"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
