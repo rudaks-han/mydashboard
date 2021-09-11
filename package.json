@@ -1,7 +1,7 @@
 {
   "name": "MyDashboard",
   "author": "rudaks",
-  "license": "spectra",
+  "license": "rudaks",
   "main": "public/electron.js",
   "version": "0.0.1",
   "private": true,
