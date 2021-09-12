@@ -19,6 +19,7 @@ class DaouofficeClient extends BaseClientComponent {
         this.ipcMainListener.on('findList', this.findList.bind(this));
         this.ipcMainListener.on('findNotificationCount', this.findNotificationCount.bind(this));
         this.ipcMainListener.on('findCalendar', this.findCalendar.bind(this));
+        this.ipcMainListener.on('findDayoffList', this.findDayoffList.bind(this));
         this.ipcMainListener.on('setUseAlarmClock', this.setUseAlarmClock.bind(this));
         this.ipcMainListener.on('openLoginPage', this.openLoginPage.bind(this));
         this.ipcMainListener.on('logout', this.logout.bind(this));
@@ -182,6 +183,23 @@ class DaouofficeClient extends BaseClientComponent {
                 holidayList,
                 dayOffList
             });
+        } catch (e) {
+            ShareUtil.printAxiosError(e);
+        }
+    }
+
+    async findDayoffList() {
+        const _this = this;
+
+        const currDate = ShareUtil.getCurrDate();
+        const toDate = ShareUtil.addDays(currDate, 7);
+
+        try {
+            const response = await axios.get(`https://spectra.daouoffice.com/api/calendar/event?timeMin=${currDate}T00%3A00%3A00.000%2B09%3A00&timeMax=${toDate}T23%3A59%3A59.999%2B09%3A00&includingAttendees=true&calendarIds%5B%5D=8452&calendarIds%5B%5D=8987&calendarIds%5B%5D=11324&calendarIds%5B%5D=11326`, _this.axiosConfig());
+
+            console.log(response.data.data)
+
+            _this.mainWindowSender.send('findDayoffListCallback', response.data.data);
         } catch (e) {
             ShareUtil.printAxiosError(e);
         }

@@ -69,6 +69,20 @@ class ShareUtil {
         return second;
     }
 
+    static addDays(date, days) {
+        let d = new Date(date);
+        d.setDate(d.getDate() + days);
+
+        const year = d.getFullYear()
+        let month = d.getMonth() + 1;
+        if (month < 10)
+            month = '0' + month;
+        let day = d.getDate();
+        if (day < 10)
+            day = '0' + day;
+        return year + '-' + month + '-' + day;
+    }
+
     static printAxiosError(e) {
         const response = e.response;
         if (response) {

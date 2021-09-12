@@ -1,9 +1,10 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import daouofficeIcon from '../static/image/daouoffice.ico';
-import { Card, Icon, Dropdown, List, Tab, Button, Segment, Header, Menu, Label, Popup } from 'semantic-ui-react'
-import UiShare  from '../UiShare';
-import { setIntervalAsync, clearIntervalAsync } from 'set-interval-async/dynamic'
+import {Button, Card, Dropdown, Header, Icon, Label, List, Menu, Popup, Segment, Tab, Table} from 'semantic-ui-react'
+import UiShare from '../UiShare';
+import {clearIntervalAsync, setIntervalAsync} from 'set-interval-async/dynamic'
 import TimerContext from "../TimerContext";
+
 const { ipcRenderer } = window.require('electron');
 
 function Daouoffice() {
@@ -21,6 +22,7 @@ function Daouoffice() {
         findUserInfo();
         findNotificationCount();
         findStore();
+        findDayoffList();
     }, []);
 
     useEffect(() => {
@@ -209,6 +211,19 @@ function Daouoffice() {
         });
     }
 
+    const findDayoffList = () => {
+        ipcRenderer.send('daouoffice.findDayoffList');
+        ipcRenderer.on('daouoffice.findDayoffListCallback', async (e, data) => {
+            data.filter(item => item.type == 'company').map(item => {
+                const { startTime, endTime, summary, type } = item;
+                const startTimeDate = startTime.substring(0, 10);
+                const endTimeDate = endTime.substring(0, 10);
+                console.log(summary, startTimeDate, endTimeDate )
+            })
+            ipcRenderer.removeAllListeners('daouoffice.findDayoffListCallback');
+        });
+    }
+
     const rightBtnTrigger = (
         <span>
             <Icon name='user' />
@@ -220,12 +235,46 @@ function Daouoffice() {
             return (
                 <div className="list-layer">
                     <Tab panes={[
-                        { menuItem: '전사 게시판', render: () =>
+                        {
+                            menuItem: '전사 게시판', render: () =>
                                 <Tab.Pane>
                                     <List divided relaxed style={{height: '200px'}}>
                                         {displayListItem()}
                                     </List>
-                                </Tab.Pane>}
+                                </Tab.Pane>
+                        },
+                        {
+                            menuItem: '연차 내역', render: () =>
+                                <Tab.Pane>
+                                    <Table celled>
+                                        <Table.Header>
+                                            <Table.Row>
+                                                <Table.HeaderCell>일자</Table.HeaderCell>
+                                                <Table.HeaderCell>내역</Table.HeaderCell>
+                                            </Table.Row>
+                                        </Table.Header>
+
+                                        <Table.Body>
+                                            <Table.Row>
+                                                <Table.Cell>2014-01-01 ~ 2014-01-01</Table.Cell>
+                                                <Table.Cell>반차(오후):한경만,이승엽</Table.Cell>
+                                            </Table.Row>
+                                            <Table.Row>
+                                                <Table.Cell>2014-01-01</Table.Cell>
+                                                <Table.Cell>반차(오후):한경만,이승엽</Table.Cell>
+                                            </Table.Row>
+                                            <Table.Row>
+                                                <Table.Cell>2014-01-01</Table.Cell>
+                                                <Table.Cell>반차(오후):한경만,이승엽</Table.Cell>
+                                            </Table.Row>
+                                            <Table.Row>
+                                                <Table.Cell>2014-01-01</Table.Cell>
+                                                <Table.Cell>반차(오후):한경만,이승엽</Table.Cell>
+                                            </Table.Row>
+                                        </Table.Body>
+                                    </Table>
+                                </Tab.Pane>
+                        }
                     ]} />
                 </div>
             )
