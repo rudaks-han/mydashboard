@@ -24,18 +24,16 @@ function Daouoffice() {
     }, []);
 
     useEffect(() => {
-        if (!userInfo) return;
         if (tickTime == null) return;
-        if (authenticated) {
-            const {hour, minute} = UiShare.getTimeFormat(tickTime);
-            if (minute === 0) {
-                console.log('[daouoffice] scheduler ==> findList ' + UiShare.getCurrTime())
-                findList();
-                findNotificationCount();
-            }
-
-            notifyClockCheck({hour, minute});
+        if (!userInfo || !authenticated) return;
+        const {hour, minute} = UiShare.getTimeFormat(tickTime);
+        if (minute === 0) {
+            console.log('[daouoffice] scheduler ==> findList ' + UiShare.getCurrTime())
+            findList();
+            findNotificationCount();
         }
+
+        notifyClockCheck({hour, minute});
     }, [tickTime, userInfo, authenticated]);
 
     useEffect(() => {
@@ -168,7 +166,6 @@ function Daouoffice() {
         ipcRenderer.removeAllListeners('daouoffice.authenticated');
         ipcRenderer.on('daouoffice.authenticated', async (e, data) => {
             setAuthenticated(data);
-
         });
     }
 
@@ -200,7 +197,6 @@ function Daouoffice() {
     const findStore = () => {
         ipcRenderer.send('daouoffice.findStore');
         ipcRenderer.on('daouoffice.findStoreCallback', async (e, data) => {
-            console.error(data)
             setUsername(data.username);
 
             const clockIn = data.useAlarmClock.clockIn || false;
@@ -209,9 +205,6 @@ function Daouoffice() {
                 clockIn,
                 clockOut
             });
-            /*setCheckedUseClockInTime(data.useClockInAlarm);
-            setCheckedUseClockOutTime(data.useClockOutAlarm);*/
-
             ipcRenderer.removeAllListeners('daouoffice.findStoreCallback');
         });
     }

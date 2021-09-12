@@ -17,29 +17,14 @@ function Jira() {
 
     useEffect(() => {
         if (tickTime == null) return;
+        if (!authenticated) return;
+
         const { minute } = UiShare.getTimeFormat(tickTime);
         if (minute === 0) {
             console.log('[jira] scheduler ==> findList ' + UiShare.getCurrTime())
             findList();
         }
-    }, [tickTime]);
-
-   /* useEffect(() => {
-        const timer = setIntervalAsync(
-            async () => {
-                console.log('[jira] scheduler ==> findList ' + UiShare.getCurrTime())
-                findList();
-            }, 1000 * 60 * 60
-        );
-
-        return () => {
-            (async () => {
-                if (timer) {
-                    await clearIntervalAsync(timer);
-                }
-            })();
-        };
-    }, [])*/
+    }, [tickTime, authenticated]);
 
     const findList = () => {
         setList(null);

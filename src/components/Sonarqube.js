@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import sonarqubeIcon from '../static/image/sonarqube-logo.png';
-import { Card, Icon, List, Button, Label, Statistic } from 'semantic-ui-react'
+import {Card, Icon, List, Button, Label, Statistic, Form, Checkbox} from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import ModuleList from "./sonarqube/ModuleList";
 import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
@@ -9,38 +9,29 @@ const { ipcRenderer } = window.require('electron');
 
 function Sonarqube() {
     const [list, setList] = useState(null);
+    const [useAlarmOnError, setUseAlarmOnError] = useState(false);
     const [clickedSetting, setClickSetting] = useState(false);
     const tickTime = useContext(TimerContext);
+    let qualityErrorMessage;
 
     useEffect(() => {
         findList();
+        findUseAlarmOnError();
     }, []);
 
     useEffect(() => {
         if (tickTime == null) return;
-        const { minute } = UiShare.getTimeFormat(tickTime);
-        if (minute === 0) {
-            console.log('[jira] sonarqube ==> findList ' + UiShare.getCurrTime())
+        const { hour, minute } = UiShare.getTimeFormat(tickTime);
+        if ((hour === 10 && minute === 0) || (hour === 15 && minute === 0)) {
+            console.log('[sonarqube] scheduler ==> findList ' + UiShare.getCurrTime())
             findList();
+            setTimeout(() => {
+                if (useAlarmOnError && qualityErrorMessage) {
+                    UiShare.showNotification(qualityErrorMessage, 'Sonarqube');
+                }
+            }, 1000*5);
         }
     }, [tickTime]);
-
-    /*useEffect(() => {
-        const timer = setIntervalAsync(
-            async () => {
-                console.log('[sonarqube] scheduler ==> findList ' + UiShare.getCurrTime())
-                findList();
-            }, 1000 * 60 * 60
-        );
-
-        return () => {
-            (async () => {
-                if (timer) {
-                    await clearIntervalAsync(timer);
-                }
-            })();
-        };
-    }, [])*/
 
     const findList = () => {
         setList(null);
@@ -48,6 +39,14 @@ function Sonarqube() {
         ipcRenderer.removeAllListeners('sonarqube.findListCallback');
         ipcRenderer.on('sonarqube.findListCallback', async (e, data) => {
             setList(data);
+        });
+    }
+
+    const findUseAlarmOnError = () => {
+        ipcRenderer.send('sonarqube.findUseAlarmOnError');
+        ipcRenderer.on('sonarqube.findUseAlarmOnErrorCallback', (e, data) => {
+            setUseAlarmOnError(data);
+            ipcRenderer.removeAllListeners('sonarqube.findUseAlarmOnErrorCallback');
         });
     }
 
@@ -68,6 +67,7 @@ function Sonarqube() {
             const labelStyle = {fontSize: '10px'}
             const result = list.map(item => {
                 let hasModuleError = false;
+                let errorMessage = '';
                 const { moduleName, measures } = item;
                 let codeSmellValue, codeSmellBestValue, codeSmellColor = 'green', codeSmellMarkStyle = {display: 'none'}, codeSmellLink;
                 let vulnerabilitiesValue, vulnerabilitiesBestValue, vulnerabilitiesColor = 'green', vulnerabilitiesMarkStyle = {display: 'none'}, vulnerabilitiesLink;
@@ -83,6 +83,7 @@ function Sonarqube() {
                         securityHotspotsLink = `http://211.63.24.41:9000/project/issues?id=${moduleName}&resolved=false&sinceLeakPeriod=true&types=SECURITY_HOTSPOT`;
                         if (!securityHotspotsBestValue) {
                             hasModuleError = true;
+                            errorMessage += `${moduleName} securityHotspots failed \n`;
                             securityHotspotsColor = 'red';
                             securityHotspotsMarkStyle = {verticalAlign: 'top'};
                         }
@@ -92,6 +93,7 @@ function Sonarqube() {
                         vulnerabilitiesLink = `http://211.63.24.41:9000/project/issues?id=${moduleName}&resolved=false&sinceLeakPeriod=true&types=VULNERABILITY`;
                         if (!vulnerabilitiesBestValue) {
                             hasModuleError = true;
+                            errorMessage += `${moduleName} vulnerability failed \n`;
                             vulnerabilitiesColor = 'red';
                             vulnerabilitiesMarkStyle = {verticalAlign: 'top'};
                         }
@@ -101,6 +103,7 @@ function Sonarqube() {
                         codeSmellLink = `http://211.63.24.41:9000/project/issues?id=${moduleName}&resolved=false&sinceLeakPeriod=true&types=CODE_SMELL`
                         if (!codeSmellBestValue) {
                             hasModuleError = true;
+                            errorMessage += `${moduleName} codesmell failed \n`;
                             codeSmellColor = 'red';
                             codeSmellMarkStyle = {verticalAlign: 'top'}
                         }
@@ -110,6 +113,7 @@ function Sonarqube() {
                         bugsLink = `http://211.63.24.41:9000/project/issues?id=${moduleName}&resolved=false&sinceLeakPeriod=true&types=BUG`;
                         if (!bugsBestValue) {
                             hasModuleError = true;
+                            errorMessage += `${moduleName} bugs failed \n`;
                             bugsColor = 'red';
                             bugsMarkStyle = {verticalAlign: 'top'};
                         }
@@ -117,6 +121,8 @@ function Sonarqube() {
                         console.log(`"${measure.metric}" is not defined.`)
                     }
                 });
+
+                qualityErrorMessage = errorMessage;
 
                 const size = 'small'; // mini, tiny, small
 
@@ -191,9 +197,24 @@ function Sonarqube() {
     const displaySettingLayer = () => {
         if (clickedSetting) {
             return <div className="setting-layer">
-                <ModuleList findList={findList}/>
+                <Form>
+                    <Form.Field>
+                        <label>알림 여부</label>
+                        <Checkbox checked={useAlarmOnError} onChange={onChangeUseAlarm}/> 오류 발생 시 화면 알림 (10시, 15시)
+                    </Form.Field>
+                    <Form.Field>
+                        <label>사용 모듈</label>
+                        <ModuleList findList={findList}/>
+                    </Form.Field>
+                </Form>
             </div>;
         }
+    }
+
+    const onChangeUseAlarm = (e, data) => {
+        const { checked } = data;
+        setUseAlarmOnError(checked);
+        ipcRenderer.send('sonarqube.useAlarmOnError', checked);
     }
 
     const onClickRefresh = () => {

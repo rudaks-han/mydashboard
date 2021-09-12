@@ -23,23 +23,6 @@ function VictoryPortal() {
         }
     }, [tickTime]);
 
-    /*useEffect(() => {
-        const timer = setIntervalAsync(
-            async () => {
-                console.log('[victoryPortal] scheduler ==> findList ' + UiShare.getCurrTime())
-                findList();
-            }, 1000 * 60 * 10
-        );
-
-        return () => {
-            (async () => {
-                if (timer) {
-                    await clearIntervalAsync(timer);
-                }
-            })();
-        };
-    }, [])*/
-
     const findList = () => {
         setList(null);
         ipcRenderer.send('victoryPortal.findList');

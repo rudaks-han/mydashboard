@@ -6,6 +6,7 @@ class SonarqubeClient extends BaseClientComponent {
     constructor(mainWindow) {
         super('sonarqube', mainWindow);
         this.availableModuleStoreId = 'sonarqube.availableModules';
+        this.useAlarmOnErrorStoreId = 'sonarqube.useAlarmOnError';
         this.bindIpcMainListener();
     }
 
@@ -14,10 +15,18 @@ class SonarqubeClient extends BaseClientComponent {
         this.ipcMainListener.on('findModuleList', this.findModuleList.bind(this));
         this.ipcMainListener.on('addAvailableModule', this.addAvailableModule.bind(this));
         this.ipcMainListener.on('removeAvailableModule', this.removeAvailableModule.bind(this));
+        this.ipcMainListener.on('findUseAlarmOnError', this.findUseAlarmOnError.bind(this));
+        this.ipcMainListener.on('useAlarmOnError', this.useAlarmOnError.bind(this));
     }
 
     getApiUrl(key) {
         return `http://211.63.24.41:9000/api/measures/component?component=${key}&metricKeys=new_bugs,new_vulnerabilities,new_security_hotspots,new_code_smells,projects`;
+    }
+
+    findUseAlarmOnError() {
+        let data = this.getStore().get(this.useAlarmOnErrorStoreId);
+        if (data == null) data = false;
+        this.mainWindowSender.send('findUseAlarmOnErrorCallback', data);
     }
 
     async findModuleList() {
@@ -66,6 +75,10 @@ class SonarqubeClient extends BaseClientComponent {
 
     setAvailableModules(data) {
         this.getStore().set(this.availableModuleStoreId, data);
+    }
+
+    useAlarmOnError(e, data) {
+        this.getStore().set(this.useAlarmOnErrorStoreId, data);
     }
 
     findList() {

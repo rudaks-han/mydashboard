@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import jenkinsIcon from '../static/image/jenkins.png';
-import { Card, Icon, List, Button, Label, Checkbox } from 'semantic-ui-react'
+import { Card, Icon, List, Button, Label, Checkbox, Form } from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
 import TimerContext from "../TimerContext";
@@ -8,41 +8,40 @@ const { ipcRenderer } = window.require('electron');
 
 function Jenkins() {
     const [list, setList] = useState(null);
+    const [useAlarmOnError, setUseAlarmOnError] = useState(false);
     const [checkedModuleNameList, setCheckedModuleNameList] = useState([]);
     const [jobList, setJobList] = useState([]);
     const [clickedSetting, setClickSetting] = useState(false);
     const tickTime = useContext(TimerContext);
+    let buildErrorMessage;
 
     useEffect(() => {
         findList();
         findModuleList();
+        findUseAlarmOnError();
     }, []);
 
     useEffect(() => {
         if (tickTime == null) return;
-        const { minute } = UiShare.getTimeFormat(tickTime);
-        if (minute === 0) {
+        const { hour, minute } = UiShare.getTimeFormat(tickTime);
+        if ((hour === 10 && minute === 0) || (hour === 15 && minute === 0)) {
             console.log('[jenkins] scheduler ==> findList ' + UiShare.getCurrTime())
             findList();
+            setTimeout(() => {
+                if (useAlarmOnError && buildErrorMessage) {
+                    UiShare.showNotification(buildErrorMessage, 'Jenkins');
+                }
+            }, 1000*5);
         }
     }, [tickTime]);
 
-    /*useEffect(() => {
-        const timer = setIntervalAsync(
-            async () => {
-                console.log('[jenkins] scheduler ==> findList ' + UiShare.getCurrTime())
-                findList();
-            }, 1000 * 60 * 60
-        );
-
-        return () => {
-            (async () => {
-                if (timer) {
-                    await clearIntervalAsync(timer);
-                }
-            })();
-        };
-    }, [])*/
+    const findUseAlarmOnError = () => {
+        ipcRenderer.send('jenkins.findUseAlarmOnError');
+        ipcRenderer.on('jenkins.findUseAlarmOnErrorCallback', (e, data) => {
+            setUseAlarmOnError(data);
+            ipcRenderer.removeAllListeners('jenkins.findUseAlarmOnErrorCallback');
+        });
+    }
 
     const findModuleList = () => {
         ipcRenderer.send('jenkins.findModuleList');
@@ -55,6 +54,10 @@ function Jenkins() {
             setCheckedModuleNameList(checkedModuleNames);
             setJobList(filteredJobs);
         });
+
+        return () => {
+            return ipcRenderer.removeAllListeners('jenkins.findModuleListCallback');
+        }
     }
 
     const filterJobs = (jobs) => {
@@ -76,9 +79,13 @@ function Jenkins() {
         ipcRenderer.removeAllListeners('jenkins.findListCallback');
         ipcRenderer.send('jenkins.findList');
         ipcRenderer.on('jenkins.findListCallback', (e, data) => {
-            setList(data);
             ipcRenderer.removeAllListeners('jenkins.findListCallback');
+            setList(data);
         });
+
+        return () => {
+            ipcRenderer.removeAllListeners('jenkins.findListCallback');
+        }
     }
 
     const displayListLayer = () => {
@@ -124,9 +131,7 @@ function Jenkins() {
                 </List.Item>;
             });
 
-            if (hasError) {
-                /*UiShare.showNotification(`[My Dashboard] ${errorMessage}`);*/
-            }
+            buildErrorMessage = errorMessage;
 
             return result;
         }
@@ -156,9 +161,24 @@ function Jenkins() {
     const displaySettingLayer = () => {
         if (clickedSetting) {
             return <div className="setting-layer">
-                {displayModuleList()}
+                <Form>
+                    <Form.Field>
+                        <label>알림 여부</label>
+                        <Checkbox checked={useAlarmOnError} onChange={onChangeUseAlarm}/> 오류 발생 시 화면 알림 (10시, 15시)
+                    </Form.Field>
+                    <Form.Field>
+                        <label>사용 모듈</label>
+                        {displayModuleList()}
+                    </Form.Field>
+                </Form>
             </div>;
         }
+    }
+
+    const onChangeUseAlarm = (e, data) => {
+        const { checked } = data;
+        setUseAlarmOnError(checked);
+        ipcRenderer.send('jenkins.useAlarmOnError', checked);
     }
 
     const displayModuleList = () => {

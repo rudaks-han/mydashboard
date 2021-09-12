@@ -8,6 +8,7 @@ class JenkinsClient extends BaseClientComponent {
         this.userId = 'kmhan';
         this.token = '1124f95f1ddfe9a55649bef93257a1c896';
         this.availableModuleStoreId = 'jenkins.availableModules';
+        this.useAlarmOnErrorStoreId = 'jenkins.useAlarmOnError';
         this.bindIpcMainListener();
     }
 
@@ -16,6 +17,8 @@ class JenkinsClient extends BaseClientComponent {
         this.ipcMainListener.on('findModuleList', this.findModuleList.bind(this));
         this.ipcMainListener.on('addAvailableModule', this.addAvailableModule.bind(this));
         this.ipcMainListener.on('removeAvailableModule', this.removeAvailableModule.bind(this));
+        this.ipcMainListener.on('findUseAlarmOnError', this.findUseAlarmOnError.bind(this));
+        this.ipcMainListener.on('useAlarmOnError', this.useAlarmOnError.bind(this));
     }
 
     getApiUrl(moduleName, branch) {
@@ -24,6 +27,12 @@ class JenkinsClient extends BaseClientComponent {
 
     getModuleUrl() {
         return `http://${this.userId}:${this.token}@211.63.24.41:8080/view/victory/api/json`;
+    }
+
+    findUseAlarmOnError() {
+        let data = this.getStore().get(this.useAlarmOnErrorStoreId);
+        if (data == null) data = false;
+        this.mainWindowSender.send('findUseAlarmOnErrorCallback', data);
     }
 
     findModuleList() {
@@ -114,6 +123,10 @@ class JenkinsClient extends BaseClientComponent {
 
         const newAvailableModules = availableModules.filter(module => module.name !== name);
         this.setAvailableModules(newAvailableModules);
+    }
+
+    useAlarmOnError(e, data) {
+        this.getStore().set(this.useAlarmOnErrorStoreId, data);
     }
 
     getAvailableModules() {

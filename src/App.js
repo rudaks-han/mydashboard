@@ -14,7 +14,6 @@ function App() {
     const [userInfo, setUserInfo] = useState({});
     const [tickTime, setTickTime] = useState(null);
 
-
     useEffect(() => {
         getUserInfo();
     }, []);
@@ -45,7 +44,8 @@ function App() {
                 const time = UiShare.getCurrTime();
                 setTickTime(time);
             },
-            1000 * 10
+            1000 * 60
+            //1000 * 5
         );
 
         return () => {

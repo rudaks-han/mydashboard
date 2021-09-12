@@ -26,6 +26,16 @@ body ::-webkit-scrollbar {
   margin: 0em 0.5em 0em 0em;
 }
 
+.ui.tiny.menu {
+  position: fixed;
+  top:0;
+  width: 100%;
+  z-index: 999;
+}
+
+.pusher {
+  margin-top: 40px;
+}
 .main-content {
   /*margin-top: 40px;*/
 }

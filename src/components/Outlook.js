@@ -18,40 +18,13 @@ function Outlook() {
 
     useEffect(() => {
         if (tickTime == null) return;
-        if (authenticated) {
-            const { minute } = UiShare.getTimeFormat(tickTime);
-            if (minute%10 === 0) {
-                console.log('[outlook] scheduler ==> findList ' + UiShare.getCurrTime())
-                findList();
-            }
+        if (!authenticated) return;
+        const { minute } = UiShare.getTimeFormat(tickTime);
+        if (minute%10 === 0) {
+            console.log('[outlook] scheduler ==> findList ' + UiShare.getCurrTime())
+            findList();
         }
-    }, [tickTime]);
-
-    /*useEffect(() => {
-        const timer = setIntervalAsync(
-            async () => {
-                console.log('[outlook] scheduler ==> findList ' + UiShare.getCurrTime())
-                findList();
-            },
-            1000 * 60 * 10
-        );
-
-        if (!authenticated) {
-            (async () => {
-                if (timer) {
-                    await clearIntervalAsync(timer);
-                }
-            })();
-        }
-
-        return () => {
-            (async () => {
-                if (timer) {
-                    await clearIntervalAsync(timer);
-                }
-            })();
-        };
-    }, [authenticated])*/
+    }, [tickTime, authenticated]);
 
     const findList = () => {
         setList(null);
