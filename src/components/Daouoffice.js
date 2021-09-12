@@ -9,6 +9,7 @@ const { ipcRenderer } = window.require('electron');
 
 function Daouoffice() {
     const [list, setList] = useState(null);
+    const [dayoffList, setDayoffList] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
     const [username, setUsername] = useState(false);
     const [notificationCount, setNotificationCount] = useState(0);
@@ -212,14 +213,20 @@ function Daouoffice() {
     }
 
     const findDayoffList = () => {
+        setDayoffList(null);
         ipcRenderer.send('daouoffice.findDayoffList');
         ipcRenderer.on('daouoffice.findDayoffListCallback', async (e, data) => {
-            data.filter(item => item.type == 'company').map(item => {
-                const { startTime, endTime, summary, type } = item;
+            const dayoffList = data.filter(item => item.type == 'company').map(item => {
+                const { id, startTime, endTime, summary, type } = item;
                 const startTimeDate = startTime.substring(0, 10);
                 const endTimeDate = endTime.substring(0, 10);
-                console.log(summary, startTimeDate, endTimeDate )
-            })
+
+                return {
+                    id, startTimeDate, endTimeDate, summary
+                }
+            });
+
+            setDayoffList(dayoffList);
             ipcRenderer.removeAllListeners('daouoffice.findDayoffListCallback');
         });
     }
@@ -244,33 +251,11 @@ function Daouoffice() {
                                 </Tab.Pane>
                         },
                         {
-                            menuItem: '연차 내역', render: () =>
+                            menuItem: '연차 현황', render: () =>
                                 <Tab.Pane>
-                                    <Table celled>
-                                        <Table.Header>
-                                            <Table.Row>
-                                                <Table.HeaderCell>일자</Table.HeaderCell>
-                                                <Table.HeaderCell>내역</Table.HeaderCell>
-                                            </Table.Row>
-                                        </Table.Header>
-
+                                    <Table celled style={{display: 'block', height: '200px', overflowY: 'auto'}}>
                                         <Table.Body>
-                                            <Table.Row>
-                                                <Table.Cell>2014-01-01 ~ 2014-01-01</Table.Cell>
-                                                <Table.Cell>반차(오후):한경만,이승엽</Table.Cell>
-                                            </Table.Row>
-                                            <Table.Row>
-                                                <Table.Cell>2014-01-01</Table.Cell>
-                                                <Table.Cell>반차(오후):한경만,이승엽</Table.Cell>
-                                            </Table.Row>
-                                            <Table.Row>
-                                                <Table.Cell>2014-01-01</Table.Cell>
-                                                <Table.Cell>반차(오후):한경만,이승엽</Table.Cell>
-                                            </Table.Row>
-                                            <Table.Row>
-                                                <Table.Cell>2014-01-01</Table.Cell>
-                                                <Table.Cell>반차(오후):한경만,이승엽</Table.Cell>
-                                            </Table.Row>
+                                            {displayDayoffList()}
                                         </Table.Body>
                                     </Table>
                                 </Tab.Pane>
@@ -315,6 +300,34 @@ function Daouoffice() {
         }
     }
 
+    const displayDayoffList = () => {
+        if (dayoffList == null) {
+            return (
+                <Table.Row>
+                    <Table.Cell>
+                        {UiShare.displayListLoading()}
+                    </Table.Cell>
+                </Table.Row>
+            );
+        }
+
+        return dayoffList.map(item => {
+            const { id, startTimeDate, endTimeDate, summary } = item;
+
+            let timeString = '';
+            if (startTimeDate !== endTimeDate) {
+                timeString = startTimeDate + '~\n' + endTimeDate;
+            } else {
+                timeString = startTimeDate;
+            }
+            return (
+                <Table.Row key={id}>
+                    <Table.Cell>{timeString}</Table.Cell>
+                    <Table.Cell>{summary}</Table.Cell>
+                </Table.Row>
+            )
+        });
+    }
     const displayRightMenu = () => {
         if (authenticated && userInfo) {
             return <div className="btn-right-layer">
@@ -379,6 +392,7 @@ function Daouoffice() {
 
     const onClickRefresh = () => {
         findList();
+        findDayoffList();
     }
 
     const onClickLogin = () => {

@@ -23,9 +23,10 @@ function App() {
     }, []);
 
     const getUserInfo = () => {
-        ipcRenderer.send('findStore', { key: 'userInfo'});
-        ipcRenderer.on('findStoreCallback', (e, data) => {
-            //console.log(data);
+
+        console.log('App getUserInfo')
+        ipcRenderer.send('login.findUserInfo');
+        ipcRenderer.on('login.findUserInfoCallback', async (e, data) => {
             const {id, employeeNumber, name, position, deptName} = data;
             setUserInfo(data);
             firebaseApp.updateActiveUserStatus({id, employeeNumber, name, position, deptName});

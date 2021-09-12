@@ -62,7 +62,7 @@ app.whenReady().then(() => {
                 }
             }
         } else {
-            loginClient.getUserInfo();
+            //loginClient.getUserInfo();
         }
     });
 

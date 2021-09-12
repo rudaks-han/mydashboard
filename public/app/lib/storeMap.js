@@ -5,7 +5,7 @@ class StoreMap {
     constructor() {
         this.store = new Store();
 
-        console.log(this.store.path);
+        console.log("storePath : " + this.store.path);
     }
 
     set(key, value) {
