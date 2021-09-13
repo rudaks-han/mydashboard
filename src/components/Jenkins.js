@@ -1,13 +1,15 @@
 import React, {useState, useEffect, useContext} from 'react';
 import jenkinsIcon from '../static/image/jenkins.png';
-import { Card, Icon, List, Button, Label, Checkbox, Form } from 'semantic-ui-react'
+import {Card, Icon, List, Button, Label, Checkbox, Form, Segment, Header, Dropdown} from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
 import TimerContext from "../TimerContext";
+import jiraIcon from "../static/image/icons8-jira-100.png";
 const { ipcRenderer } = window.require('electron');
 
 function Jenkins() {
     const [list, setList] = useState(null);
+    const [authenticated, setAuthenticated] = useState(false);
     const [useAlarmOnError, setUseAlarmOnError] = useState(false);
     const [checkedModuleNameList, setCheckedModuleNameList] = useState([]);
     const [jobList, setJobList] = useState([]);
@@ -23,6 +25,7 @@ function Jenkins() {
 
     useEffect(() => {
         if (tickTime == null) return;
+        if (!authenticated) return;
         const { hour, minute } = UiShare.getTimeFormat(tickTime);
         if ((hour === 10 && minute === 0) || (hour === 15 && minute === 0)) {
             console.log('[jenkins] scheduler ==> findList ' + UiShare.getCurrTime())
@@ -33,7 +36,7 @@ function Jenkins() {
                 }
             }, 1000*5);
         }
-    }, [tickTime]);
+    }, [tickTime, authenticated]);
 
     const findUseAlarmOnError = () => {
         ipcRenderer.send('jenkins.findUseAlarmOnError');
@@ -76,26 +79,36 @@ function Jenkins() {
 
     const findList = () => {
         setList(null);
-        ipcRenderer.removeAllListeners('jenkins.findListCallback');
         ipcRenderer.send('jenkins.findList');
         ipcRenderer.on('jenkins.findListCallback', (e, data) => {
             ipcRenderer.removeAllListeners('jenkins.findListCallback');
             setList(data);
         });
 
-        return () => {
-            ipcRenderer.removeAllListeners('jenkins.findListCallback');
-        }
+        ipcRenderer.removeAllListeners('jenkins.authenticated');
+        ipcRenderer.on('jenkins.authenticated', async (e, data) => {
+            setAuthenticated(data);
+        });
     }
 
     const displayListLayer = () => {
-        return (
-            <div className="list-layer">
-                <List divided relaxed size='huge' style={{'height': '320px'}}>
-                    {displayListItem()}
-                </List>
-            </div>
-        );
+        if (authenticated) {
+            return (
+                <div className="list-layer">
+                    <List divided relaxed size='huge' style={{'height': '320px'}}>
+                        {displayListItem()}
+                    </List>
+                </div>
+            );
+        } else {
+            return <Segment placeholder>
+                <Header icon>
+                    <img src={jenkinsIcon} alt="" className="component-icon"/>
+                    Jira에 로그인
+                </Header>
+                <Button primary onClick={onClickLogin}>Login</Button>
+            </Segment>;
+        }
     }
 
     const displayListItem = () => {
@@ -141,13 +154,24 @@ function Jenkins() {
         return UiShare.timeSince(timestamp) + ' ago';
     }
 
+    const rightBtnTrigger = (
+        <span>
+            <Icon name='user' />
+        </span>
+    )
+
     const displayRightMenu = () => {
-        return <div className="btn-right-layer">
-            <Icon name='expand arrows alternate' className='component-move'/>
-            <Icon name='refresh' onClick={onClickRefresh}/>
-            <Icon name='setting' onClick={onClickSetting}/>
-            {displaySettingLayer()}
-        </div>;
+        if (authenticated) {
+            return <div className="btn-right-layer">
+                <Icon name='expand arrows alternate' className='component-move'/>
+                <Icon name='refresh' onClick={onClickRefresh}/>
+                <Icon name='setting' onClick={onClickSetting}/>
+                {displaySettingLayer()}
+                <Dropdown trigger={rightBtnTrigger} options={[
+                    { key: 'logout', text: 'Logout', onClick: onClickLogout }
+                ]} />
+            </div>;
+        }
     }
 
     const onClickSetting = e => {
@@ -207,6 +231,14 @@ function Jenkins() {
 
     const onClickRefresh = () => {
         findList();
+    }
+
+    const onClickLogin = () => {
+        ipcRenderer.send('jenkins.openLoginPage');
+    }
+
+    const onClickLogout = () => {
+        ipcRenderer.send('jenkins.logout');
     }
 
     return (

@@ -128,7 +128,6 @@ function Outlook() {
     }
 
     const onClickLogout = () => {
-        console.error('__ onClickLogout')
         ipcRenderer.send('outlook.logout');
     }
 

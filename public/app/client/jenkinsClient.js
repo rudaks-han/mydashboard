@@ -1,12 +1,12 @@
+const { BrowserWindow, session } = require('electron');
 const axios = require('axios');
 const BaseClientComponent = require('./baseClientComponent');
 const ShareUtil = require('../lib/shareUtil');
+const CookieConst = require('../const/cookieConst');
 
 class JenkinsClient extends BaseClientComponent {
     constructor(mainWindow) {
         super('jenkins', mainWindow);
-        this.userId = 'kmhan';
-        this.token = '1124f95f1ddfe9a55649bef93257a1c896';
         this.availableModuleStoreId = 'jenkins.availableModules';
         this.useAlarmOnErrorStoreId = 'jenkins.useAlarmOnError';
         this.bindIpcMainListener();
@@ -19,14 +19,61 @@ class JenkinsClient extends BaseClientComponent {
         this.ipcMainListener.on('removeAvailableModule', this.removeAvailableModule.bind(this));
         this.ipcMainListener.on('findUseAlarmOnError', this.findUseAlarmOnError.bind(this));
         this.ipcMainListener.on('useAlarmOnError', this.useAlarmOnError.bind(this));
+        this.ipcMainListener.on('openLoginPage', this.openLoginPage.bind(this));
+        this.ipcMainListener.on('logout', this.logout.bind(this));
+    }
+
+    openLoginPage() {
+        const _this = this;
+        let ses = session.defaultSession;
+
+        let loginWindow = new BrowserWindow({
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation : false
+            },
+            width: 800,
+            height: 600
+        })
+
+        loginWindow.loadURL('http://211.63.24.41:8080/login');
+        loginWindow.webContents.on('did-finish-load', e => {
+            const url = e.sender.getURL();
+            if (url === 'http://211.63.24.41:8080/') {
+                this.getCookieAndStore('211.63.24.41', CookieConst.jenkins, () => {
+                    loginWindow.close();
+                    loginWindow = null;
+                    _this.findList();
+                });
+            }
+        })
+        //loginWindow.webContents.openDevTools();
+    }
+
+    logout(e) {
+        const _this = this;
+        this.storeMap.set(CookieConst.jenkins, '');
+
+        _this.mainWindowSender.send('authenticated', false);
+        _this.mainWindowSender.send('findListCallback', []);
+    }
+
+    axiosConfig() {
+        const cookieDataString = this.getCookieDataString(CookieConst.jenkins);
+        return {
+            headers: {
+                TimeZoneOffset: 540,
+                Cookie: `${cookieDataString};`
+            }
+        };
     }
 
     getApiUrl(moduleName, branch) {
-        return `http://${this.userId}:${this.token}@211.63.24.41:8080/view/victory/job/${moduleName}/job/${branch}/lastBuild/api/json?moduleName=${moduleName}`;
+        return `http://211.63.24.41:8080/view/victory/job/${moduleName}/job/${branch}/lastBuild/api/json?moduleName=${moduleName}`;
     }
 
     getModuleUrl() {
-        return `http://${this.userId}:${this.token}@211.63.24.41:8080/view/victory/api/json`;
+        return `http://211.63.24.41:8080/view/victory/api/json`;
     }
 
     findUseAlarmOnError() {
@@ -39,13 +86,13 @@ class JenkinsClient extends BaseClientComponent {
         const _this = this;
         this.request.get(
             _this.getModuleUrl(),
-            {},
+            _this.axiosConfig(),
             response => {
                 let moduleUrls = [];
                 let filteredJobs = [];
                 response.data.jobs.map(job => {
                     if (job._class === 'org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject') {
-                        moduleUrls.push(axios.get(_this.getModuleDetailUrl(job.name)))
+                        moduleUrls.push(axios.get(_this.getModuleDetailUrl(job.name), _this.axiosConfig()))
                         filteredJobs.push(job);
                     }
                 });
@@ -97,7 +144,7 @@ class JenkinsClient extends BaseClientComponent {
     }
 
     getModuleDetailUrl(moduleName) {
-        return `http://${this.userId}:${this.token}@211.63.24.41:8080/job/${moduleName}/api/json`;
+        return `http://211.63.24.41:8080/job/${moduleName}/api/json`;
     }
 
     addAvailableModule(e, data) {
@@ -153,7 +200,7 @@ class JenkinsClient extends BaseClientComponent {
 
         let urls = [];
         availableModules.map(module => {
-            urls.push(axios.get(this.getApiUrl(module.name, module.branch)))
+            urls.push(axios.get(this.getApiUrl(module.name, module.branch), _this.axiosConfig()))
         });
 
         this.request.all(
@@ -177,6 +224,7 @@ class JenkinsClient extends BaseClientComponent {
                 });
 
                 _this.mainWindowSender.send('findListCallback', buildResults);
+                _this.mainWindowSender.send('authenticated', true);
             },
             error => {
                 ShareUtil.printAxiosError(error);

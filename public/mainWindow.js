@@ -1,14 +1,20 @@
 const electron = require('electron');
-const { BrowserWindow, shell } = electron;
+const { BrowserWindow, shell, Menu } = electron;
+const windowStateKeeper = require('electron-window-state')
 const path = require('path');
 const ShareUtil = require('./app/lib/shareUtil');
 const logger = require('electron-log'); // /Users/macbookpro/Library/Logs/my-dashboard
+let mainMenu = Menu.buildFromTemplate(require('./mainMenu'))
 //const FirebaseApp = require('../src/firebaseApp');
 //import FirebaseApp from './firebaseApp';
 //const firebaseApp = new FirebaseApp();
 
 class MainWindow extends BrowserWindow {
     constructor(url, storeMap) {
+        let winState = windowStateKeeper({
+            defaultWidth: 1280, defaultHeight: 800
+        })
+
         super({
             webPreferences: {
                 nodeIntegration: true,
@@ -16,12 +22,14 @@ class MainWindow extends BrowserWindow {
                 enableRemoteModule: true,
                 preload: __dirname + '/preload.js'
             },
-            width: 1280,
-            height: 800
+            width: winState.width, height: winState.height,
+            x: winState.x, y: winState.y,
         });
 
         this.storeMap = storeMap;
         this.load(url);
+        winState.manage(this);
+        Menu.setApplicationMenu(mainMenu);
         //this.startTimer();
 
         //this.maximize();

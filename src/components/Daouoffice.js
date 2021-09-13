@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import daouofficeIcon from '../static/image/daouoffice.ico';
-import {Button, Card, Dropdown, Header, Icon, Label, List, Menu, Popup, Segment, Tab, Table} from 'semantic-ui-react'
+import {Button, Card, Dropdown, Header, Icon, Label, List, Menu, Popup, Segment, Tab, Table, Statistic} from 'semantic-ui-react'
 import UiShare from '../UiShare';
 import {clearIntervalAsync, setIntervalAsync} from 'set-interval-async/dynamic'
 import TimerContext from "../TimerContext";
@@ -10,6 +10,7 @@ const { ipcRenderer } = window.require('electron');
 function Daouoffice() {
     const [list, setList] = useState(null);
     const [dayoffList, setDayoffList] = useState(null);
+    const [myDayoffList, setMyDayoffList] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
     const [username, setUsername] = useState(false);
     const [notificationCount, setNotificationCount] = useState(0);
@@ -24,6 +25,7 @@ function Daouoffice() {
         findNotificationCount();
         findStore();
         findDayoffList();
+        findMyDayoffList();
     }, []);
 
     useEffect(() => {
@@ -231,6 +233,18 @@ function Daouoffice() {
         });
     }
 
+    const findMyDayoffList = () => {
+        setMyDayoffList(null);
+        ipcRenderer.send('daouoffice.findMyDayoffList');
+        ipcRenderer.on('daouoffice.findMyDayoffListCallback', async (e, data) => {
+            console.log('findMyDayoffListCallback');
+            console.log(data);
+
+            setMyDayoffList(data);
+            ipcRenderer.removeAllListeners('daouoffice.findMyDayoffListCallback');
+        });
+    }
+
     const rightBtnTrigger = (
         <span>
             <Icon name='user' />
@@ -251,7 +265,7 @@ function Daouoffice() {
                                 </Tab.Pane>
                         },
                         {
-                            menuItem: '연차 현황', render: () =>
+                            menuItem: '회사 연차현황', render: () =>
                                 <Tab.Pane>
                                     <Table celled style={{display: 'block', height: '200px', overflowY: 'auto'}}>
                                         <Table.Body>
@@ -259,6 +273,12 @@ function Daouoffice() {
                                         </Table.Body>
                                     </Table>
                                 </Tab.Pane>
+                        },
+                        {
+                            menuItem: '내 연차', render: () =>
+                                <div style={{margin: '20px'}}>
+                                    {displayMyDayoffList()}
+                                </div>
                         }
                     ]} />
                 </div>
@@ -316,18 +336,59 @@ function Daouoffice() {
 
             let timeString = '';
             if (startTimeDate !== endTimeDate) {
-                timeString = startTimeDate + '~\n' + endTimeDate;
+                timeString = startTimeDate + '\n~' + endTimeDate;
             } else {
                 timeString = startTimeDate;
             }
             return (
                 <Table.Row key={id}>
-                    <Table.Cell>{timeString}</Table.Cell>
+                    <Table.Cell className='new-line' style={{minWidth: '105px'}}>{timeString}</Table.Cell>
                     <Table.Cell>{summary}</Table.Cell>
                 </Table.Row>
             )
         });
     }
+
+    const displayMyDayoffList = () => {
+        console.error(myDayoffList)
+        if (myDayoffList == null) {
+            return (
+                <Table.Row>
+                    <Table.Cell>
+                        {UiShare.displayListLoading()}
+                    </Table.Cell>
+                </Table.Row>
+            );
+        }
+
+        const { startDate, endDate, sumPoint, usedPoint, restPoint } = myDayoffList;
+
+        return (
+            <div>
+                <Label>
+                    연차 사용기간
+                    <Label.Detail>
+                        {startDate} ~ {endDate}
+                    </Label.Detail>
+                </Label>
+                <Statistic.Group size="mini">
+                    <Statistic>
+                        <Statistic.Value>{sumPoint}</Statistic.Value>
+                        <Statistic.Label>총 연차</Statistic.Label>
+                    </Statistic>
+                    <Statistic>
+                        <Statistic.Value>{usedPoint}</Statistic.Value>
+                        <Statistic.Label>사용 연차</Statistic.Label>
+                    </Statistic>
+                    <Statistic color='red'>
+                        <Statistic.Value>{restPoint}</Statistic.Value>
+                        <Statistic.Label>잔여 연차</Statistic.Label>
+                    </Statistic>
+                </Statistic.Group>
+            </div>
+        );
+    }
+
     const displayRightMenu = () => {
         if (authenticated && userInfo) {
             return <div className="btn-right-layer">

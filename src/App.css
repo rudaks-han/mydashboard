@@ -168,6 +168,9 @@ body ::-webkit-scrollbar {
   cursor: move;
 }
 
+.new-line {
+  white-space: pre-line;
+}
 
 
 /*.main-content .component {
