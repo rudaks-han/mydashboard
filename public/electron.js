@@ -45,8 +45,6 @@ app.whenReady().then(() => {
         logger.info('[mainWindow] did-finish-load: ' + url);
         logger.info('loginClient.isAuthenticated(): ' + loginClient.isAuthenticated());
 
-        console.log('url : ' + url);
-
         if (!loginClient.isAuthenticated()) {
             if (url.indexOf('https://spectra.daouoffice.com/app/home') > -1) {
                 storeMap.getCookieAndStore('spectra.daouoffice.com', CookieConst.daouoffice_for_app, (cookieValue) => {
@@ -61,8 +59,6 @@ app.whenReady().then(() => {
                     mainWindow.load('index.html', true);
                 }
             }
-        } else {
-            //loginClient.getUserInfo();
         }
     });
 
@@ -111,10 +107,6 @@ ipcMain.on(`saveStore`, (e, data) => {
 
     const key = data.key;
     const value = data.value;
-
-    console.log('--- saveStore --- ');
-    console.log('key: ' + key);
-    console.log('value: ' + JSON.stringify(value));
 
     storeMap.set(key, value);
 });

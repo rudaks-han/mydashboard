@@ -23,7 +23,6 @@ function Sonarqube() {
         if (tickTime == null) return;
         const { hour, minute } = UiShare.getTimeFormat(tickTime);
         if ((hour === 10 && minute === 0) || (hour === 15 && minute === 0)) {
-            console.log('[sonarqube] scheduler ==> findList ' + UiShare.getCurrTime())
             findList();
             setTimeout(() => {
                 if (useAlarmOnError && qualityErrorMessage) {

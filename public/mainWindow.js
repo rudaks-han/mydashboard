@@ -1,13 +1,10 @@
 const electron = require('electron');
-const { BrowserWindow, shell, Menu } = electron;
+const { BrowserWindow, shell, Menu, Tray } = electron;
 const windowStateKeeper = require('electron-window-state')
 const path = require('path');
 const ShareUtil = require('./app/lib/shareUtil');
 const logger = require('electron-log'); // /Users/macbookpro/Library/Logs/my-dashboard
 let mainMenu = Menu.buildFromTemplate(require('./mainMenu'))
-//const FirebaseApp = require('../src/firebaseApp');
-//import FirebaseApp from './firebaseApp';
-//const firebaseApp = new FirebaseApp();
 
 class MainWindow extends BrowserWindow {
     constructor(url, storeMap) {
@@ -29,7 +26,10 @@ class MainWindow extends BrowserWindow {
         this.storeMap = storeMap;
         this.load(url);
         winState.manage(this);
+
         Menu.setApplicationMenu(mainMenu);
+
+        this.createTray();
         //this.startTimer();
 
         //this.maximize();
@@ -68,28 +68,23 @@ class MainWindow extends BrowserWindow {
         logger.info('------------------------------');
     }
 
-    startTimer() {
-        //const interval = 1000 * 60;
-        const interval = 1000 * 2;
-        setInterval(() => {
-            if (!this.authenticated) {
-                console.log('startTimer: unauthorized');
-                return;
+    createTray() {
+        this.tray = new Tray(`${__dirname}/trayTemplate.png`)
+        this.tray.setToolTip('Tray details')
+
+        this.tray.on('click', e => {
+            if (e.shiftKey) {
+                app.quit()
+            } else {
+                this.isVisible() ? this.hide() : this.show()
             }
-            const year = ShareUtil.getCurrYear();
-            const month = Number(ShareUtil.getCurrMonth());
-            const day = Number(ShareUtil.getCurrDay());
-            const hour = Number(ShareUtil.getCurrHour());
-            const minute = Number(ShareUtil.getCurrMinute());
-            const second = Number(ShareUtil.getCurrSecond());
+        })
 
-            this.webContents.send(
-                'mainWindow.polling',
-                {year, month, day, hour, minute, second}
-            );
+        let trayMenu = Menu.buildFromTemplate([
+            {role: 'quit'}
+        ]);
 
-            console.log('polling: ' + JSON.stringify({year, month, day, hour, minute, second}));
-        }, interval);
+        this.tray.setContextMenu(trayMenu)
     }
 }
 

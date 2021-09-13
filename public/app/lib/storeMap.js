@@ -4,8 +4,7 @@ const { session } = require('electron');
 class StoreMap {
     constructor() {
         this.store = new Store();
-
-        console.log("storePath : " + this.store.path);
+        //console.log("storePath : " + this.store.path);
     }
 
     set(key, value) {
@@ -14,6 +13,10 @@ class StoreMap {
 
     get(key) {
         return this.store.get(key);
+    }
+
+    clear() {
+        this.store.clear();
     }
 
     getCookieAndStore(domain, storeName, callback) {

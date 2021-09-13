@@ -21,7 +21,6 @@ function Outlook() {
         if (!authenticated) return;
         const { minute } = UiShare.getTimeFormat(tickTime);
         if (minute%10 === 0) {
-            console.log('[outlook] scheduler ==> findList ' + UiShare.getCurrTime())
             findList();
         }
     }, [tickTime, authenticated]);

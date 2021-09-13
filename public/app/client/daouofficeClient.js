@@ -210,8 +210,6 @@ class DaouofficeClient extends BaseClientComponent {
 
         try {
             const response = await axios.get(`https://spectra.daouoffice.com/api/ehr/vacation/stat?baseDate=${currDate}`, _this.axiosConfig());
-            console.log('____ findMyDayoffList')
-            console.log(response)
             _this.mainWindowSender.send('findMyDayoffListCallback', response.data.data);
         } catch (e) {
             ShareUtil.printAxiosError(e);

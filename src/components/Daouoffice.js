@@ -33,7 +33,6 @@ function Daouoffice() {
         if (!userInfo || !authenticated) return;
         const {hour, minute} = UiShare.getTimeFormat(tickTime);
         if (minute === 0) {
-            console.log('[daouoffice] scheduler ==> findList ' + UiShare.getCurrTime())
             findList();
             findNotificationCount();
         }
@@ -50,7 +49,6 @@ function Daouoffice() {
         if (authenticated) {
             findListTimer = setIntervalAsync(
                 async () => {
-                    console.log('[daouoffice] scheduler ==> findList ' + UiShare.getCurrTime())
                     findList();
                     findNotificationCount();
                 },
@@ -59,7 +57,6 @@ function Daouoffice() {
 
             notifyClockTimer = setIntervalAsync(
                 async () => {
-                    console.log('[daouoffice] scheduler ==> notifyClockCheck ' + UiShare.getCurrTime())
                     const currTime = UiShare.getCurrTime().split(':');
                     const hour = Number(currTime[0]);
                     const minute = Number(currTime[1]);
@@ -237,9 +234,6 @@ function Daouoffice() {
         setMyDayoffList(null);
         ipcRenderer.send('daouoffice.findMyDayoffList');
         ipcRenderer.on('daouoffice.findMyDayoffListCallback', async (e, data) => {
-            console.log('findMyDayoffListCallback');
-            console.log(data);
-
             setMyDayoffList(data);
             ipcRenderer.removeAllListeners('daouoffice.findMyDayoffListCallback');
         });

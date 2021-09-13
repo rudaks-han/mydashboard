@@ -7,7 +7,6 @@ autoUpdater.autoDownload = false;
 module.exports = () => {
     console.log('Checking for updates: ' + process.env.mode);
 
-    // ~/Library/Logs/my-dashboard/index.log
     if (process.env.mode !== 'dev') {
         autoUpdater.checkForUpdates();
     }
@@ -39,4 +38,10 @@ module.exports = () => {
             }
         })
     })
+
+    return {
+        checkUpdate() {
+            return autoUpdater.checkForUpdates();
+        }
+    }
 }

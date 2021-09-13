@@ -18,7 +18,6 @@ function VictoryPortal() {
         if (tickTime == null) return;
         const { minute } = UiShare.getTimeFormat(tickTime);
         if (minute === 0) {
-            console.log('[jira] sonarqube ==> findList ' + UiShare.getCurrTime())
             findList();
         }
     }, [tickTime]);

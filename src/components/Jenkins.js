@@ -28,7 +28,6 @@ function Jenkins() {
         if (!authenticated) return;
         const { hour, minute } = UiShare.getTimeFormat(tickTime);
         if ((hour === 10 && minute === 0) || (hour === 15 && minute === 0)) {
-            console.log('[jenkins] scheduler ==> findList ' + UiShare.getCurrTime())
             findList();
             setTimeout(() => {
                 if (useAlarmOnError && buildErrorMessage) {

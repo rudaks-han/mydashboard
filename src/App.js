@@ -23,8 +23,6 @@ function App() {
     }, []);
 
     const getUserInfo = () => {
-
-        console.log('App getUserInfo')
         ipcRenderer.send('login.findUserInfo');
         ipcRenderer.on('login.findUserInfoCallback', async (e, data) => {
             const {id, employeeNumber, name, position, deptName} = data;
@@ -41,7 +39,6 @@ function App() {
     const startTimer = () => {
         const timer = setIntervalAsync(
             async () => {
-                //console.log('[timer] ' + UiShare.getCurrTime())
                 const time = UiShare.getCurrTime();
                 setTickTime(time);
             },

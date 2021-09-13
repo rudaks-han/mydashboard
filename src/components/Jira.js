@@ -21,7 +21,6 @@ function Jira() {
 
         const { minute } = UiShare.getTimeFormat(tickTime);
         if (minute === 0) {
-            console.log('[jira] scheduler ==> findList ' + UiShare.getCurrTime())
             findList();
         }
     }, [tickTime, authenticated]);
