@@ -94,7 +94,7 @@ function Jenkins() {
         if (authenticated) {
             return (
                 <div>
-                    <Label color='teal' ribbon='right'>
+                    <Label color='teal' ribbon='right' style={{top: '-10px'}}>
                         Last update: {lastUpdated}
                     </Label>
                     <div className="list-layer">
