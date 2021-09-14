@@ -2,7 +2,6 @@ import React, {useContext, useEffect, useState} from 'react';
 import daouofficeIcon from '../static/image/daouoffice.ico';
 import {Button, Card, Dropdown, Header, Icon, Label, List, Menu, Popup, Segment, Tab, Table, Statistic} from 'semantic-ui-react'
 import UiShare from '../UiShare';
-import {clearIntervalAsync, setIntervalAsync} from 'set-interval-async/dynamic'
 import TimerContext from "../TimerContext";
 
 const { ipcRenderer } = window.require('electron');
@@ -39,53 +38,6 @@ function Daouoffice() {
 
         notifyClockCheck({hour, minute});
     }, [tickTime, userInfo, authenticated]);
-
-    useEffect(() => {
-        if (!userInfo) return;
-
-        let findListTimer;
-        let notifyClockTimer;
-
-        if (authenticated) {
-            findListTimer = setIntervalAsync(
-                async () => {
-                    findList();
-                    findNotificationCount();
-                },
-                1000 * 60 * 60
-            );
-
-            notifyClockTimer = setIntervalAsync(
-                async () => {
-                    const currTime = UiShare.getCurrTime().split(':');
-                    const hour = Number(currTime[0]);
-                    const minute = Number(currTime[1]);
-                    notifyClockCheck({ hour, minute });
-                },
-                1000 * 60
-            );
-        } else {
-            (async () => {
-                if (findListTimer) {
-                    await clearIntervalAsync(findListTimer);
-                }
-                if (notifyClockTimer) {
-                    await clearIntervalAsync(notifyClockTimer);
-                }
-            })();
-        }
-
-        return () => {
-            (async () => {
-                if (findListTimer) {
-                    await clearIntervalAsync(findListTimer);
-                }
-                if (notifyClockTimer) {
-                    await clearIntervalAsync(notifyClockTimer);
-                }
-            })();
-        };
-    }, [userInfo, authenticated])
 
     const notifyClockCheck = (currTime) => {
         if (userInfo == null) return;

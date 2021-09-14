@@ -3,7 +3,6 @@ import sonarqubeIcon from '../static/image/sonarqube-logo.png';
 import {Card, Icon, List, Button, Label, Statistic, Form, Checkbox} from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import ModuleList from "./sonarqube/ModuleList";
-import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
 import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
 

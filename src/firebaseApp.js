@@ -60,10 +60,15 @@ class FirebaseApp {
     }
 
     addAccessLog(name) {
-        const currDate = UiShare.getCurrDate();
+        const currYear = UiShare.getCurrYear();
+        const currMonth = UiShare.getCurrMonth();
+        const currDay = UiShare.getCurrDay();
+        //const currDate = UiShare.getCurrDate();
         const currTime = UiShare.getCurrTime();
-        const ref = this.database.ref(this.accessLogPath + '/' + currDate + '/' + currTime);
-        ref.set(name).then(function() {
+        const { ip } = UiShare.getClientIp()
+
+        const ref = this.database.ref(this.accessLogPath + '/' + currYear + '-' + currMonth + '/' + currDay + '/' + currTime + '_' + name);
+        ref.set(ip).then(function() {
             //userStatusDatabaseRef.set(isOnlineForDatabase);
         });
     }

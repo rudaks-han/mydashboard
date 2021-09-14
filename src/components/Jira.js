@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import jiraIcon from '../static/image/icons8-jira-100.png';
 import { Card, Icon, Dropdown, List, Tab, Button, Segment, Header } from 'semantic-ui-react'
 import UiShare  from '../UiShare';
-import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
 import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
 

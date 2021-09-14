@@ -2,9 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import jenkinsIcon from '../static/image/jenkins.png';
 import {Card, Icon, List, Button, Label, Checkbox, Form, Segment, Header, Dropdown} from 'semantic-ui-react'
 import UiShare  from '../UiShare';
-import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
 import TimerContext from "../TimerContext";
-import jiraIcon from "../static/image/icons8-jira-100.png";
 const { ipcRenderer } = window.require('electron');
 
 function Jenkins() {
@@ -52,7 +50,6 @@ function Jenkins() {
     const findModuleList = () => {
         ipcRenderer.send('jenkins.findModuleList');
         ipcRenderer.on('jenkins.findModuleListCallback', (e, data) => {
-            console.log(data)
             const jobs = data.data;
             const availableModules = data.availableModules;
             const filteredJobs = filterJobs(jobs);

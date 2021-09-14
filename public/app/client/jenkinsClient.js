@@ -206,6 +206,7 @@ class JenkinsClient extends BaseClientComponent {
             urls,
             responses => {
                 let buildResults = [];
+                let sessionExpired = true;
                 responses.map(response => {
                     if (response.status === 200) {
                         const moduleName = this.extractModuleName(response.data.fullDisplayName);
@@ -213,7 +214,7 @@ class JenkinsClient extends BaseClientComponent {
                         const result = response.data.result;
                         const timestamp = response.data.timestamp;
                         const fullDisplayName = response.data.fullDisplayName;
-
+                        sessionExpired = false;
                         buildResults.push({url, moduleName, result, timestamp, fullDisplayName, hasError: false})
                     } else {
                         const url = response.config.url;
@@ -223,10 +224,12 @@ class JenkinsClient extends BaseClientComponent {
                 });
 
                 _this.mainWindowSender.send('findListCallback', buildResults);
-                _this.mainWindowSender.send('authenticated', true);
+                _this.mainWindowSender.send('authenticated', sessionExpired ? false : true);
             },
             error => {
                 ShareUtil.printAxiosError(error);
+                _this.mainWindowSender.send('findListCallback', []);
+                _this.mainWindowSender.send('authenticated', false);
             });
     }
 

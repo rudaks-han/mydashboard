@@ -2,7 +2,6 @@ import React, {useState, useEffect, useContext} from 'react';
 import outlookIcon from '../static/image/outlook.png';
 import {Card, Icon, Dropdown, List, Tab, Button, Segment, Header, Label, Menu} from 'semantic-ui-react'
 import UiShare  from '../UiShare';
-import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
 import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
 

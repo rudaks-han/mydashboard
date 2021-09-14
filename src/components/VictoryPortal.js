@@ -2,7 +2,6 @@ import React, {useState, useEffect, useContext} from 'react';
 import victoryPortalIcon from '../static/image/victory-portal.ico';
 import { Card, Icon, List, Tab, Button } from 'semantic-ui-react'
 import UiShare  from '../UiShare';
-import {clearIntervalAsync, setIntervalAsync} from "set-interval-async/dynamic";
 import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
 
