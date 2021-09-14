@@ -14,6 +14,7 @@ function Jenkins() {
     const [checkedModuleNameList, setCheckedModuleNameList] = useState([]);
     const [jobList, setJobList] = useState([]);
     const [clickedSetting, setClickSetting] = useState(false);
+    const [lastUpdated, setLastUpdated] = useState('');
     const tickTime = useContext(TimerContext);
     let buildErrorMessage;
 
@@ -82,6 +83,7 @@ function Jenkins() {
         ipcRenderer.on('jenkins.findListCallback', (e, data) => {
             ipcRenderer.removeAllListeners('jenkins.findListCallback');
             setList(data);
+            setLastUpdated(UiShare.getCurrDate() + " " + UiShare.getCurrTime());
         });
 
         ipcRenderer.removeAllListeners('jenkins.authenticated');
@@ -93,10 +95,15 @@ function Jenkins() {
     const displayListLayer = () => {
         if (authenticated) {
             return (
-                <div className="list-layer">
-                    <List divided relaxed size='huge' style={{'height': '320px'}}>
-                        {displayListItem()}
-                    </List>
+                <div>
+                    <div style={{textAlign:'right'}}>
+                        <Label>last Updated: {lastUpdated}</Label>
+                    </div>
+                    <div className="list-layer">
+                        <List divided relaxed size='huge' style={{'height': '320px'}}>
+                            {displayListItem()}
+                        </List>
+                    </div>
                 </div>
             );
         } else {

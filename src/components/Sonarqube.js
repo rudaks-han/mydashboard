@@ -11,6 +11,7 @@ function Sonarqube() {
     const [list, setList] = useState(null);
     const [useAlarmOnError, setUseAlarmOnError] = useState(false);
     const [clickedSetting, setClickSetting] = useState(false);
+    const [lastUpdated, setLastUpdated] = useState('');
     const tickTime = useContext(TimerContext);
     let qualityErrorMessage;
 
@@ -38,6 +39,7 @@ function Sonarqube() {
         ipcRenderer.removeAllListeners('sonarqube.findListCallback');
         ipcRenderer.on('sonarqube.findListCallback', async (e, data) => {
             setList(data);
+            setLastUpdated(UiShare.getCurrDate() + " " + UiShare.getCurrTime());
         });
     }
 
@@ -51,10 +53,15 @@ function Sonarqube() {
 
     const displayListLayer = () => {
         return (
-            <div className="list-layer">
-                <List divided style={{'height': '320px'}}>
-                    {displayListItem()}
-                </List>
+            <div>
+                <div style={{textAlign:'right'}}>
+                    <Label>last Updated: {lastUpdated}</Label>
+                </div>
+                <div className="list-layer">
+                    <List divided style={{'height': '320px'}}>
+                        {displayListItem()}
+                    </List>
+                </div>
             </div>
         );
     }
