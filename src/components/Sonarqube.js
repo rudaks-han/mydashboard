@@ -53,11 +53,11 @@ function Sonarqube() {
     const displayListLayer = () => {
         return (
             <div>
-                <div style={{textAlign:'right'}}>
-                    <Label>last Updated: {lastUpdated}</Label>
-                </div>
+                <Label color='teal' ribbon='right'>
+                    Last update: {lastUpdated}
+                </Label>
                 <div className="list-layer">
-                    <List divided style={{'height': '320px'}}>
+                    <List divided style={{'height': '300px'}}>
                         {displayListItem()}
                     </List>
                 </div>

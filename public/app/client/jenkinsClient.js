@@ -214,8 +214,18 @@ class JenkinsClient extends BaseClientComponent {
                         const result = response.data.result;
                         const timestamp = response.data.timestamp;
                         const fullDisplayName = response.data.fullDisplayName;
+                        console.log('response.data.changeSets[0]')
+                        console.log(response.data.changeSets[0])
+                        let lastChangeSets = response.data.changeSets[0];
+                        let lastCommit = {};
+                        if (lastChangeSets) {
+                            lastCommit['authorName'] = lastChangeSets.items[0].author.fullName;
+                            lastCommit['comment'] = lastChangeSets.items[0].comment;
+                            lastCommit['date'] = lastChangeSets.items[0].date;
+                        }
+
                         sessionExpired = false;
-                        buildResults.push({url, moduleName, result, timestamp, fullDisplayName, hasError: false})
+                        buildResults.push({url, moduleName, result, timestamp, fullDisplayName, lastCommit, hasError: false})
                     } else {
                         const url = response.config.url;
                         const moduleName = _this.getParam(url, 'moduleName');

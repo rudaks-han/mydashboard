@@ -172,6 +172,14 @@ body ::-webkit-scrollbar {
   white-space: pre-line;
 }
 
+.hide {
+  display:none !important;
+}
+
+.show {
+  display:block !important;;
+}
+
 
 /*.main-content .component {
   //min-width: 420px;

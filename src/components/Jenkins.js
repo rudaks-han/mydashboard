@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import jenkinsIcon from '../static/image/jenkins.png';
-import {Card, Icon, List, Button, Label, Checkbox, Form, Segment, Header, Dropdown} from 'semantic-ui-react'
+import {Card, Icon, Button, Label, Checkbox, Form, Segment, Header, Dropdown, Item} from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import TimerContext from "../TimerContext";
 const { ipcRenderer } = window.require('electron');
@@ -78,6 +78,7 @@ function Jenkins() {
         setList(null);
         ipcRenderer.send('jenkins.findList');
         ipcRenderer.on('jenkins.findListCallback', (e, data) => {
+            console.log(data)
             ipcRenderer.removeAllListeners('jenkins.findListCallback');
             setList(data);
             setLastUpdated(UiShare.getCurrDate() + " " + UiShare.getCurrTime());
@@ -93,13 +94,13 @@ function Jenkins() {
         if (authenticated) {
             return (
                 <div>
-                    <div style={{textAlign:'right'}}>
-                        <Label>last Updated: {lastUpdated}</Label>
-                    </div>
+                    <Label color='teal' ribbon='right'>
+                        Last update: {lastUpdated}
+                    </Label>
                     <div className="list-layer">
-                        <List divided relaxed size='huge' style={{'height': '320px'}}>
+                        <Item.Group style={{'height': '300px'}}>
                             {displayListItem()}
-                        </List>
+                        </Item.Group>
                     </div>
                 </div>
             );
@@ -124,27 +125,44 @@ function Jenkins() {
                 let lastBuildResult = false;
                 let color = 'green';
                 const moduleName = item.moduleName;
+                let lastCommitClassName = '';
                 if (item.result === 'SUCCESS') {
                     lastBuildResult = true;
+                    lastCommitClassName = 'hide';
                 } else {
                     hasError = true;
                     color = 'red';
                     errorMessage += `${moduleName} failed \n`;
                 }
+                let authorName = item.lastCommit.authorName || '';
+                let comment = item.lastCommit.comment || '';
+                let date = item.lastCommit.date && item.lastCommit.date.substring(0, 16) || '';
                 const freshness = item.timestamp > 0 ? toDate(item.timestamp) : '-';
 
-                return <List.Item key={moduleName}>
-                    <Label circular color={color} key={color} className='image padding20' style={{verticalAlign:'middle', fontSize: '20px'}}>
-                        {lastBuildResult?'A':'E'}
-                    </Label>
+                return (
+                    <Item>
+                        <Item.Image size='mini'>
+                            <Label circular color={color} key={color} className='image padding20' style={{verticalAlign:'middle', fontSize: '20px'}}>
+                                {lastBuildResult?'A':'E'}
+                            </Label>
+                        </Item.Image>
 
-                    <List.Content>
-                        <List.Header>
-                            <a rel="noreferrer" href={`http://211.63.24.41:8080/view/victory/job/${moduleName}`} target='_blank'>{moduleName}</a>
-                        </List.Header>
-                        <List.Description>{freshness}</List.Description>
-                    </List.Content>
-                </List.Item>;
+                        <Item.Content>
+                            <Item.Header as='a'>
+                                <a rel="noreferrer" href={`http://211.63.24.41:8080/view/victory/job/${moduleName}`} target='_blank'>{moduleName}</a>
+                            </Item.Header>
+                            <Item.Meta>
+                                {freshness}
+                            </Item.Meta>
+                            <Item.Description className={lastCommitClassName}>
+                                Last commit on {date} by {authorName}
+                            </Item.Description>
+                            <Item.Extra className={lastCommitClassName}>
+                                {comment}
+                            </Item.Extra>
+                        </Item.Content>
+                    </Item>
+                )
             });
 
             buildErrorMessage = errorMessage;
