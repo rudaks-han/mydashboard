@@ -62,8 +62,7 @@ class JenkinsClient extends BaseClientComponent {
         const cookieDataString = this.getCookieDataString(CookieConst.jenkins);
         return {
             headers: {
-                TimeZoneOffset: 540,
-                Cookie: `${cookieDataString};`
+                Cookie: `${cookieDataString}`
             }
         };
     }

@@ -27,6 +27,9 @@ function Jenkins() {
         if (tickTime == null) return;
         if (!authenticated) return;
         const { hour, minute } = UiShare.getTimeFormat(tickTime);
+        if (minute%10 === 0) {
+            findModuleList();
+        }
         if ((hour === 10 && minute === 0) || (hour === 15 && minute === 0)) {
             findList();
             setTimeout(() => {
@@ -47,19 +50,16 @@ function Jenkins() {
 
     const findModuleList = () => {
         ipcRenderer.send('jenkins.findModuleList');
-        ipcRenderer.removeAllListeners('jenkins.findModuleListCallback');
         ipcRenderer.on('jenkins.findModuleListCallback', (e, data) => {
+            console.log(data)
             const jobs = data.data;
             const availableModules = data.availableModules;
             const filteredJobs = filterJobs(jobs);
             const checkedModuleNames = availableModules.map(module => module.name);
             setCheckedModuleNameList(checkedModuleNames);
             setJobList(filteredJobs);
+            ipcRenderer.removeAllListeners('jenkins.findModuleListCallback');
         });
-
-        return () => {
-            return ipcRenderer.removeAllListeners('jenkins.findModuleListCallback');
-        }
     }
 
     const filterJobs = (jobs) => {
