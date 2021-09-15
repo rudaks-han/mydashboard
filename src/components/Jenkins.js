@@ -1,8 +1,11 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import jenkinsIcon from '../static/image/jenkins.png';
-import {Card, Icon, Button, Label, Checkbox, Form, Segment, Header, Dropdown, Item} from 'semantic-ui-react'
-import UiShare  from '../UiShare';
+import {Button, Card, Header, Label, Segment} from 'semantic-ui-react'
+import UiShare from '../UiShare';
 import TimerContext from "../TimerContext";
+import RightMenu from "./jenkins/RightMenu";
+import BuildStatusList from "./jenkins/BuilStatusList";
+
 const { ipcRenderer } = window.require('electron');
 
 function Jenkins() {
@@ -14,6 +17,7 @@ function Jenkins() {
     const [clickedSetting, setClickSetting] = useState(false);
     const [lastUpdated, setLastUpdated] = useState('');
     const tickTime = useContext(TimerContext);
+
     let buildErrorMessage;
 
     useEffect(() => {
@@ -97,9 +101,10 @@ function Jenkins() {
                         Last update: {lastUpdated}
                     </Label>
                     <div className="list-layer">
-                        <Item.Group style={{'height': '300px'}}>
-                            {displayListItem()}
-                        </Item.Group>
+                        <BuildStatusList
+                            list={list}
+                            setBuildErrorMessage={setBuildErrorMessage}
+                        />
                     </div>
                 </div>
             );
@@ -114,84 +119,8 @@ function Jenkins() {
         }
     }
 
-    const displayListItem = () => {
-        if (list == null) {
-            return UiShare.displayListLoading();
-        } else {
-            let hasError = false;
-            let errorMessage = '';
-            const result = list.map(item => {
-                let lastBuildResult = false;
-                let color = 'green';
-                const moduleName = item.moduleName;
-                let lastCommitClassName = '';
-                if (item.result === 'SUCCESS') {
-                    lastBuildResult = true;
-                    lastCommitClassName = 'hide';
-                } else {
-                    hasError = true;
-                    color = 'red';
-                    errorMessage += `${moduleName} failed \n`;
-                }
-                let authorName = item.lastCommit.authorName || '';
-                let comment = item.lastCommit.comment || '';
-                let date = item.lastCommit.date && item.lastCommit.date.substring(0, 16) || '';
-                const freshness = item.timestamp > 0 ? toDate(item.timestamp) : '-';
-
-                return (
-                    <Item key={moduleName}>
-                        <Item.Image size='mini'>
-                            <Label circular color={color} key={color} className='image padding20' style={{verticalAlign:'middle', fontSize: '20px'}}>
-                                {lastBuildResult?'A':'E'}
-                            </Label>
-                        </Item.Image>
-
-                        <Item.Content>
-                            <Item.Header>
-                                <a rel="noreferrer" href={`http://211.63.24.41:8080/view/victory/job/${moduleName}`} target='_blank'>{moduleName}</a>
-                            </Item.Header>
-                            <Item.Meta>
-                                Last build on {freshness}
-                            </Item.Meta>
-                            <Item.Description className={lastCommitClassName}>
-                                Last commit on {date} by {authorName}
-                            </Item.Description>
-                            <Item.Extra className={lastCommitClassName}>
-                                {comment}
-                            </Item.Extra>
-                        </Item.Content>
-                    </Item>
-                )
-            });
-
-            buildErrorMessage = errorMessage;
-
-            return result;
-        }
-    }
-
-    const toDate = (timestamp) => {
-        return UiShare.timeSince(timestamp) + ' ago';
-    }
-
-    const rightBtnTrigger = (
-        <span>
-            <Icon name='user' />
-        </span>
-    )
-
-    const displayRightMenu = () => {
-        if (authenticated) {
-            return <div className="btn-right-layer">
-                <Icon name='expand arrows alternate' className='component-move'/>
-                <Icon name='refresh' onClick={onClickRefresh}/>
-                <Icon name='setting' onClick={onClickSetting}/>
-                {displaySettingLayer()}
-                <Dropdown trigger={rightBtnTrigger} options={[
-                    { key: 'logout', text: 'Logout', onClick: onClickLogout }
-                ]} />
-            </div>;
-        }
+    const setBuildErrorMessage = msg => {
+        buildErrorMessage = msg;
     }
 
     const onClickSetting = e => {
@@ -202,35 +131,11 @@ function Jenkins() {
         }
     }
 
-    const displaySettingLayer = () => {
-        if (clickedSetting) {
-            return <div className="setting-layer">
-                <Form>
-                    <Form.Field>
-                        <label>알림 여부</label>
-                        <Checkbox checked={useAlarmOnError} onChange={onChangeUseAlarm}/> 오류 발생 시 화면 알림 (10시, 15시)
-                    </Form.Field>
-                    <Form.Field>
-                        <label>사용 모듈</label>
-                        {displayModuleList()}
-                    </Form.Field>
-                </Form>
-            </div>;
-        }
-    }
 
     const onChangeUseAlarm = (e, data) => {
         const { checked } = data;
         setUseAlarmOnError(checked);
         ipcRenderer.send('jenkins.useAlarmOnError', checked);
-    }
-
-    const displayModuleList = () => {
-        return jobList.map(item => {
-            return <div key={item.url}>
-                <Checkbox label={item.name} value={item.branch} name={item.name} checked={checkedModuleNameList.includes(item.name)} onChange={onChangeModuleChange}/>
-            </div>
-        })
     }
 
     const onChangeModuleChange = (e, data) => {
@@ -269,7 +174,18 @@ function Jenkins() {
                         <img src={jenkinsIcon} alt="" className="header-icon"/>
                         Jenkins
                     </div>
-                    {displayRightMenu()}
+                    <RightMenu
+                        jobList={jobList}
+                        checkedModuleNameList={checkedModuleNameList}
+                        authenticated={authenticated}
+                        onClickRefresh={onClickRefresh}
+                        onClickSetting={onClickSetting}
+                        onChangeModuleChange={onChangeModuleChange}
+                        onClickLogout={onClickLogout}
+                        clickedSetting={clickedSetting}
+                        useAlarmOnError={useAlarmOnError}
+                        onChangeUseAlarm={onChangeUseAlarm}
+                    />
                 </Card.Header>
 
                 {displayListLayer()}

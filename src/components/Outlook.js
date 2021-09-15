@@ -3,6 +3,8 @@ import outlookIcon from '../static/image/outlook.png';
 import {Card, Icon, Dropdown, List, Tab, Button, Segment, Header, Label, Menu} from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import TimerContext from "../TimerContext";
+import RightMenu from "./outlook/RightMenu";
+import InboxList from "./outlook/InboxList";
 const { ipcRenderer } = window.require('electron');
 
 function Outlook() {
@@ -39,12 +41,6 @@ function Outlook() {
         });
     }
 
-    const rightBtnTrigger = (
-        <span>
-            <Icon name='user' />
-        </span>
-    )
-
     const displayListLayer = () => {
         if (authenticated) {
             return (
@@ -52,9 +48,10 @@ function Outlook() {
                     <Tab panes={[
                         { menuItem: '받은 편지함', render: () =>
                                 <Tab.Pane>
-                                    <List divided relaxed>
-                                        {displayListItem()}
-                                    </List>
+                                    <InboxList
+                                        list={list}
+                                        openOutlook={openOutlook}
+                                    />
                                 </Tab.Pane>}
                     ]} />
                 </div>
@@ -67,53 +64,6 @@ function Outlook() {
                 </Header>
                 <Button primary onClick={onClickLogin}>Login</Button>
             </Segment>;
-        }
-    }
-
-    const displayListItem = () => {
-        if (list == null) {
-            return UiShare.displayListLoading();
-        } else {
-            return list.conversations.map(item => {
-                const { ConversationId, UniqueSenders, ConversationTopic, LastDeliveryTime, UnreadCount } = item;
-                const id = ConversationId.Id;
-                let lastDeliveryTime = LastDeliveryTime;
-
-                lastDeliveryTime = lastDeliveryTime.replace(/T/, ' ');
-                lastDeliveryTime = lastDeliveryTime.substring(0, 16);
-
-                let readFlagStyle = '';
-                if (UnreadCount === 0) {
-                    readFlagStyle = 'normal';
-                }
-
-                return <List.Item key={id}>
-                    <List.Content>
-                        <List.Header>
-                            <a rel="noreferrer" target="_blank" onClick={openOutlook} style={{fontWeight:readFlagStyle}}>{ConversationTopic}</a>
-                        </List.Header>
-                        <List.Description>{UniqueSenders} | {lastDeliveryTime}</List.Description>
-                    </List.Content>
-                </List.Item>;
-            });
-        }
-    }
-
-    const displayRightMenu = () => {
-        if (authenticated) {
-            return <div className="btn-right-layer">
-                <Icon name='expand arrows alternate' className='component-move'/>
-                <Icon name='refresh' onClick={onClickRefresh}/>
-                <Menu.Item as='a' style={{position:'relative', cursor:'pointer'}} onClick={openOutlook}>
-                    <Icon name='bell' style={{color:'#000'}}/>
-                    <Label color='red' floating style={{display:unreadCount>0?"":"none", borderRadius:'16px', fontSize: '10px', padding: '4px'}}>
-                        {unreadCount}
-                    </Label>
-                </Menu.Item>
-                <Dropdown trigger={rightBtnTrigger} options={[
-                    { key: 'logout', text: 'Logout', onClick: onClickLogout }
-                ]} />
-            </div>;
         }
     }
 
@@ -141,7 +91,13 @@ function Outlook() {
                         <img src={outlookIcon} alt="" className="header-icon"/>
                         outlook
                     </div>
-                    {displayRightMenu()}
+                    <RightMenu
+                        authenticated={authenticated}
+                        onClickRefresh={onClickRefresh}
+                        onClickLogout={onClickLogout}
+                        openOutlook={openOutlook}
+                        unreadCount={unreadCount}
+                    />
                 </Card.Header>
 
                 {displayListLayer()}

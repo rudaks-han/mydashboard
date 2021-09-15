@@ -6,6 +6,8 @@ import TimerContext from "../TimerContext";
 import CompanyBoardList from "./daouoffice/CompanyBoardList";
 import CompanyDayoffList from "./daouoffice/CompanyDayoffList";
 import MyDayoffList from "./daouoffice/MyDayoffList";
+import ExtraButtons from "./daouoffice/ExtraButtons";
+import RightMenu from "./daouoffice/RightMenu";
 
 const { ipcRenderer } = window.require('electron');
 
@@ -194,12 +196,6 @@ function Daouoffice() {
         });
     }
 
-    const rightBtnTrigger = (
-        <span>
-            <Icon name='user' />
-        </span>
-    )
-
     const displayListLayer = () => {
         if (authenticated) {
             return (
@@ -237,173 +233,8 @@ function Daouoffice() {
         }
     }
 
-    const displayListItem = () => {
-        if (list == null) {
-            return UiShare.displayListLoading();
-        } else {
-            return list.map(item => {
-                const { id, title, readPost, createdAt, writer } = item;
-                let createdAtFormat = createdAt.substring(0, 16);
-                createdAtFormat = createdAtFormat.replace(/T/, ' ');
-
-                let readFlagStyle = '';
-                if (readPost) {
-                    readFlagStyle = 'normal';
-                }
-
-                return <List.Item key={id}>
-                    <List.Content>
-                        <List.Header>
-                            <a href={`https://spectra.daouoffice.com/app/board/2302/post/${id}`} rel="noreferrer" target="_blank" style={{fontWeight:readFlagStyle}}>{title}</a>
-                        </List.Header>
-                        <List.Description>{createdAtFormat} {writer.name} {writer.positionName}</List.Description>
-                    </List.Content>
-                </List.Item>;
-            });
-        }
-    }
-
-    const displayDayoffList = () => {
-        if (dayoffList == null) {
-            return (
-                <Table.Row>
-                    <Table.Cell>
-                        {UiShare.displayListLoading()}
-                    </Table.Cell>
-                </Table.Row>
-            );
-        }
-
-        return dayoffList.map(item => {
-            const { id, startTimeDate, endTimeDate, summary } = item;
-
-            let timeString = '';
-            if (startTimeDate !== endTimeDate) {
-                timeString = startTimeDate + '\n~' + endTimeDate;
-            } else {
-                timeString = startTimeDate;
-            }
-            return (
-                <Table.Row key={id}>
-                    <Table.Cell className='new-line' style={{minWidth: '105px'}}>{timeString}</Table.Cell>
-                    <Table.Cell>{summary}</Table.Cell>
-                </Table.Row>
-            )
-        });
-    }
-
-    const displayMyDayoffList = () => {
-        if (myDayoffList == null) {
-            return (
-                <Table.Row>
-                    <Table.Cell>
-                        {UiShare.displayListLoading()}
-                    </Table.Cell>
-                </Table.Row>
-            );
-        }
-
-        const { startDate, endDate, sumPoint, usedPoint, restPoint } = myDayoffList;
-
-        return (
-            <div>
-                <Label>
-                    연차 사용기간
-                    <Label.Detail>
-                        {startDate} ~ {endDate}
-                    </Label.Detail>
-                </Label>
-                <Statistic.Group size="mini">
-                    <Statistic>
-                        <Statistic.Value>{sumPoint}</Statistic.Value>
-                        <Statistic.Label>총 연차</Statistic.Label>
-                    </Statistic>
-                    <Statistic>
-                        <Statistic.Value>{usedPoint}</Statistic.Value>
-                        <Statistic.Label>사용 연차</Statistic.Label>
-                    </Statistic>
-                    <Statistic color='red'>
-                        <Statistic.Value>{restPoint}</Statistic.Value>
-                        <Statistic.Label>잔여 연차</Statistic.Label>
-                    </Statistic>
-                </Statistic.Group>
-            </div>
-        );
-    }
-
-    const displayRightMenu = () => {
-        if (authenticated && userInfo) {
-            return <div className="btn-right-layer">
-                <Icon name='expand arrows alternate' className='component-move'/>
-                <Icon name='refresh' onClick={onClickRefresh}/>
-                <Menu.Item as='a' href={'https://spectra.daouoffice.com/app/noti/unread'} target='_blank' style={{position:'relative', cursor:'pointer'}}>
-                    <Icon name='bell' style={{color:'#000'}}/>
-                    <Label color='red' floating style={{display:notificationCount>0?"":"none", borderRadius:'16px', fontSize: '10px', padding: '4px'}}>
-                        {notificationCount}
-                    </Label>
-                </Menu.Item>
-                <Icon name='setting' onClick={onClickSetting}/>
-                {displaySettingLayer()}
-                <Dropdown trigger={rightBtnTrigger} options={[
-                    { key: 'logout', text: 'Logout', onClick: onClickLogout }
-                ]} />
-            </div>;
-        }
-    }
-
-    const onClickSetting = e => {
-        if (clickedSetting) {
-            setClickSetting(false);
-        } else {
-            setClickSetting(true);
-        }
-    }
-
-    const displaySettingLayer = () => {
-        if (clickedSetting) {
-            return <div className="setting-layer">
-                <div className="ui checkbox">
-                    <input type="checkbox" checked={useAlarmClock.clockIn} onChange={onCheckUseClockInTime} />
-                    <label>출근 시간(<span>{userInfo.workStartTime}</span>) 체크 알림 (5분 전)</label>
-                </div>
-                <div className="ui checkbox">
-                    <input type="checkbox" checked={useAlarmClock.clockOut} onChange={onCheckUseClockOutTime} />
-                    <label>퇴근 시간(<span>{userInfo.workEndTime}</span>) 체크 알림 (정시)</label>
-                </div>
-            </div>;
-        }
-    }
-
-    const onCheckUseClockInTime = e => {
-        const data = {
-            clockIn: e.target.checked,
-            clockOut: useAlarmClock.clockOut
-        }
-        setUseAlarmClock(data);
-        ipcRenderer.send('daouoffice.setUseAlarmClock', data);
-    }
-
-    const onCheckUseClockOutTime = e => {
-        const data = {
-            clockIn: useAlarmClock.clockIn,
-            clockOut: e.target.checked
-        }
-
-        setUseAlarmClock(data);
-        ipcRenderer.send('daouoffice.setUseAlarmClock', data);
-    }
-
-    const onClickRefresh = () => {
-        findList();
-        findDayoffList();
-    }
-
     const onClickLogin = () => {
         ipcRenderer.send('daouoffice.openLoginPage');
-    }
-
-    const onClickLogout = () => {
-        ipcRenderer.send('daouoffice.logout');
     }
 
     const onClockIn = () => {
@@ -456,39 +287,6 @@ function Daouoffice() {
         });
     }
 
-    const displayExtraButtons = () => {
-        if (authenticated && userInfo) {
-            return <div style={{"marginBottom":"5px"}}>
-                <Button.Group>
-                    <Popup
-                        content={userInfo.clockInTime}
-                        open={!!userInfo.clockedIn}
-                        trigger={<Button onClick={onClockIn} disabled={!!userInfo.clockedIn}>출근하기</Button>}
-                    />
-                    <Button.Or />
-                    <Popup
-                        content={userInfo.clockOutTime}
-                        open={!!userInfo.clockedOut}
-                        trigger={<Button onClick={onClockOut} positive disabled={!!userInfo.clockedOut}>퇴근하기</Button>}
-                    />
-                </Button.Group>
-                &nbsp;
-                <Button.Group>
-                    <Button>바로가기</Button>
-                    <Dropdown
-                        className='button icon'
-                        floating
-                        options={[
-                            { key: '1', icon: 'discussions', selected: true, text: '회의실 예약', href: 'https://spectra.daouoffice.com/app/asset', target: '_blank'},
-                            { key: '2', icon: 'address book', selected: true, text: '주소록', href: 'https://spectra.daouoffice.com/app/contact/dept/2752', target: '_blank'},
-                        ]}
-                        trigger={<></>}
-                    />
-                </Button.Group>
-            </div>
-        }
-    }
-
     return (
         <Card fluid>
             <Card.Content>
@@ -497,7 +295,18 @@ function Daouoffice() {
                         <img src={daouofficeIcon} alt="" className="header-icon"/>
                         Daouoffice
                     </div>
-                    {displayRightMenu()}
+
+                    <RightMenu
+                        authenticated={authenticated}
+                        userInfo={userInfo}
+                        clickedSetting={clickedSetting}
+                        setClickSetting={setClickSetting}
+                        findList={findList}
+                        findDayoffList={findDayoffList}
+                        notificationCount={notificationCount}
+                        useAlarmClock={useAlarmClock}
+                        setUseAlarmClock={setUseAlarmClock}
+                    />
                 </Card.Header>
 
                 {displayListLayer()}
@@ -505,8 +314,12 @@ function Daouoffice() {
             </Card.Content>
 
             <Card.Content extra>
-
-                { displayExtraButtons() }
+                <ExtraButtons
+                    authenticated={authenticated}
+                    userInfo={userInfo}
+                    onClockIn={onClockIn}
+                    onClockOut={onClockOut}
+                />
 
                 <div>
                     <Button fluid color="blue" as='a' href={'https://spectra.daouoffice.com/app/home'} rel="noreferrer" target='_blank'>

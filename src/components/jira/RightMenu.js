@@ -2,7 +2,7 @@ import React from 'react';
 import {Dropdown, Icon, List} from 'semantic-ui-react';
 import UiShare  from '../../UiShare';
 
-function RecentJobList({authenticated, onClickRefresh, onClickLogout}) {
+function RightMenu({authenticated, onClickRefresh, onClickLogout}) {
     const rightBtnTrigger = (
         <span>
             <Icon name='user' />
@@ -25,4 +25,4 @@ function RecentJobList({authenticated, onClickRefresh, onClickLogout}) {
     }
 };
 
-export default RecentJobList;
+export default RightMenu;
