@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react';
-import victoryPortalIcon from '../static/image/victory-portal.ico';
+import victoryPortalIcon from '../static/image/wordpress-logo.svg';
 import { Card, Icon, List, Tab, Button } from 'semantic-ui-react'
 import UiShare  from '../UiShare';
 import TimerContext from "../TimerContext";
