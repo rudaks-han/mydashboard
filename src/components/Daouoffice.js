@@ -3,6 +3,9 @@ import daouofficeIcon from '../static/image/daouoffice.ico';
 import {Button, Card, Dropdown, Header, Icon, Label, List, Menu, Popup, Segment, Tab, Table, Statistic} from 'semantic-ui-react'
 import UiShare from '../UiShare';
 import TimerContext from "../TimerContext";
+import CompanyBoardList from "./daouoffice/CompanyBoardList";
+import CompanyDayoffList from "./daouoffice/CompanyDayoffList";
+import MyDayoffList from "./daouoffice/MyDayoffList";
 
 const { ipcRenderer } = window.require('electron');
 
@@ -205,26 +208,20 @@ function Daouoffice() {
                         {
                             menuItem: '전사 게시판', render: () =>
                                 <Tab.Pane>
-                                    <List divided relaxed style={{height: '200px'}}>
-                                        {displayListItem()}
-                                    </List>
+                                    <CompanyBoardList list={list}/>
                                 </Tab.Pane>
                         },
                         {
                             menuItem: '회사 연차현황', render: () =>
                                 <Tab.Pane>
-                                    <Table celled style={{display: 'block', height: '200px', overflowY: 'auto'}}>
-                                        <Table.Body>
-                                            {displayDayoffList()}
-                                        </Table.Body>
-                                    </Table>
+                                    <CompanyDayoffList dayoffList={dayoffList} />
                                 </Tab.Pane>
                         },
                         {
                             menuItem: '내 연차', render: () =>
-                                <div style={{margin: '20px'}}>
-                                    {displayMyDayoffList()}
-                                </div>
+                                <Tab.Pane>
+                                    <MyDayoffList myDayoffList={myDayoffList} />
+                                </Tab.Pane>
                         }
                     ]} />
                 </div>
@@ -296,7 +293,6 @@ function Daouoffice() {
     }
 
     const displayMyDayoffList = () => {
-        console.error(myDayoffList)
         if (myDayoffList == null) {
             return (
                 <Table.Row>
