@@ -229,7 +229,7 @@ class JenkinsClient extends BaseClientComponent {
                     } else {
                         const url = response.config.url;
                         const moduleName = _this.getParam(url, 'moduleName');
-                        buildResults.push({url:'', moduleName, result:'', timestamp:0, fullDisplayName:'', hasError: true})
+                        buildResults.push({url:'', moduleName, result:'', timestamp:0, fullDisplayName:'', lastCommit: {}, hasError: true})
                     }
                 });
 

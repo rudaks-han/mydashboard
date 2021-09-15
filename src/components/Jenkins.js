@@ -78,7 +78,6 @@ function Jenkins() {
         setList(null);
         ipcRenderer.send('jenkins.findList');
         ipcRenderer.on('jenkins.findListCallback', (e, data) => {
-            console.log(data)
             ipcRenderer.removeAllListeners('jenkins.findListCallback');
             setList(data);
             setLastUpdated(UiShare.getCurrDate() + " " + UiShare.getCurrTime());
@@ -140,7 +139,7 @@ function Jenkins() {
                 const freshness = item.timestamp > 0 ? toDate(item.timestamp) : '-';
 
                 return (
-                    <Item>
+                    <Item key={moduleName}>
                         <Item.Image size='mini'>
                             <Label circular color={color} key={color} className='image padding20' style={{verticalAlign:'middle', fontSize: '20px'}}>
                                 {lastBuildResult?'A':'E'}
@@ -148,7 +147,7 @@ function Jenkins() {
                         </Item.Image>
 
                         <Item.Content>
-                            <Item.Header as='a'>
+                            <Item.Header>
                                 <a rel="noreferrer" href={`http://211.63.24.41:8080/view/victory/job/${moduleName}`} target='_blank'>{moduleName}</a>
                             </Item.Header>
                             <Item.Meta>
