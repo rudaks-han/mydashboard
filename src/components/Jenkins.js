@@ -151,7 +151,7 @@ function Jenkins() {
                                 <a rel="noreferrer" href={`http://211.63.24.41:8080/view/victory/job/${moduleName}`} target='_blank'>{moduleName}</a>
                             </Item.Header>
                             <Item.Meta>
-                                {freshness}
+                                Last build on {freshness}
                             </Item.Meta>
                             <Item.Description className={lastCommitClassName}>
                                 Last commit on {date} by {authorName}

@@ -35,7 +35,6 @@ app.whenReady().then(() => {
     victoryPortalClient = new VictoryPortalClient(mainWindow);
     outlookClient = new OutlookClient(mainWindow);
 
-    logger.log('isAuthenticated : ' + loginClient.isAuthenticated());
     if (loginClient.isAuthenticated()) {
         mainWindow.load('index.html', true);
     }
@@ -75,6 +74,11 @@ app.on('window-all-closed', () => {
 })
 
 ipcMain.on(`logout`, (event, data) => {
+    storeMap.set(CookieConst.daouoffice_for_app, '');
+    mainWindow.load('https://spectra.daouoffice.com/login');
+});
+
+ipcMain.on(`goLoginPage`, (event, data) => {
     storeMap.set(CookieConst.daouoffice_for_app, '');
     mainWindow.load('https://spectra.daouoffice.com/login');
 });

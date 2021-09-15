@@ -214,8 +214,6 @@ class JenkinsClient extends BaseClientComponent {
                         const result = response.data.result;
                         const timestamp = response.data.timestamp;
                         const fullDisplayName = response.data.fullDisplayName;
-                        console.log('response.data.changeSets[0]')
-                        console.log(response.data.changeSets[0])
                         let lastChangeSets = response.data.changeSets[0];
                         let lastCommit = {};
                         if (lastChangeSets) {

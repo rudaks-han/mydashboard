@@ -30,9 +30,11 @@ class LoginClient extends BaseClientComponent {
                 const userInfo = {id, employeeNumber, name, position, deptName};
                 this.getStore().set('userInfo', userInfo);
                 _this.mainWindowSender.send('findUserInfoCallback', userInfo);
+                _this.mainWindowSender.send('authenticated', true);
             },
             error => {
                 ShareUtil.printAxiosError(error);
+                _this.mainWindowSender.send('authenticated', false);
             });
     }
 }
