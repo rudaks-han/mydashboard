@@ -8,7 +8,6 @@ function RightMenu({authenticated, onClickRefresh, onClickLogout, openOutlook, u
         </span>
     )
 
-    console.log(authenticated)
     if (authenticated) {
         return <div className="btn-right-layer">
             <Icon name='expand arrows alternate' className='component-move'/>

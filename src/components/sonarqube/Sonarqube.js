@@ -1,13 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
-import sonarqubeIcon from '../static/image/sonarqube-logo.png';
-import {Card, Checkbox, Form, Label, List, Statistic} from 'semantic-ui-react'
-import UiShare from '../UiShare';
-import ModuleList from "./sonarqube/ModuleList";
-import TimerContext from "../TimerContext";
-import AddLinkLayer from "./share/AddLinkLayer";
-import TitleLayer from "./share/TitleLayer";
-import RightMenu from "./sonarqube/RightMenu";
-import ContentLayer from "./sonarqube/ContentLayer";
+import sonarqubeIcon from '../../static/image/sonarqube-logo.png';
+import {Card} from 'semantic-ui-react'
+import UiShare from '../../UiShare';
+import TimerContext from "../../TimerContext";
+import AddLinkLayer from "../share/AddLinkLayer";
+import TitleLayer from "../share/TitleLayer";
+import RightMenu from "./RightMenu";
+import ContentLayer from "./ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 

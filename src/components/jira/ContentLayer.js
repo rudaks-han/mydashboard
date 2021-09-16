@@ -1,6 +1,7 @@
 import React from 'react';
-import {Button, Header, List, Segment, Tab} from 'semantic-ui-react';
+import {List, Tab} from 'semantic-ui-react';
 import RecentJobList from "./RecentJobList";
+import LoginLayer from "../share/LoginLayer";
 
 function ContentLayer(props) {
     if (props.authenticated) {
@@ -19,13 +20,7 @@ function ContentLayer(props) {
             </div>
         )
     } else {
-        return <Segment placeholder>
-            <Header icon>
-                <img src={props.jiraIcon} alt="" className="component-icon"/>
-                Jira에 로그인
-            </Header>
-            <Button primary onClick={props.onClickLogin}>Login</Button>
-        </Segment>;
+        return <LoginLayer {...props} />
     }
 };
 

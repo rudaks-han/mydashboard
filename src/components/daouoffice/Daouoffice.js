@@ -1,17 +1,16 @@
 import React, {useContext, useEffect, useState} from 'react';
-import daouofficeIcon from '../static/image/daouoffice.ico';
-import {Button, Card, Dropdown, Header, Icon, Label, List, Menu, Popup, Segment, Tab, Table, Statistic} from 'semantic-ui-react'
-import UiShare from '../UiShare';
-import TimerContext from "../TimerContext";
-import CompanyBoardList from "./daouoffice/CompanyBoardList";
-import CompanyDayoffList from "./daouoffice/CompanyDayoffList";
-import MyDayoffList from "./daouoffice/MyDayoffList";
-import ExtraButtons from "./daouoffice/ExtraButtons";
-import RightMenu from "./daouoffice/RightMenu";
-import AddLinkLayer from "./share/AddLinkLayer";
-import jiraIcon from "../static/image/icons8-jira-100.png";
-import TitleLayer from "./share/TitleLayer";
-import ContentLayer from "./daouoffice/ContentLayer";
+import daouofficeIcon from '../../static/image/daouoffice.ico';
+import {Button, Card, Header, Segment, Tab} from 'semantic-ui-react'
+import UiShare from '../../UiShare';
+import TimerContext from "../../TimerContext";
+import CompanyBoardList from "./CompanyBoardList";
+import CompanyDayoffList from "./CompanyDayoffList";
+import MyDayoffList from "./MyDayoffList";
+import ExtraButtons from "./ExtraButtons";
+import RightMenu from "./RightMenu";
+import AddLinkLayer from "../share/AddLinkLayer";
+import TitleLayer from "../share/TitleLayer";
+import ContentLayer from "./ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 
@@ -309,16 +308,15 @@ function Daouoffice() {
                     />
                 </Card.Header>
                 <ContentLayer
+                    title="Daouoffice"
                     authenticated={authenticated}
                     list={list}
                     dayoffList={dayoffList}
                     myDayoffList={myDayoffList}
                     onClickLogin={onClickLogin}
-                    daouofficeIcon={daouofficeIcon}
+                    icon={daouofficeIcon}
                 />
-
             </Card.Content>
-
             <Card.Content extra>
                 <ExtraButtons
                     authenticated={authenticated}

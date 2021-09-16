@@ -1,7 +1,6 @@
 import React from 'react';
 import {Card, CardDescription, Icon, List} from 'semantic-ui-react'
-import jenkinsIcon from "../static/image/jenkins.png";
-import TitleLayer from "./share/TitleLayer";
+import TitleLayer from "../share/TitleLayer";
 
 function Modeloffice() {
     const frontPageItems = [

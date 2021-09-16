@@ -1,6 +1,5 @@
 import React from 'react';
-import {Dropdown, Icon, Label, List, Menu} from 'semantic-ui-react';
-import UiShare  from '../../UiShare';
+import {Dropdown, Icon, Label, Menu} from 'semantic-ui-react';
 
 function RightMenu({authenticated, userInfo, clickedSetting, setClickSetting, findList, findDayoffList,
                        notificationCount, useAlarmClock, setUseAlarmClock}) {

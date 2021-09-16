@@ -1,11 +1,11 @@
 import React, {useContext, useEffect, useState} from 'react';
-import outlookIcon from '../static/image/outlook.png';
+import outlookIcon from '../../static/image/outlook.png';
 import {Card} from 'semantic-ui-react'
-import UiShare from '../UiShare';
-import TimerContext from "../TimerContext";
-import RightMenu from "./outlook/RightMenu";
-import AddLinkLayer from "./share/AddLinkLayer";
-import ContentLayer from "./outlook/ContentLayer";
+import UiShare from '../../UiShare';
+import TimerContext from "../../TimerContext";
+import RightMenu from "./RightMenu";
+import AddLinkLayer from "../share/AddLinkLayer";
+import ContentLayer from "./ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 
@@ -78,6 +78,8 @@ function Outlook() {
                 <ContentLayer
                     authenticated={authenticated}
                     list={list}
+                    title="Outlook"
+                    icon={outlookIcon}
                     onClickLogin={onClickLogin}
                     openOutlook={openOutlook}
                 />

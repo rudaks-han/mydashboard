@@ -9,7 +9,6 @@ function RightMenu({authenticated, onClickRefresh, onClickLogout}) {
         </span>
     )
 
-    console.log(authenticated)
     if (authenticated) {
         return (
             <div className="btn-right-layer">

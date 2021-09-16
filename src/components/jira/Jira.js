@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
-import jiraIcon from '../static/image/icons8-jira-100.png';
-import { Card, List, Tab, Button, Segment, Header } from 'semantic-ui-react'
-import UiShare  from '../UiShare';
-import TimerContext from "../TimerContext";
-import RecentJobList from "./jira/RecentJobList";
-import RightMenu from "./jira/RightMenu";
-import ContentLayer from "./jira/ContentLayer";
-import AddLinkLayer from "./share/AddLinkLayer";
-import TitleLayer from "./share/TitleLayer";
+import React, {useContext, useEffect, useState} from 'react';
+import jiraIcon from '../../static/image/icons8-jira-100.png';
+import {Card} from 'semantic-ui-react'
+import UiShare from '../../UiShare';
+import TimerContext from "../../TimerContext";
+import RightMenu from "./RightMenu";
+import ContentLayer from "./ContentLayer";
+import AddLinkLayer from "../share/AddLinkLayer";
+import TitleLayer from "../share/TitleLayer";
+
 const { ipcRenderer } = window.require('electron');
 
 function Jira() {
@@ -65,6 +65,8 @@ function Jira() {
                 <ContentLayer
                     authenticated={authenticated}
                     list={list}
+                    title="Jira"
+                    icon={jiraIcon}
                     onClickLogin={onClickLogin}
                 />
             </Card.Content>

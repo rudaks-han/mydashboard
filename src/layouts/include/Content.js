@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import { ReactSortable } from "react-sortablejs";
-import Jira from "../../components/Jira";
-import Daouoffice from "../../components/Daouoffice";
-import Outlook from "../../components/Outlook";
-import Jenkins from "../../components/Jenkins";
-import Sonarqube from "../../components/Sonarqube";
-import VictoryPortal from "../../components/VictoryPortal";
-import Modeloffice from "../../components/Modeloffice";
+import Jira from "../../components/jira/Jira";
+import Daouoffice from "../../components/daouoffice/Daouoffice";
+import Outlook from "../../components/outlook/Outlook";
+import Jenkins from "../../components/jenkins/Jenkins";
+import Sonarqube from "../../components/sonarqube/Sonarqube";
+import VictoryPortal from "../../components/victoryPortal/VictoryPortal";
+import Modeloffice from "../../components/modeloffice/Modeloffice";
 const { ipcRenderer } = window.require('electron');
 
 const Content = () => {

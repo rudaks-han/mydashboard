@@ -3,6 +3,7 @@ import {Button, Header, Segment, Tab} from 'semantic-ui-react';
 import CompanyBoardList from "./CompanyBoardList";
 import CompanyDayoffList from "./CompanyDayoffList";
 import MyDayoffList from "./MyDayoffList";
+import LoginLayer from "../share/LoginLayer";
 
 function ContentLayer(props) {
     if (props.authenticated) {
@@ -31,13 +32,9 @@ function ContentLayer(props) {
             </div>
         )
     } else {
-        return <Segment placeholder>
-            <Header icon>
-                <img src={props.daouofficeIcon} alt="" className="component-icon"/>
-                Daouoffice에 로그인
-            </Header>
-            <Button primary onClick={props.onClickLogin}>Login</Button>
-        </Segment>;
+        return (
+            <LoginLayer {...props} />
+        )
     }
 };
 

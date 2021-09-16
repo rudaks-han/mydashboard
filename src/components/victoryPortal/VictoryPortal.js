@@ -1,14 +1,14 @@
-import React, {useState, useEffect, useContext} from 'react';
-import victoryPortalIcon from '../static/image/wordpress-logo.svg';
-import { Card, Icon, List, Tab, Button } from 'semantic-ui-react'
-import UiShare  from '../UiShare';
-import TimerContext from "../TimerContext";
-import RecentPostList from "./victoryPortal/RecentPostList";
-import RightMenu from "./victoryPortal/RightMenu";
-import AddLinkLayer from "./share/AddLinkLayer";
-import sonarqubeIcon from "../static/image/sonarqube-logo.png";
-import TitleLayer from "./share/TitleLayer";
-import ContentLayer from "./victoryPortal/ContentLayer";
+import React, {useContext, useEffect, useState} from 'react';
+import victoryPortalIcon from '../../static/image/wordpress-logo.svg';
+import {Card, Tab} from 'semantic-ui-react'
+import UiShare from '../../UiShare';
+import TimerContext from "../../TimerContext";
+import RecentPostList from "./RecentPostList";
+import RightMenu from "./RightMenu";
+import AddLinkLayer from "../share/AddLinkLayer";
+import TitleLayer from "../share/TitleLayer";
+import ContentLayer from "./ContentLayer";
+
 const { ipcRenderer } = window.require('electron');
 
 function VictoryPortal() {

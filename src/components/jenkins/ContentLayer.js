@@ -1,7 +1,7 @@
 import React from 'react';
-import {Button, Header, Label, Segment} from 'semantic-ui-react';
+import {Label} from 'semantic-ui-react';
 import BuildStatusList from "./BuilStatusList";
-import jenkinsIcon from "../../static/image/jenkins.png";
+import LoginLayer from "../share/LoginLayer";
 
 function ContentLayer(props) {
     if (props.authenticated) {
@@ -19,13 +19,7 @@ function ContentLayer(props) {
             </div>
         );
     } else {
-        return <Segment placeholder>
-            <Header icon>
-                <img src={jenkinsIcon} alt="" className="component-icon"/>
-                Jira에 로그인
-            </Header>
-            <Button primary onClick={props.onClickLogin}>Login</Button>
-        </Segment>;
+        return <LoginLayer {...props} />
     }
 };
 

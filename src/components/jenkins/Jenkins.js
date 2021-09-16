@@ -1,12 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
-import jenkinsIcon from '../static/image/jenkins.png';
+import jenkinsIcon from '../../static/image/jenkins.png';
 import {Card} from 'semantic-ui-react'
-import UiShare from '../UiShare';
-import TimerContext from "../TimerContext";
-import RightMenu from "./jenkins/RightMenu";
-import AddLinkLayer from "./share/AddLinkLayer";
-import TitleLayer from "./share/TitleLayer";
-import ContentLayer from "./jenkins/ContentLayer";
+import UiShare from '../../UiShare';
+import TimerContext from "../../TimerContext";
+import RightMenu from "./RightMenu";
+import AddLinkLayer from "../share/AddLinkLayer";
+import TitleLayer from "../share/TitleLayer";
+import ContentLayer from "./ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 
@@ -163,6 +163,8 @@ function Jenkins() {
                     authenticated={authenticated}
                     lastUpdated={lastUpdated}
                     list={list}
+                    title="Jenkins"
+                    icon={jenkinsIcon}
                     setBuildErrorMessage={setBuildErrorMessage}
                     onClickLogin={onClickLogin}
                 />
