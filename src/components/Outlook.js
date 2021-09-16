@@ -1,10 +1,12 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import outlookIcon from '../static/image/outlook.png';
-import {Card, Icon, Dropdown, List, Tab, Button, Segment, Header, Label, Menu} from 'semantic-ui-react'
-import UiShare  from '../UiShare';
+import {Card} from 'semantic-ui-react'
+import UiShare from '../UiShare';
 import TimerContext from "../TimerContext";
 import RightMenu from "./outlook/RightMenu";
-import InboxList from "./outlook/InboxList";
+import AddLinkLayer from "./share/AddLinkLayer";
+import ContentLayer from "./outlook/ContentLayer";
+
 const { ipcRenderer } = window.require('electron');
 
 function Outlook() {
@@ -41,32 +43,6 @@ function Outlook() {
         });
     }
 
-    const displayListLayer = () => {
-        if (authenticated) {
-            return (
-                <div className="list-layer">
-                    <Tab panes={[
-                        { menuItem: '받은 편지함', render: () =>
-                                <Tab.Pane>
-                                    <InboxList
-                                        list={list}
-                                        openOutlook={openOutlook}
-                                    />
-                                </Tab.Pane>}
-                    ]} />
-                </div>
-            )
-        } else {
-            return <Segment placeholder>
-                <Header icon>
-                    <img src={outlookIcon} alt="" className="component-icon"/>
-                    Outlook에 로그인
-                </Header>
-                <Button primary onClick={onClickLogin}>Login</Button>
-            </Segment>;
-        }
-    }
-
     const onClickRefresh = () => {
         findList();
     }
@@ -99,14 +75,15 @@ function Outlook() {
                         unreadCount={unreadCount}
                     />
                 </Card.Header>
-
-                {displayListLayer()}
-
+                <ContentLayer
+                    authenticated={authenticated}
+                    list={list}
+                    onClickLogin={onClickLogin}
+                    openOutlook={openOutlook}
+                />
             </Card.Content>
             <Card.Content extra>
-                <Button fluid color="blue" onClick={openOutlook}>
-                    Outlook 열기
-                </Button>
+                <AddLinkLayer onClick={openOutlook} text="Outlook 열기" />
             </Card.Content>
         </Card>
     )

@@ -1,10 +1,12 @@
 import React, {useContext, useEffect, useState} from 'react';
 import jenkinsIcon from '../static/image/jenkins.png';
-import {Button, Card, Header, Label, Segment} from 'semantic-ui-react'
+import {Card} from 'semantic-ui-react'
 import UiShare from '../UiShare';
 import TimerContext from "../TimerContext";
 import RightMenu from "./jenkins/RightMenu";
-import BuildStatusList from "./jenkins/BuilStatusList";
+import AddLinkLayer from "./share/AddLinkLayer";
+import TitleLayer from "./share/TitleLayer";
+import ContentLayer from "./jenkins/ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 
@@ -93,32 +95,6 @@ function Jenkins() {
         });
     }
 
-    const displayListLayer = () => {
-        if (authenticated) {
-            return (
-                <div>
-                    <Label color='teal' ribbon='right' style={{top: '-10px'}}>
-                        Last update: {lastUpdated}
-                    </Label>
-                    <div className="list-layer">
-                        <BuildStatusList
-                            list={list}
-                            setBuildErrorMessage={setBuildErrorMessage}
-                        />
-                    </div>
-                </div>
-            );
-        } else {
-            return <Segment placeholder>
-                <Header icon>
-                    <img src={jenkinsIcon} alt="" className="component-icon"/>
-                    Jira에 로그인
-                </Header>
-                <Button primary onClick={onClickLogin}>Login</Button>
-            </Segment>;
-        }
-    }
-
     const setBuildErrorMessage = msg => {
         buildErrorMessage = msg;
     }
@@ -130,7 +106,6 @@ function Jenkins() {
             setClickSetting(true);
         }
     }
-
 
     const onChangeUseAlarm = (e, data) => {
         const { checked } = data;
@@ -170,10 +145,7 @@ function Jenkins() {
         <Card fluid>
             <Card.Content>
                 <Card.Header>
-                    <div className="ui header">
-                        <img src={jenkinsIcon} alt="" className="header-icon"/>
-                        Jenkins
-                    </div>
+                    <TitleLayer title="Jenkins" icon={jenkinsIcon} />
                     <RightMenu
                         jobList={jobList}
                         checkedModuleNameList={checkedModuleNameList}
@@ -187,14 +159,16 @@ function Jenkins() {
                         onChangeUseAlarm={onChangeUseAlarm}
                     />
                 </Card.Header>
-
-                {displayListLayer()}
-
+                <ContentLayer
+                    authenticated={authenticated}
+                    lastUpdated={lastUpdated}
+                    list={list}
+                    setBuildErrorMessage={setBuildErrorMessage}
+                    onClickLogin={onClickLogin}
+                />
             </Card.Content>
             <Card.Content extra>
-                <Button fluid color="blue" as='a' href={'http://211.63.24.41:8080/view/victory/'} rel="noreferrer" target='_blank'>
-                    바로 가기
-                </Button>
+                <AddLinkLayer href="http://211.63.24.41:8080/view/victory/" />
             </Card.Content>
         </Card>
     )

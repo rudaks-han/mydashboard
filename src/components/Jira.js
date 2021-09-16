@@ -5,6 +5,9 @@ import UiShare  from '../UiShare';
 import TimerContext from "../TimerContext";
 import RecentJobList from "./jira/RecentJobList";
 import RightMenu from "./jira/RightMenu";
+import ContentLayer from "./jira/ContentLayer";
+import AddLinkLayer from "./share/AddLinkLayer";
+import TitleLayer from "./share/TitleLayer";
 const { ipcRenderer } = window.require('electron');
 
 function Jira() {
@@ -40,33 +43,6 @@ function Jira() {
         });
     }
 
-    const displayListLayer = () => {
-        if (authenticated) {
-            return (
-                <div className="list-layer">
-                    <Tab panes={[
-                        {
-                            menuItem: '최근 작업', render: () =>
-                                <Tab.Pane>
-                                    <List divided relaxed>
-                                        <RecentJobList list={list} />
-                                    </List>
-                                </Tab.Pane>
-                        }
-                    ]} />
-                </div>
-            )
-        } else {
-            return <Segment placeholder>
-                <Header icon>
-                    <img src={jiraIcon} alt="" className="component-icon"/>
-                    Jira에 로그인
-                </Header>
-                <Button primary onClick={onClickLogin}>Login</Button>
-            </Segment>;
-        }
-    }
-
     const onClickRefresh = () => {
         findList();
     }
@@ -83,22 +59,17 @@ function Jira() {
         <Card fluid>
             <Card.Content>
                 <Card.Header>
-                    <div className="ui header">
-                        <img src={jiraIcon} alt="" className="header-icon"/>
-                        Jira
-                    </div>
-
+                    <TitleLayer title="Jira" icon={jiraIcon} />
                     <RightMenu authenticated={authenticated} onClickRefresh={onClickRefresh} onClickLogout={onClickLogout} />
-
                 </Card.Header>
-
-                {displayListLayer()}
-
+                <ContentLayer
+                    authenticated={authenticated}
+                    list={list}
+                    onClickLogin={onClickLogin}
+                />
             </Card.Content>
             <Card.Content extra>
-                <Button fluid color="blue" as='a' href={'https://enomix.atlassian.net/jira/your-work'} rel="noreferrer" target='_blank'>
-                    바로 가기
-                </Button>
+                <AddLinkLayer href="https://enomix.atlassian.net/jira/your-work" />
             </Card.Content>
         </Card>
     )

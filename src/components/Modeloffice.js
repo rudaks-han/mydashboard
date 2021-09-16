@@ -1,5 +1,7 @@
 import React from 'react';
 import {Card, CardDescription, Icon, List} from 'semantic-ui-react'
+import jenkinsIcon from "../static/image/jenkins.png";
+import TitleLayer from "./share/TitleLayer";
 
 function Modeloffice() {
     const frontPageItems = [
@@ -52,10 +54,7 @@ function Modeloffice() {
         <Card fluid>
             <Card.Content>
                 <Card.Header>
-                    <div className="ui header">
-                        Victory Modeloffice
-                    </div>
-
+                    <TitleLayer title="Victory Modeloffice" />
                     {displayRightMenu()}
                 </Card.Header>
                 <CardDescription>

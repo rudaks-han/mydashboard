@@ -8,6 +8,10 @@ import CompanyDayoffList from "./daouoffice/CompanyDayoffList";
 import MyDayoffList from "./daouoffice/MyDayoffList";
 import ExtraButtons from "./daouoffice/ExtraButtons";
 import RightMenu from "./daouoffice/RightMenu";
+import AddLinkLayer from "./share/AddLinkLayer";
+import jiraIcon from "../static/image/icons8-jira-100.png";
+import TitleLayer from "./share/TitleLayer";
+import ContentLayer from "./daouoffice/ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 
@@ -291,11 +295,7 @@ function Daouoffice() {
         <Card fluid>
             <Card.Content>
                 <Card.Header>
-                    <div className="ui header">
-                        <img src={daouofficeIcon} alt="" className="header-icon"/>
-                        Daouoffice
-                    </div>
-
+                    <TitleLayer title="Daouoffice" icon={daouofficeIcon} />
                     <RightMenu
                         authenticated={authenticated}
                         userInfo={userInfo}
@@ -308,8 +308,14 @@ function Daouoffice() {
                         setUseAlarmClock={setUseAlarmClock}
                     />
                 </Card.Header>
-
-                {displayListLayer()}
+                <ContentLayer
+                    authenticated={authenticated}
+                    list={list}
+                    dayoffList={dayoffList}
+                    myDayoffList={myDayoffList}
+                    onClickLogin={onClickLogin}
+                    daouofficeIcon={daouofficeIcon}
+                />
 
             </Card.Content>
 
@@ -320,12 +326,7 @@ function Daouoffice() {
                     onClockIn={onClockIn}
                     onClockOut={onClockOut}
                 />
-
-                <div>
-                    <Button fluid color="blue" as='a' href={'https://spectra.daouoffice.com/app/home'} rel="noreferrer" target='_blank'>
-                        바로 가기
-                    </Button>
-                </div>
+                <AddLinkLayer href="https://spectra.daouoffice.com/app/hom" />
             </Card.Content>
         </Card>
     )
