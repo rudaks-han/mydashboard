@@ -2,7 +2,7 @@ import React from 'react';
 import {Tab} from 'semantic-ui-react';
 import RecentPostList from "./RecentPostList";
 
-function ContentLayer(props) {
+const ContentLayer = props => {
     return (
         <div className="list-layer">
             <Tab panes={[

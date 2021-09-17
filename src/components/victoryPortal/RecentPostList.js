@@ -2,12 +2,12 @@ import React from 'react';
 import {List} from 'semantic-ui-react';
 import UiShare from '../../UiShare';
 
-function RecentPostList({list}) {
+const RecentPostList = props => {
     const displayListItem = () => {
-        if (list == null) {
+        if (props.list == null) {
             return UiShare.displayListLoading();
         } else {
-            return list.map(item => {
+            return props.list.map(item => {
                 const { id, date, link, title } = item;
 
                 return <List.Item key={id}>

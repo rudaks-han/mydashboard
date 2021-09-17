@@ -3,7 +3,7 @@ import {List, Tab} from 'semantic-ui-react';
 import RecentJobList from "./RecentJobList";
 import LoginLayer from "../share/LoginLayer";
 
-function ContentLayer(props) {
+const ContentLayer = props => {
     if (props.authenticated) {
         return (
             <div className="list-layer">

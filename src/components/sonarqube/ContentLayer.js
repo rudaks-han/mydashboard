@@ -2,7 +2,7 @@ import React from 'react';
 import {Label, List, Statistic} from 'semantic-ui-react';
 import UiShare from "../../UiShare";
 
-function ContentLayer(props) {
+const ContentLayer = props => {
     const displayListItem = () => {
         if (props.list == null) {
             return UiShare.displayListLoading();

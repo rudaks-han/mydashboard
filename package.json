@@ -11,6 +11,7 @@
     "concurrently": "^6.2.1",
     "electron": "^13.1.8",
     "electron-builder": "^22.11.7",
+    "electron-icon-builder": "^2.0.1",
     "eslint": "^7.32.0",
     "eslint-plugin-react": "^7.25.1",
     "eslint-plugin-react-hooks": "^4.2.0",
@@ -48,6 +49,7 @@
     "react:start": "react-scripts start",
     "electron:start": "wait-on http://localhost:3000 && electron --inspect=5858 .",
     "react:build": "react-scripts build",
+    "icons": "./node_modules/.bin/electron-icon-builder --input=./icon.png --output=./build/static",
     "build": "npm run react:build && electron-builder -mw",
     "release": "npm run react:build && electron-builder -mw --publish=always"
   },
@@ -58,11 +60,17 @@
       "provider": "github"
     },
     "files": [
-      "build/**/*",
+      "./build/**/*",
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "static"
+      "buildResources": "./static"
+    },
+    "mac": {
+      "icon": "./build/static/icons/mac/icon.icns"
+    },
+    "win": {
+      "icon": "./build/static/icons/win/icon.ico"
     }
   },
   "eslintConfig": {

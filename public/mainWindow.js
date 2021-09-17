@@ -12,6 +12,7 @@ class MainWindow extends BrowserWindow {
             defaultWidth: 1280, defaultHeight: 800
         })
 
+        console.log(__dirname)
         super({
             webPreferences: {
                 nodeIntegration: true,
@@ -21,7 +22,8 @@ class MainWindow extends BrowserWindow {
             },
             width: winState.width, height: winState.height,
             x: winState.x, y: winState.y,
-            icon: path.join(__dirname, "static/icons/png/64x64.png")
+            icon: path.join(__dirname, "static/icons/png/1024x1024.png")
+            //icon: path.join(__dirname, "static/icons/mac/icon.icns")
         });
 
         this.storeMap = storeMap;

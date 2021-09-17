@@ -2,14 +2,14 @@ import React from 'react';
 import {Item, Label} from 'semantic-ui-react'
 import UiShare from '../../UiShare';
 
-function BuildStatusList({ list, setBuildErrorMessage }) {
+const BuildStatusList = props => {
     const displayListItem = () => {
-        if (list == null) {
+        if (props.list == null) {
             return UiShare.displayListLoading();
         } else {
             let hasError = false;
             let errorMessage = '';
-            const result = list.map(item => {
+            const result = props.list.map(item => {
                 let lastBuildResult = false;
                 let color = 'green';
                 const moduleName = item.moduleName;
@@ -53,7 +53,7 @@ function BuildStatusList({ list, setBuildErrorMessage }) {
                 )
             });
 
-            setBuildErrorMessage(errorMessage);
+            props.setBuildErrorMessage(errorMessage);
 
             return result;
         }

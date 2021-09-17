@@ -5,7 +5,7 @@ import CompanyDayoffList from "./CompanyDayoffList";
 import MyDayoffList from "./MyDayoffList";
 import LoginLayer from "../share/LoginLayer";
 
-function ContentLayer(props) {
+const ContentLayer = props => {
     if (props.authenticated) {
         return (
             <div className="list-layer">

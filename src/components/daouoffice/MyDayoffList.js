@@ -2,9 +2,9 @@ import React from 'react';
 import {Label, List, Statistic, Table} from 'semantic-ui-react'
 import UiShare from '../../UiShare';
 
-function MyDayoffList({ myDayoffList }) {
+const MyDayoffList = props => {
     const displayMyDayoffList = () => {
-        if (myDayoffList == null) {
+        if (props.myDayoffList == null) {
             return (
                 <Table.Row>
                     <Table.Cell>
@@ -14,7 +14,7 @@ function MyDayoffList({ myDayoffList }) {
             );
         }
 
-        const { startDate, endDate, sumPoint, usedPoint, restPoint } = myDayoffList;
+        const { startDate, endDate, sumPoint, usedPoint, restPoint } = props.myDayoffList;
 
         return (
             <div>

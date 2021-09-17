@@ -10,7 +10,7 @@ import ContentLayer from "./ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 
-function Jenkins() {
+const Jenkins = () => {
     const [list, setList] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
     const [useAlarmOnError, setUseAlarmOnError] = useState(false);

@@ -11,7 +11,7 @@ import ContentLayer from "./ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 
-function VictoryPortal() {
+const VictoryPortal = () => {
     const [list, setList] = useState(null);
     const tickTime = useContext(TimerContext);
 

@@ -2,17 +2,12 @@ import React from 'react';
 import {Checkbox, Form, Icon} from 'semantic-ui-react';
 import ModuleList from "./ModuleList";
 
-function RightMenu(props) {
-    const onClickRefresh = () => {
-        props.findList();
-    }
-
+const RightMenu = props => {
     const onChangeUseAlarm = (e, data) => {
         const { checked } = data;
         props.setUseAlarmOnError(checked);
         ipcRenderer.send('sonarqube.useAlarmOnError', checked);
     }
-
 
     const displaySettingLayer = () => {
         if (props.clickedSetting) {

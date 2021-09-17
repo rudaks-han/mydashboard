@@ -1,8 +1,7 @@
 import React from 'react';
 import {Dropdown, Icon, Label, Menu} from 'semantic-ui-react';
 
-function RightMenu({authenticated, userInfo, clickedSetting, setClickSetting, findList, findDayoffList,
-                       notificationCount, useAlarmClock, setUseAlarmClock}) {
+const RightMenu = props => {
     const rightBtnTrigger = (
         <span>
             <Icon name='user' />
@@ -10,35 +9,30 @@ function RightMenu({authenticated, userInfo, clickedSetting, setClickSetting, fi
     )
 
     const onClickSetting = e => {
-        if (clickedSetting) {
-            setClickSetting(false);
+        if (props.clickedSetting) {
+            props.setClickSetting(false);
         } else {
-            setClickSetting(true);
+            props.setClickSetting(true);
         }
     }
 
     const onCheckUseClockInTime = e => {
         const data = {
             clockIn: e.target.checked,
-            clockOut: useAlarmClock.clockOut
+            clockOut: props.useAlarmClock.clockOut
         }
-        setUseAlarmClock(data);
+        props.setUseAlarmClock(data);
         ipcRenderer.send('daouoffice.setUseAlarmClock', data);
     }
 
     const onCheckUseClockOutTime = e => {
         const data = {
-            clockIn: useAlarmClock.clockIn,
+            clockIn: props.useAlarmClock.clockIn,
             clockOut: e.target.checked
         }
 
-        setUseAlarmClock(data);
+        props.setUseAlarmClock(data);
         ipcRenderer.send('daouoffice.setUseAlarmClock', data);
-    }
-
-    const onClickRefresh = () => {
-        findList();
-        findDayoffList();
     }
 
     const onClickLogout = () => {
@@ -46,28 +40,28 @@ function RightMenu({authenticated, userInfo, clickedSetting, setClickSetting, fi
     }
 
     const displaySettingLayer = () => {
-        if (clickedSetting) {
+        if (props.clickedSetting) {
             return <div className="setting-layer">
                 <div className="ui checkbox">
-                    <input type="checkbox" checked={useAlarmClock.clockIn} onChange={onCheckUseClockInTime} />
-                    <label>출근 시간(<span>{userInfo.workStartTime}</span>) 체크 알림 (5분 전)</label>
+                    <input type="checkbox" checked={props.useAlarmClock.clockIn} onChange={onCheckUseClockInTime} />
+                    <label>출근 시간(<span>{props.userInfo.workStartTime}</span>) 체크 알림 (5분 전)</label>
                 </div>
                 <div className="ui checkbox">
-                    <input type="checkbox" checked={useAlarmClock.clockOut} onChange={onCheckUseClockOutTime} />
-                    <label>퇴근 시간(<span>{userInfo.workEndTime}</span>) 체크 알림 (정시)</label>
+                    <input type="checkbox" checked={props.useAlarmClock.clockOut} onChange={onCheckUseClockOutTime} />
+                    <label>퇴근 시간(<span>{props.userInfo.workEndTime}</span>) 체크 알림 (정시)</label>
                 </div>
             </div>;
         }
     }
 
-    if (authenticated && userInfo) {
+    if (props.authenticated && props.userInfo) {
         return <div className="btn-right-layer">
             <Icon name='expand arrows alternate' className='component-move'/>
-            <Icon name='refresh' onClick={onClickRefresh}/>
+            <Icon name='refresh' onClick={props.onClickRefresh}/>
             <Menu.Item as='a' href={'https://spectra.daouoffice.com/app/noti/unread'} target='_blank' style={{position:'relative', cursor:'pointer'}}>
                 <Icon name='bell' style={{color:'#000'}}/>
-                <Label color='red' floating style={{display:notificationCount>0?"":"none", borderRadius:'16px', fontSize: '10px', padding: '4px'}}>
-                    {notificationCount}
+                <Label color='red' floating style={{display:props.notificationCount>0?"":"none", borderRadius:'16px', fontSize: '10px', padding: '4px'}}>
+                    {props.notificationCount}
                 </Label>
             </Menu.Item>
             <Icon name='setting' onClick={onClickSetting}/>

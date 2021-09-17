@@ -2,12 +2,12 @@ import React from 'react';
 import {List} from 'semantic-ui-react'
 import UiShare from '../../UiShare';
 
-function InboxList({ list, openOutlook }) {
+const InboxList = props => {
     const displayListItem = () => {
-        if (list == null) {
+        if (props.list == null) {
             return UiShare.displayListLoading();
         } else {
-            return list.conversations.map(item => {
+            return props.list.conversations.map(item => {
                 const {ConversationId, UniqueSenders, ConversationTopic, LastDeliveryTime, UnreadCount} = item;
                 const id = ConversationId.Id;
                 let lastDeliveryTime = LastDeliveryTime;
@@ -23,7 +23,7 @@ function InboxList({ list, openOutlook }) {
                 return <List.Item key={id}>
                     <List.Content>
                         <List.Header>
-                            <a rel="noreferrer" target="_blank" onClick={openOutlook}
+                            <a rel="noreferrer" target="_blank" onClick={props.openOutlook}
                                style={{fontWeight: readFlagStyle}}>{ConversationTopic}</a>
                         </List.Header>
                         <List.Description>{UniqueSenders} | {lastDeliveryTime}</List.Description>

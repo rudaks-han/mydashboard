@@ -2,20 +2,20 @@ import React from 'react';
 import {Dropdown, Icon, List} from 'semantic-ui-react';
 import UiShare  from '../../UiShare';
 
-function RightMenu({authenticated, onClickRefresh, onClickLogout}) {
+const RightMenu = props => {
     const rightBtnTrigger = (
         <span>
             <Icon name='user' />
         </span>
     )
 
-    if (authenticated) {
+    if (props.authenticated) {
         return (
             <div className="btn-right-layer">
                 <Icon name='expand arrows alternate' className='component-move'/>
-                <Icon name='refresh' onClick={onClickRefresh} />
+                <Icon name='refresh' onClick={props.onClickRefresh} />
                 <Dropdown trigger={rightBtnTrigger} options={[
-                    { key: 'logout', text: 'Logout', onClick: onClickLogout }
+                    { key: 'logout', text: 'Logout', onClick: props.onClickLogout }
                 ]} />
             </div>
         );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Checkbox } from 'semantic-ui-react'
 const { ipcRenderer } = window.require('electron');
 
-function ModuleList(props) {
+const ModuleList = props => {
     const [checkedModuleNameList, setCheckedModuleNameList] = useState([]);
     const [componentList, setComponentList] = useState([]);
 

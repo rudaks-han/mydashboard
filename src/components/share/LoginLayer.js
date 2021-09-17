@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button, Header, Segment} from "semantic-ui-react";
 
-function LoginLayer(props) {
+const LoginLayer = props => {
     return (
         <Segment placeholder>
             <Header icon>

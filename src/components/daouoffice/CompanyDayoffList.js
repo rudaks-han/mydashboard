@@ -2,9 +2,9 @@ import React from 'react';
 import {List, Table} from 'semantic-ui-react'
 import UiShare from '../../UiShare';
 
-function CompanyBoardList({ dayoffList }) {
+const CompanyBoardList = props => {
     const displayDayoffList = () => {
-        if (dayoffList == null) {
+        if (props.dayoffList == null) {
             return (
                 <Table.Row>
                     <Table.Cell>
@@ -14,7 +14,7 @@ function CompanyBoardList({ dayoffList }) {
             );
         }
 
-        return dayoffList.map(item => {
+        return props.dayoffList.map(item => {
             const { id, startTimeDate, endTimeDate, summary } = item;
 
             let timeString = '';

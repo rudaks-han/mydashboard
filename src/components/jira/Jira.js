@@ -10,7 +10,7 @@ import TitleLayer from "../share/TitleLayer";
 
 const { ipcRenderer } = window.require('electron');
 
-function Jira() {
+const Jira = () => {
     const [list, setList] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
     const tickTime = useContext(TimerContext);

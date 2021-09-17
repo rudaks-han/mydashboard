@@ -1,11 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import daouofficeIcon from '../../static/image/daouoffice.ico';
-import {Button, Card, Header, Segment, Tab} from 'semantic-ui-react'
+import {Card} from 'semantic-ui-react'
 import UiShare from '../../UiShare';
 import TimerContext from "../../TimerContext";
-import CompanyBoardList from "./CompanyBoardList";
-import CompanyDayoffList from "./CompanyDayoffList";
-import MyDayoffList from "./MyDayoffList";
 import ExtraButtons from "./ExtraButtons";
 import RightMenu from "./RightMenu";
 import AddLinkLayer from "../share/AddLinkLayer";
@@ -14,7 +11,7 @@ import ContentLayer from "./ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 
-function Daouoffice() {
+const Daouoffice = () => {
     const [list, setList] = useState(null);
     const [dayoffList, setDayoffList] = useState(null);
     const [myDayoffList, setMyDayoffList] = useState(null);
@@ -199,41 +196,9 @@ function Daouoffice() {
         });
     }
 
-    const displayListLayer = () => {
-        if (authenticated) {
-            return (
-                <div className="list-layer">
-                    <Tab panes={[
-                        {
-                            menuItem: '전사 게시판', render: () =>
-                                <Tab.Pane>
-                                    <CompanyBoardList list={list}/>
-                                </Tab.Pane>
-                        },
-                        {
-                            menuItem: '회사 연차현황', render: () =>
-                                <Tab.Pane>
-                                    <CompanyDayoffList dayoffList={dayoffList} />
-                                </Tab.Pane>
-                        },
-                        {
-                            menuItem: '내 연차', render: () =>
-                                <Tab.Pane>
-                                    <MyDayoffList myDayoffList={myDayoffList} />
-                                </Tab.Pane>
-                        }
-                    ]} />
-                </div>
-            )
-        } else {
-            return <Segment placeholder>
-                <Header icon>
-                    <img src={daouofficeIcon} alt="" className="component-icon"/>
-                    Daouoffice에 로그인
-                </Header>
-                <Button primary onClick={onClickLogin}>Login</Button>
-            </Segment>;
-        }
+    const onClickRefresh = () => {
+        findList();
+        findDayoffList();
     }
 
     const onClickLogin = () => {
@@ -305,6 +270,7 @@ function Daouoffice() {
                         notificationCount={notificationCount}
                         useAlarmClock={useAlarmClock}
                         setUseAlarmClock={setUseAlarmClock}
+                        onClickRefresh={onClickRefresh}
                     />
                 </Card.Header>
                 <ContentLayer

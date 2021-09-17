@@ -10,7 +10,7 @@ import ContentLayer from "./ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 
-function Sonarqube() {
+const Sonarqube = () => {
     const [list, setList] = useState(null);
     const [useAlarmOnError, setUseAlarmOnError] = useState(false);
     const [clickedSetting, setClickSetting] = useState(false);

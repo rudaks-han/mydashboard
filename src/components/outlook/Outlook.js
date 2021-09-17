@@ -9,7 +9,7 @@ import ContentLayer from "./ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
 
-function Outlook() {
+const Outlook = () => {
     const [list, setList] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);

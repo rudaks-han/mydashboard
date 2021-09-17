@@ -1,20 +1,20 @@
 import React from 'react';
 import {Button, Dropdown, Popup} from 'semantic-ui-react'
 
-function ExtraButtons({ authenticated, userInfo, onClockIn, onClockOut }) {
-    if (authenticated && userInfo) {
+const ExtraButtons = props => {
+    if (props.authenticated && props.userInfo) {
         return <div style={{"marginBottom":"5px"}}>
             <Button.Group>
                 <Popup
-                    content={userInfo.clockInTime}
-                    open={!!userInfo.clockedIn}
-                    trigger={<Button onClick={onClockIn} disabled={!!userInfo.clockedIn}>출근하기</Button>}
+                    content={props.userInfo.clockInTime}
+                    open={!!props.userInfo.clockedIn}
+                    trigger={<Button onClick={props.onClockIn} disabled={!!props.userInfo.clockedIn}>출근하기</Button>}
                 />
                 <Button.Or />
                 <Popup
-                    content={userInfo.clockOutTime}
-                    open={!!userInfo.clockedOut}
-                    trigger={<Button onClick={onClockOut} positive disabled={!!userInfo.clockedOut}>퇴근하기</Button>}
+                    content={props.userInfo.clockOutTime}
+                    open={!!props.userInfo.clockedOut}
+                    trigger={<Button onClick={props.onClockOut} positive disabled={!!props.userInfo.clockedOut}>퇴근하기</Button>}
                 />
             </Button.Group>
             &nbsp;

@@ -3,7 +3,7 @@ import {Label} from 'semantic-ui-react';
 import BuildStatusList from "./BuilStatusList";
 import LoginLayer from "../share/LoginLayer";
 
-function ContentLayer(props) {
+const ContentLayer = props => {
     if (props.authenticated) {
         return (
             <div>

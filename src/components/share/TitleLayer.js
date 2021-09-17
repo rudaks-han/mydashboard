@@ -1,12 +1,12 @@
 import React from 'react';
 
-function TitleLayer({ title, icon }) {
+const TitleLayer = props => {
     return (
         <div className="ui header">
             {
-                icon ? <img src={icon} alt="" className="header-icon"/> : ''
+                props.icon ? <img src={props.icon} alt="" className="header-icon"/> : ''
             }
-            {title}
+            {props.title}
         </div>
     );
 };

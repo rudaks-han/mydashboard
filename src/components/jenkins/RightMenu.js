@@ -2,7 +2,7 @@ import React from 'react';
 import {Dropdown, Icon} from 'semantic-ui-react';
 import SettingLayer from "./SettingLayer";
 
-function RightMenu(props) {
+const RightMenu = props => {
     const rightBtnTrigger = (
         <span>
             <Icon name='user' />

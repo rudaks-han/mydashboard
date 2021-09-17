@@ -2,7 +2,7 @@ import React from 'react';
 import {Card, CardDescription, Icon, List} from 'semantic-ui-react'
 import TitleLayer from "../share/TitleLayer";
 
-function Modeloffice() {
+const Modeloffice = () => {
     const frontPageItems = [
         {name: 'backoffice', url: 'https://victory-backoffice.spectra.co.kr'},
         {name: 'customer', url: 'https://victory-customer.spectra.co.kr/demo'},

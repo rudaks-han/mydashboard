@@ -2,12 +2,12 @@ import React from 'react';
 import { List } from 'semantic-ui-react'
 import UiShare from '../../UiShare';
 
-function CompanyBoardList({ list }) {
+const CompanyBoardList = props => {
     const displayListItem = () => {
-        if (list == null) {
+        if (props.list == null) {
             return UiShare.displayListLoading();
         } else {
-            return list.map(item => {
+            return props.list.map(item => {
                 const { id, title, readPost, createdAt, writer } = item;
                 let createdAtFormat = createdAt.substring(0, 16);
                 createdAtFormat = createdAtFormat.replace(/T/, ' ');
