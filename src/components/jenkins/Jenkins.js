@@ -80,10 +80,10 @@ const Jenkins = () => {
         });
     }
 
-    const findList = () => {
+    const findList = async () => {
         setList(null);
         ipcRenderer.send('jenkins.findList');
-        ipcRenderer.on('jenkins.findListCallback', (e, data) => {
+        ipcRenderer.on('jenkins.findListCallback', async (e, data) => {
             ipcRenderer.removeAllListeners('jenkins.findListCallback');
             setList(data);
             setLastUpdated(UiShare.getCurrDate() + " " + UiShare.getCurrTime());
