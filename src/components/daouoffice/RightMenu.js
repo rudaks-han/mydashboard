@@ -1,5 +1,6 @@
 import React from 'react';
 import {Dropdown, Icon, Label, Menu} from 'semantic-ui-react';
+import SettingModal from "./SettingModal";
 
 const RightMenu = props => {
     const rightBtnTrigger = (
@@ -9,11 +10,11 @@ const RightMenu = props => {
     )
 
     const onClickSetting = e => {
-        if (props.clickedSetting) {
+        /*if (props.clickedSetting) {
             props.setClickSetting(false);
         } else {
             props.setClickSetting(true);
-        }
+        }*/
     }
 
     const onCheckUseClockInTime = e => {
@@ -64,8 +65,12 @@ const RightMenu = props => {
                     {props.notificationCount}
                 </Label>
             </Menu.Item>
-            <Icon name='setting' onClick={onClickSetting}/>
             {displaySettingLayer()}
+            <SettingModal
+                useAlarmClock={props.useAlarmClock}
+                userInfo={props.userInfo}
+                setUseAlarmClock={props.setUseAlarmClock}
+            />
             <Dropdown trigger={rightBtnTrigger} options={[
                 { key: 'logout', text: 'Logout', onClick: onClickLogout }
             ]} />
