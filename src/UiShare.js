@@ -163,10 +163,10 @@ class UiShare {
 
                 if (alias >= 1) {
                     // this single interface has multiple ipv4 addresses
-                    console.log(ifname + ':' + alias, iface.address);
+                    //console.log(ifname + ':' + alias, iface.address);
                 } else {
                     // this interface has only one ipv4 adress
-                    console.log(ifname, iface.address);
+                    //console.log(ifname, iface.address);
                     ipAdresse = {ip: iface.address, mac: iface.mac};
                 }
                 ++alias;

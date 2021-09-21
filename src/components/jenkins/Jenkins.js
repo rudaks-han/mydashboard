@@ -80,17 +80,17 @@ const Jenkins = () => {
         });
     }
 
-    const findList = async () => {
+    const findList = () => {
         setList(null);
         ipcRenderer.send('jenkins.findList');
-        ipcRenderer.on('jenkins.findListCallback', async (e, data) => {
-            ipcRenderer.removeAllListeners('jenkins.findListCallback');
+        ipcRenderer.removeAllListeners('jenkins.findListCallback');
+        ipcRenderer.on('jenkins.findListCallback', (e, data) => {
             setList(data);
             setLastUpdated(UiShare.getCurrDate() + " " + UiShare.getCurrTime());
         });
 
         ipcRenderer.removeAllListeners('jenkins.authenticated');
-        ipcRenderer.on('jenkins.authenticated', async (e, data) => {
+        ipcRenderer.on('jenkins.authenticated', (e, data) => {
             setAuthenticated(data);
         });
     }

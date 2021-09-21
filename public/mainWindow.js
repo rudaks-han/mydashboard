@@ -2,7 +2,6 @@ const electron = require('electron');
 const { BrowserWindow, shell, Menu, Tray } = electron;
 const windowStateKeeper = require('electron-window-state')
 const path = require('path');
-const ShareUtil = require('./app/lib/shareUtil');
 const logger = require('electron-log'); // /Users/macbookpro/Library/Logs/my-dashboard
 let mainMenu = Menu.buildFromTemplate(require('./mainMenu'))
 
@@ -12,7 +11,6 @@ class MainWindow extends BrowserWindow {
             defaultWidth: 1280, defaultHeight: 800
         })
 
-        console.log(__dirname)
         super({
             webPreferences: {
                 nodeIntegration: true,
