@@ -18,7 +18,7 @@ const Daouoffice = () => {
     const [authenticated, setAuthenticated] = useState(false);
     const [username, setUsername] = useState(false);
     const [notificationCount, setNotificationCount] = useState(0);
-    const [useAlarmClock, setUseAlarmClock] = useState({clockIn: true, clockOut: true});
+    const [useAlarmClock, setUseAlarmClock] = useState({clockIn: true, beforeTime: 5, clockOut: true, afterTime: 0});
     const [clickedSetting, setClickSetting] = useState(false);
     const [userInfo, setUserInfo] = useState(null);
     const tickTime = useContext(TimerContext);
@@ -158,11 +158,19 @@ const Daouoffice = () => {
         ipcRenderer.on('daouoffice.findStoreCallback', async (e, data) => {
             setUsername(data.username);
 
+            console.error('___ ' + data);
+            console.error(data);
             const clockIn = data.useAlarmClock.clockIn || false;
             const clockOut = data.useAlarmClock.clockOut || false;
+            const beforeTime = data.useAlarmClock.beforeTime || 5;
+            const afterTime = data.useAlarmClock.afterTime || 0;
+            console.log('beforeTime : ' + beforeTime)
+            console.log('afterTime : ' + afterTime)
             setUseAlarmClock({
                 clockIn,
-                clockOut
+                clockOut,
+                beforeTime,
+                afterTime
             });
             ipcRenderer.removeAllListeners('daouoffice.findStoreCallback');
         });

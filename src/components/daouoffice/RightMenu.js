@@ -9,15 +9,7 @@ const RightMenu = props => {
         </span>
     )
 
-    const onClickSetting = e => {
-        /*if (props.clickedSetting) {
-            props.setClickSetting(false);
-        } else {
-            props.setClickSetting(true);
-        }*/
-    }
-
-    const onCheckUseClockInTime = e => {
+    /*const onCheckUseClockInTime = e => {
         const data = {
             clockIn: e.target.checked,
             clockOut: props.useAlarmClock.clockOut
@@ -34,13 +26,13 @@ const RightMenu = props => {
 
         props.setUseAlarmClock(data);
         ipcRenderer.send('daouoffice.setUseAlarmClock', data);
-    }
+    }*/
 
     const onClickLogout = () => {
         ipcRenderer.send('daouoffice.logout');
     }
 
-    const displaySettingLayer = () => {
+   /* const displaySettingLayer = () => {
         if (props.clickedSetting) {
             return <div className="setting-layer">
                 <div className="ui checkbox">
@@ -53,8 +45,9 @@ const RightMenu = props => {
                 </div>
             </div>;
         }
-    }
+    }*/
 
+    console.error(props.useAlarmClock.beforeTime)
     if (props.authenticated && props.userInfo) {
         return <div className="btn-right-layer">
             <Icon name='expand arrows alternate' className='component-move'/>
@@ -65,7 +58,6 @@ const RightMenu = props => {
                     {props.notificationCount}
                 </Label>
             </Menu.Item>
-            {displaySettingLayer()}
             <SettingModal
                 useAlarmClock={props.useAlarmClock}
                 userInfo={props.userInfo}

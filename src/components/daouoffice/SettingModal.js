@@ -1,16 +1,28 @@
 import React from 'react';
-import {Icon, Header, Modal, Form, Checkbox} from 'semantic-ui-react';
+import {Icon, Header, Modal, Form, Checkbox, Select, Dropdown} from 'semantic-ui-react';
 import {Button} from 'semantic-ui-react'
+import DropdownTime from "./DropdownTime";
 const { ipcRenderer } = window.require('electron');
 
 const SettingModal = props => {
     const [open, setOpen] = React.useState(false)
 
+    const getUseAlarmClock = () => {
+        return {
+            clockIn: props.useAlarmClock.clockIn,
+            clockOut: props.useAlarmClock.clockOut,
+            beforeTime: props.useAlarmClock.beforeTime,
+            afterTime: props.useAlarmClock.afterTime
+        }
+    }
+
     const onCheckUseClockInTime = (e, data) => {
         const param = {
-            clockIn: data.checked,
-            clockOut: props.useAlarmClock.clockOut
+            ...getUseAlarmClock(),
+            clockIn: data.checked
         }
+
+        console.log(param);
 
         props.setUseAlarmClock(param);
         ipcRenderer.send('daouoffice.setUseAlarmClock', param);
@@ -18,7 +30,7 @@ const SettingModal = props => {
 
     const onCheckUseClockOutTime = (e,data) => {
         const param = {
-            clockIn: props.useAlarmClock.clockIn,
+            ...getUseAlarmClock(),
             clockOut: data.checked
         }
 
@@ -26,7 +38,28 @@ const SettingModal = props => {
         ipcRenderer.send('daouoffice.setUseAlarmClock', param);
     }
 
-    console.log(props.useAlarmClock.clockIn)
+    const onChangeClockInBeforeTime = (e, data) => {
+
+        const param = {
+            ...getUseAlarmClock(),
+            beforeTime: data.value
+        }
+        console.log(param);
+        props.setUseAlarmClock(param);
+        ipcRenderer.send('daouoffice.setUseAlarmClock', param);
+    }
+
+    const onChangeClockOutAfterTime = (e, data) => {
+
+        const param = {
+            ...getUseAlarmClock(),
+            afterTime: data.value
+        }
+        console.log(param);
+        props.setUseAlarmClock(param);
+        ipcRenderer.send('daouoffice.setUseAlarmClock', param);
+    }
+
     return (
         <Modal
             closeIcon
@@ -40,11 +73,27 @@ const SettingModal = props => {
                 <Form>
                     <Form.Field>
                         <label>출근 시간 체크 알림 (출근 시간: {props.userInfo.workStartTime})</label>
-                        <Checkbox label='사용' checked={props.useAlarmClock.clockIn} onChange={onCheckUseClockInTime} /> (5분 전)
+                        <div role="listbox" className='ui active visible dropdown'>
+                            <Checkbox label='사용' checked={props.useAlarmClock.clockIn} onChange={onCheckUseClockInTime} />,
+                            &nbsp;
+                            <DropdownTime
+                                count={15}
+                                onChange={onChangeClockInBeforeTime}
+                                value={props.useAlarmClock.beforeTime}
+                            /> 전 알림
+                        </div>
                     </Form.Field>
                     <Form.Field>
                         <label>퇴근 시간 체크 알림 (퇴근 시간: {props.userInfo.workEndTime})</label>
-                        <Checkbox label='사용' checked={props.useAlarmClock.clockOut} onChange={onCheckUseClockOutTime} /> (5분 전)
+                        <div role="listbox" className='ui active visible dropdown'>
+                            <Checkbox label='사용' checked={props.useAlarmClock.clockOut} onChange={onCheckUseClockOutTime} />
+                            &nbsp;
+                            <DropdownTime
+                                count={15}
+                                onChange={onChangeClockOutAfterTime}
+                                value={props.useAlarmClock.afterTime}
+                            /> 후 알림
+                        </div>
                     </Form.Field>
                 </Form>
 

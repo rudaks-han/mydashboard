@@ -281,6 +281,8 @@ class DaouofficeClient extends BaseClientComponent {
             useAlarmClock: {
                 clockIn: useAlarmClock ? useAlarmClock.clockIn : false,
                 clockOut: useAlarmClock ? useAlarmClock.clockOut : false,
+                beforeTime: useAlarmClock ? useAlarmClock.beforeTime : 5,
+                afterTime: useAlarmClock ? useAlarmClock.afterTime : 0,
             }
         };
         _this.mainWindowSender.send('findStoreCallback', data);
