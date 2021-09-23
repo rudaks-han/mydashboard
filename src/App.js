@@ -48,8 +48,8 @@ function App() {
                 const time = UiShare.getCurrDate() + ' ' + UiShare.getCurrTime();
                 setTickTime(time);
             },
-            //1000 * 60
-            1000 * 5
+            1000 * 60
+            //1000 * 5
         );
 
         return () => {
