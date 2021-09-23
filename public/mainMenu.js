@@ -1,3 +1,6 @@
+const openAboutWindow = require('about-window').default;
+
+const join = require('path').join;
 const { dialog, shell } = require('electron');
 const autoUpdater = require('./autoUpdater');
 
@@ -6,7 +9,14 @@ module.exports = [
         label: 'MyDashboard',
         submenu: [
             {
-                label: 'About My Dashboard'
+                label: 'About My Dashboard',
+                click: () => {
+                    openAboutWindow({
+                        icon_path: join(__dirname, 'static/icons/png/128x128.png'),
+                        copyright: 'Copyright (c) 2021 rudaks',
+                        package_json_dir: __dirname
+                    })
+                }
             },
             {
                 label: '업데이트 확인',
