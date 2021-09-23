@@ -1,6 +1,7 @@
 import React from 'react';
 import {Label, List, Statistic} from 'semantic-ui-react';
 import UiShare from "../../UiShare";
+const logger = window.require('electron-log').scope('sonarqube');
 
 const ContentLayer = props => {
     const displayListItem = () => {
@@ -61,7 +62,7 @@ const ContentLayer = props => {
                             bugsMarkStyle = {verticalAlign: 'top'};
                         }
                     } else {
-                        console.log(`"${measure.metric}" is not defined.`)
+                        logger.warn(`"${measure.metric}" is not defined.`)
                     }
                 });
 

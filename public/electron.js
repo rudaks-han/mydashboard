@@ -12,6 +12,8 @@ const OutlookClient = require('./app/client/outlookClient');
 const StoreMap = require('./app/lib/storeMap');
 const storeMap = new StoreMap();
 const logger = require('electron-log');
+logger.transports.file.level = 'info';
+logger.transports.console.level = 'info';
 
 let mainWindow;
 let loginClient;
@@ -42,7 +44,7 @@ app.whenReady().then(() => {
     mainWindow.webContents.on('did-finish-load', e => {
         const url = e.sender.getURL();
         logger.info('[mainWindow] did-finish-load: ' + url);
-        logger.info('loginClient.isAuthenticated(): ' + loginClient.isAuthenticated());
+        logger.info('isAuthenticated(): ' + loginClient.isAuthenticated());
 
         if (!loginClient.isAuthenticated()) {
             if (url.indexOf('https://spectra.daouoffice.com/app/home') > -1) {
@@ -74,6 +76,7 @@ app.on('window-all-closed', () => {
 })
 
 ipcMain.on(`logout`, (event, data) => {
+    logger.info('logout');
     storeMap.set(CookieConst.daouoffice_for_app, '');
     mainWindow.load('https://spectra.daouoffice.com/login');
 });
@@ -84,6 +87,7 @@ ipcMain.on(`goLoginPage`, (event, data) => {
 });
 
 ipcMain.on(`saveComponentSort`, (event, data) => {
+    logger.info('saveComponentSort');
     storeMap.set(CookieConst.component_sort, data);
 });
 
@@ -94,7 +98,7 @@ ipcMain.on(`findComponentSort`, () => {
 
 ipcMain.on(`findStore`, (e, data) => {
     if (!data || !data.key) {
-        console.log('findStore: key not exists');
+        logger.warn('findStore: key not exists');
         return;
     }
 
@@ -105,7 +109,7 @@ ipcMain.on(`findStore`, (e, data) => {
 
 ipcMain.on(`saveStore`, (e, data) => {
     if (!data || !data.key) {
-        console.log('findStore: key not exists');
+        logger.warn('findStore: key not exists');
         return;
     }
 

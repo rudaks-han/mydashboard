@@ -265,8 +265,8 @@ class DaouofficeClient extends BaseClientComponent {
             const response = await axios.post(`https://spectra.daouoffice.com/api/ehr/timeline/status/clockIn?userId=${this.getUserId()}&baseDate=${ShareUtil.getCurrDate()}`, data, _this.axiosConfig());
             _this.mainWindowSender.send('clockInCallback', response.data);
         } catch (e) {
-            ShareUtil.printAxiosError(error);
-            _this.mainWindowSender.send('clockInCallback', error.response.data);
+            ShareUtil.printAxiosError(e);
+            _this.mainWindowSender.send('clockInCallback', e.response.data);
         }
     }
 

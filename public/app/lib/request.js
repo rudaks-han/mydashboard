@@ -1,4 +1,5 @@
 const axios = require('axios');
+const logger = require('electron-log');
 
 class Request {
     constructor() {
@@ -58,7 +59,7 @@ class Request {
             }))
             .catch((error) => {
                 if (error) {
-                    console.log(error);
+                    logger.error(error);
                 }
             });
     }

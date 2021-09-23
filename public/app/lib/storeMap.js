@@ -1,10 +1,11 @@
 const Store = require('electron-store');
 const { session } = require('electron');
+const logger = require('electron-log');
 
 class StoreMap {
     constructor() {
         this.store = new Store();
-        //console.log("storePath : " + this.store.path);
+        logger.debug("storePath : " + this.store.path);
     }
 
     set(key, value) {

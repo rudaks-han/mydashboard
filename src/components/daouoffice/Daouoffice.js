@@ -10,6 +10,7 @@ import TitleLayer from "../share/TitleLayer";
 import ContentLayer from "./ContentLayer";
 
 const { ipcRenderer } = window.require('electron');
+const logger = window.require('electron-log').scope('daouoffice');
 
 const Daouoffice = () => {
     const [list, setList] = useState(null);
@@ -61,6 +62,10 @@ const Daouoffice = () => {
     const showDialogClockIn = currTime => {
         const {year, month, day, hour, minute} = currTime;
 
+        if (UiShare.isWeekend()) {
+            return;
+        }
+
         if (isHoliday()) {
             return;
         }
@@ -106,6 +111,10 @@ const Daouoffice = () => {
 
     const showDialogClockOut = currTime => {
         const {year, month, day, hour, minute} = currTime;
+
+        if (UiShare.isWeekend()) {
+            return;
+        }
 
         if (isHoliday()) {
             return;
@@ -155,7 +164,7 @@ const Daouoffice = () => {
     const isHoliday = () => {
         const date = UiShare.getCurrDate();
         if (calendarList.holidayList[date] != null) {
-            console.log(date + ' is holiday');
+            logger.debug(date + ' is holiday');
             return true;
         } else {
             return false;
@@ -169,7 +178,7 @@ const Daouoffice = () => {
             if (item.indexOf(username) > -1 || item.indexOf('보상휴가') > -1) {
                 if ((item.indexOf('연차') > -1 || item.indexOf('보상') > -1)
                     && item.indexOf('오전') == -1 && item.indexOf('오후') == -1 && item.indexOf('반차') == -1) {
-                    console.log(`[${username}] ${date} is day off`);
+                    logger.debug(`[${username}] ${date} is day off`);
                     return true;
                 }
             }
@@ -186,19 +195,19 @@ const Daouoffice = () => {
                 let item = dayoffList[i];
                 if (item.indexOf(username) > -1) {
                     if (item.indexOf('오전') > -1 && item.indexOf('반반차') > -1) {
-                        console.log('오전반반차')
+                        logger.debug('오전반반차')
                         return '오전반반차';
                     } else if (item.indexOf('오후') > -1 && item.indexOf('반반차') > -1) {
-                        console.log('오후반반차')
+                        logger.debug('오후반반차')
                         return '오후반반차';
                     } else if (item.indexOf('오전') > -1) {
-                        console.log('오전반차')
+                        logger.debug('오전반차')
                         return '오전반차';
                     } else if (item.indexOf('오후') > -1) {
-                        console.log('오후반차')
+                        logger.debug('오후반차')
                         return '오후반차';
                     } else if (item.indexOf('반차') > -1) {
-                        console.log('>>> 오늘은 반차입니다. (오전/오후 알수 없음) ');
+                        logger.debug('오늘은 반차입니다. (오전/오후 알수 없음) ');
                         return '오전반차';
                     }
                 }

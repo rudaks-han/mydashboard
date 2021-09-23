@@ -3,6 +3,7 @@ const { BrowserWindow, shell, Menu, Tray } = electron;
 const windowStateKeeper = require('electron-window-state')
 const path = require('path');
 const logger = require('electron-log'); // /Users/macbookpro/Library/Logs/my-dashboard
+
 let mainMenu = Menu.buildFromTemplate(require('./mainMenu'))
 
 class MainWindow extends BrowserWindow {
@@ -41,7 +42,7 @@ class MainWindow extends BrowserWindow {
     }
 
     load(url, authenticated = false) {
-        logger.info('------------- mainWindow#load -----------------');
+        logger.debug('------------- mainWindow#load -----------------');
         logger.info('# __dirname : ' + __dirname);
         logger.info('# url : ' + url);
         logger.info('# process.env.mode : ' + process.env.mode)
@@ -55,13 +56,13 @@ class MainWindow extends BrowserWindow {
             this.loadURL(url);
         } else {
             if (process.env.mode === 'dev') {
-                logger.info('# loadURL : ' + 'http://localhost:3000');
-                this.loadURL('http://localhost:3000');
-
-
+                const path = 'http://localhost:3000';
+                logger.info('# loadURL : ' + path);
+                this.loadURL(path);
             } else {
-                logger.info('# loadURL : ' + `${path.join(__dirname, '../build/index.html')}`);
-                this.loadFile(`${path.join(__dirname, '../build/index.html')}`);
+                const path = `${path.join(__dirname, '../build/index.html')}`;
+                logger.info('# loadURL : ' + path);
+                this.loadFile(path);
             }
         }
 

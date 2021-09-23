@@ -1,6 +1,7 @@
 import {Placeholder} from "semantic-ui-react";
 const os = window.require('os');
 const { dialog } = window.require('electron').remote;
+const logger = window.require('electron-log');
 
 class UiShare {
     static displayListLoading = () => {
@@ -169,6 +170,15 @@ class UiShare {
         }
     }
 
+    static isWeekend() {
+        let currDate = new Date();
+        if (currDate.getDay() === 0 || currDate.getDay() === 6) { // 토, 일 제외
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     static getClientIp() {
         var ifaces = os.networkInterfaces();
         let ipAdresse = {};
@@ -182,10 +192,10 @@ class UiShare {
 
                 if (alias >= 1) {
                     // this single interface has multiple ipv4 addresses
-                    //console.log(ifname + ':' + alias, iface.address);
+                    logger.debug(ifname + ':' + alias, iface.address);
                 } else {
                     // this interface has only one ipv4 adress
-                    //console.log(ifname, iface.address);
+                    logger.debug(ifname, iface.address);
                     ipAdresse = {ip: iface.address, mac: iface.mac};
                 }
                 ++alias;

@@ -1,3 +1,5 @@
+const logger = require('electron-log');
+
 class ShareUtil {
     static getCurrDate() {
         return this.getCurrYear() + '-' + this.getCurrMonth() + '-' + this.getCurrDay();
@@ -98,7 +100,7 @@ class ShareUtil {
             }
             ShareUtil.printlnMap('[axios error]', errorData);
         } else {
-            console.error('response is undefined');
+            logger.error('response is undefined', e);
             //console.error(e);
         }
     }
@@ -114,7 +116,7 @@ class ShareUtil {
     }
 
     static println(str) {
-        console.log(str);
+        logger.log(str);
     }
 
     static printTable(str) {
@@ -122,7 +124,7 @@ class ShareUtil {
     }
 
     static printlnWithDate(str) {
-        console.log(`[${ShareUtil.getCurrDate()} ${ShareUtil.getCurrTime()}] ${str}`);
+        logger.log(`[${ShareUtil.getCurrDate()} ${ShareUtil.getCurrTime()}] ${str}`);
     }
 }
 

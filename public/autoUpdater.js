@@ -1,11 +1,11 @@
 const { autoUpdater } = require('electron-updater');
 const { dialog } = require('electron');
-autoUpdater.logger = require('electron-log');
-autoUpdater.logger.transports.file.level = 'info';
+const logger = require('electron-log');
+logger.transports.file.level = 'info';
 autoUpdater.autoDownload = false;
 
 module.exports = () => {
-    console.log('Checking for updates: ' + process.env.mode);
+    logger.info('Checking for updates: ' + process.env.mode);
 
     if (process.env.mode !== 'dev') {
         autoUpdater.checkForUpdates();
