@@ -55,6 +55,7 @@ const Jenkins = () => {
 
     const findModuleList = () => {
         ipcRenderer.send('jenkins.findModuleList');
+        ipcRenderer.removeAllListeners('jenkins.findModuleListCallback');
         ipcRenderer.on('jenkins.findModuleListCallback', (e, data) => {
             const jobs = data.data;
             const availableModules = data.availableModules;
@@ -62,7 +63,6 @@ const Jenkins = () => {
             const checkedModuleNames = availableModules.map(module => module.name);
             setCheckedModuleNameList(checkedModuleNames);
             setJobList(filteredJobs);
-            ipcRenderer.removeAllListeners('jenkins.findModuleListCallback');
         });
     }
 

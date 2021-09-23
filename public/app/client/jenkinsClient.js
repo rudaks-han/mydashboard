@@ -44,6 +44,7 @@ class JenkinsClient extends BaseClientComponent {
                     loginWindow.close();
                     loginWindow = null;
                     _this.findList();
+                    _this.findModuleList();
                 });
             }
         })
