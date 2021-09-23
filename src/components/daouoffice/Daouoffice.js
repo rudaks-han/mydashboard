@@ -13,6 +13,7 @@ const { ipcRenderer } = window.require('electron');
 
 const Daouoffice = () => {
     const [list, setList] = useState(null);
+    const [calendarList, setCalendarList] = useState(null);
     const [dayoffList, setDayoffList] = useState(null);
     const [myDayoffList, setMyDayoffList] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
@@ -26,6 +27,7 @@ const Daouoffice = () => {
     useEffect(() => {
         findList();
         findUserInfo();
+        findCalendar();
         findNotificationCount();
         findStore();
         findDayoffList();
@@ -35,16 +37,17 @@ const Daouoffice = () => {
     useEffect(() => {
         if (tickTime == null) return;
         if (!userInfo || !authenticated) return;
-        const {hour, minute} = UiShare.getTimeFormat(tickTime);
+        const {year, month, day, hour, minute} = UiShare.getDateTimeFormat(tickTime);
         if (minute === 0) {
             findList();
+            findCalendar();
             findNotificationCount();
         }
 
-        notifyClockCheck({hour, minute});
+        notifyClockCheck({year, month, day, hour, minute});
     }, [tickTime, userInfo, authenticated]);
 
-    const notifyClockCheck = (currTime) => {
+    const notifyClockCheck = currTime => {
         if (userInfo == null) return;
         if (useAlarmClock.clockIn) {
             showDialogClockIn(currTime);
@@ -55,22 +58,39 @@ const Daouoffice = () => {
         }
     }
 
-    const showDialogClockIn = (currTime) => {
-        const {hour, minute} = currTime;
+    const showDialogClockIn = currTime => {
+        const {year, month, day, hour, minute} = currTime;
 
-        const beforeMinute = -5;
-        const clockInTimeString = `${UiShare.getCurrDate()} ${userInfo.workStartTime}`;
+        if (isHoliday()) {
+            return;
+        }
+
+        if (isUserDayoff()) {
+            return;
+        }
+
+        const beforeMinute = -useAlarmClock.beforeTime;
+        let workStartTime = userInfo.workStartTime;
+        const currDate = UiShare.getCurrDate();
+        //const currDate = '2021-09-15';
+        let clockInTimeString = `${currDate} ${workStartTime}`;
         //const clockInTimeString = '2021-09-08 15:20:00';
-        const clockInTimeDate = new Date(clockInTimeString);
+        let clockInTimeDate = new Date(clockInTimeString);
+        let userHalfDayoffString = getUserHalfDayoff(); // 오전반차, 오후반차
+        clockInTimeDate = getHalfDayoffClockInTime(clockInTimeDate, userHalfDayoffString);
         const clockInBeforeTime = UiShare.addMinutes(clockInTimeDate, beforeMinute);
         const clockInTimeHour = clockInBeforeTime.getHours();
         const clockInTimeMinute = clockInBeforeTime.getMinutes();
 
         if (hour === clockInTimeHour && minute === clockInTimeMinute) {
             setTimeout(() => {
+                let message = '출근시간을 등록하시겠습니까?';
+                if (userHalfDayoffString != null) {
+                    message += '\n금일은 ' + userHalfDayoffString + ' 입니다';
+                }
                 const dialogOptions = {
                     title: '출근시간 등록',
-                    message: '출근시간을 등록하시겠습니까?',
+                    message: message,
                     detail: `${username}님의 출근시간은 ${userInfo.workStartTime} 입니다.`,
                     buttons: ['Yes', 'No'],
                 };
@@ -84,22 +104,41 @@ const Daouoffice = () => {
         }
     }
 
-    const showDialogClockOut = (data) => {
-        const {hour, minute} = data;
+    const showDialogClockOut = currTime => {
+        const {year, month, day, hour, minute} = currTime;
 
-        const afterMinute = 0;
-        const clockOutTimeString = `${UiShare.getCurrDate()} ${userInfo.workEndTime}`;
+        if (isHoliday()) {
+            return;
+        }
+
+        if (isUserDayoff()) {
+            return;
+        }
+
+        const afterMinute = useAlarmClock.afterTime;
+        let workEndTime = userInfo.workEndTime;
+        const currDate = UiShare.getCurrDate();
+        //const currDate = '2021-09-15';
+        const clockOutTimeString = `${currDate} ${workEndTime}`;
         //const clockOutTimeString = '2021-09-08 08:37:00';
-        const clockOutTimeDate = new Date(clockOutTimeString);
+        let clockOutTimeDate = new Date(clockOutTimeString);
+        let userHalfDayoffString = getUserHalfDayoff(); // 오전반
+        clockOutTimeDate = getHalfDayoffClockOutTime(clockOutTimeDate, userHalfDayoffString);
+        //const clockOutTimeString = `${UiShare.getCurrDate()} ${workEndTime}`;
+
         const clockOutAfterTime = UiShare.addMinutes(clockOutTimeDate, afterMinute);
         const clockOutTimeHour = clockOutAfterTime.getHours();
         const clockOutTimeMinute = clockOutAfterTime.getMinutes();
 
         if (hour === clockOutTimeHour && minute === clockOutTimeMinute) {
             setTimeout(() => {
+                let message = '퇴근시간을 등록하시겠습니까?';
+                if (userHalfDayoffString != null) {
+                    message += '\n금일은 ' + userHalfDayoffString + ' 입니다';
+                }
                 const dialogOptions = {
                     title: '퇴근시간 등록',
-                    message: '퇴근시간을 등록하시겠습니까?',
+                    message: message,
                     detail: `${username}님의 퇴근시간은 ${userInfo.workEndTime} 입니다.`,
                     buttons: ['Yes', 'No'],
                 };
@@ -113,6 +152,93 @@ const Daouoffice = () => {
         }
     }
 
+    const isHoliday = () => {
+        const date = UiShare.getCurrDate();
+        if (calendarList.holidayList[date] != null) {
+            console.log(date + ' is holiday');
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    const isUserDayoff = () => {
+        const date = UiShare.getCurrDate();
+        const dayoffList = calendarList.dayOffList[date];
+        dayoffList.map(item => {
+            if (item.indexOf(username) > -1 || item.indexOf('보상휴가') > -1) {
+                if ((item.indexOf('연차') > -1 || item.indexOf('보상') > -1)
+                    && item.indexOf('오전') == -1 && item.indexOf('오후') == -1 && item.indexOf('반차') == -1) {
+                    console.log(`[${username}] ${date} is day off`);
+                    return true;
+                }
+            }
+        });
+
+        return false;
+    }
+
+    const getUserHalfDayoff = () => {
+        const date = UiShare.getCurrDate();
+        const dayoffList = calendarList.dayOffList[date];
+        if (dayoffList) {
+            for (let i = 0; i < dayoffList.length; i++) {
+                let item = dayoffList[i];
+                if (item.indexOf(username) > -1) {
+                    if (item.indexOf('오전') > -1 && item.indexOf('반반차') > -1) {
+                        console.log('오전반반차')
+                        return '오전반반차';
+                    } else if (item.indexOf('오후') > -1 && item.indexOf('반반차') > -1) {
+                        console.log('오후반반차')
+                        return '오후반반차';
+                    } else if (item.indexOf('오전') > -1) {
+                        console.log('오전반차')
+                        return '오전반차';
+                    } else if (item.indexOf('오후') > -1) {
+                        console.log('오후반차')
+                        return '오후반차';
+                    } else if (item.indexOf('반차') > -1) {
+                        console.log('>>> 오늘은 반차입니다. (오전/오후 알수 없음) ');
+                        return '오전반차';
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    const getHalfDayoffClockInTime = (clockInTimeDate, halfDayoffType) => {
+        let lunchHour = 0;
+        if (halfDayoffType === '오전반반차') {
+            if (clockInTimeDate.getHours() >= 10) {
+                lunchHour = 1;
+            }
+
+            return UiShare.addHours(clockInTimeDate, 2 + lunchHour); //
+        } else if (halfDayoffType === '오전반차') {
+            if (clockInTimeDate.getHours() >= 8) {
+                lunchHour = 1
+            }
+            return UiShare.addHours(clockInTimeDate, 4 + lunchHour);
+        } else {
+            return clockInTimeDate;
+        }
+    }
+
+    const getHalfDayoffClockOutTime = (clockOutTimeDate, halfDayoffType) => {
+        let lunchHour = 0;
+        if (halfDayoffType === '오후반반차') {
+            return UiShare.addHours(clockOutTimeDate, -2);
+        } else if (halfDayoffType === '오후반차') {
+            if (clockOutTimeDate.getHours() <= 16 || (clockOutTimeDate.getHours() <= 17 && clockOutTimeDate.getMinutes() === 0)) {
+                lunchHour = 1;
+            }
+            return UiShare.addHours(clockOutTimeDate, -4 -lunchHour);
+        } else {
+            return clockOutTimeDate;
+        }
+    }
 
     const findList = () => {
         setList(null);
@@ -144,6 +270,15 @@ const Daouoffice = () => {
         });
     }
 
+    const findCalendar = () => {
+        ipcRenderer.send('daouoffice.findCalendar');
+        ipcRenderer.removeAllListeners('daouoffice.findCalendarCallback');
+        ipcRenderer.on('daouoffice.findCalendarCallback', async (e, data) => {
+            setCalendarList(data);
+        });
+
+    }
+
     const findNotificationCount = () => {
         ipcRenderer.send('daouoffice.findNotificationCount');
         ipcRenderer.on('daouoffice.findNotificationCountCallback', async (e, data) => {
@@ -158,14 +293,10 @@ const Daouoffice = () => {
         ipcRenderer.on('daouoffice.findStoreCallback', async (e, data) => {
             setUsername(data.username);
 
-            console.error('___ ' + data);
-            console.error(data);
             const clockIn = data.useAlarmClock.clockIn || false;
             const clockOut = data.useAlarmClock.clockOut || false;
             const beforeTime = data.useAlarmClock.beforeTime || 5;
             const afterTime = data.useAlarmClock.afterTime || 0;
-            console.log('beforeTime : ' + beforeTime)
-            console.log('afterTime : ' + afterTime)
             setUseAlarmClock({
                 clockIn,
                 clockOut,

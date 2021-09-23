@@ -1,6 +1,6 @@
 import React from 'react';
 import {Dropdown, Icon} from 'semantic-ui-react';
-import SettingLayer from "./SettingLayer";
+import SettingModal from "../jenkins/SettingModal";
 
 const RightMenu = props => {
     const rightBtnTrigger = (
@@ -13,8 +13,9 @@ const RightMenu = props => {
         return <div className="btn-right-layer">
             <Icon name='expand arrows alternate' className='component-move'/>
             <Icon name='refresh' onClick={props.onClickRefresh}/>
-            <Icon name='setting' onClick={props.onClickSetting}/>
-            <SettingLayer {...props} />
+            <SettingModal
+                {...props}
+            />
             <Dropdown trigger={rightBtnTrigger} options={[
                 { key: 'logout', text: 'Logout', onClick: props.onClickLogout }
             ]} />

@@ -73,6 +73,11 @@ class UiShare {
         return date;
     }
 
+    static addHours(date, hour) {
+        date.setTime(date.getTime() + hour * 60 * 60 * 1000);
+        return date;
+    }
+
     static getCurrYear() {
         const currDate = new Date();
         return currDate.getFullYear();
@@ -144,6 +149,20 @@ class UiShare {
     static getTimeFormat(time) {
         const arTime = time.split(':');
         return {
+            hour: Number(arTime[0]),
+            minute: Number(arTime[1]),
+            second: Number(arTime[2])
+        }
+    }
+
+    static getDateTimeFormat(str) {
+        const arStr = str.split(' '); // 2021-09-23 08:51:00
+        const arDate = arStr[0].split('-');
+        const arTime = arStr[1].split(':');
+        return {
+            year: Number(arDate[0]),
+            month: Number(arDate[1]),
+            day: Number(arDate[2]),
             hour: Number(arTime[0]),
             minute: Number(arTime[1]),
             second: Number(arTime[2])

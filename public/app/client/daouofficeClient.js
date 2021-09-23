@@ -162,17 +162,17 @@ class DaouofficeClient extends BaseClientComponent {
                     eventList.map(event => {
                         let type = event.type; // holiday: 휴일, company: 연차/공가)
                         let summary = event.summary; // 연차 : 서형태, 반차: 이승엽(오후), 공가 : 유민(오후)
-                        //console.error('date : ' + date + ', type : ' + type + ', summary : ' + summary);
 
-                        if (type == 'holiday' || type == 'anniversary') { // anniversary : 근로자의 날
+                        if (type === 'holiday' || type === 'anniversary') { // anniversary : 근로자의 날
                             holidayList[date] = type;
-                        } else if (type == 'company') {
+                        } else if (type === 'company') {
                             if (!dayOffList[date])
                                 dayOffList[date] = [];
-
-                            dayOffList[date].push(summary); // summary => 연차 : 한경만
-                        } else if (type == 'normal') {
-                            if (summary == '연차') {
+                            if (_this.hasDayoffString(summary)) {
+                                dayOffList[date].push(summary); // summary => 연차 : 한경만
+                            }
+                        } else if (type === 'normal') {
+                            if (summary === '연차') {
                                 dayOffList[date].push(summary + ':' + event.creator.name);
                             }
                         }
@@ -187,6 +187,18 @@ class DaouofficeClient extends BaseClientComponent {
         } catch (e) {
             ShareUtil.printAxiosError(e);
         }
+    }
+
+    hasDayoffString(summary) {
+        const dayoffString = ['연차', '반차', '장기근속', '보상'];
+
+        for (let i=0; i<dayoffString.length; i++) {
+            if (summary.indexOf(dayoffString[i]) > -1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     async findDayoffList() {

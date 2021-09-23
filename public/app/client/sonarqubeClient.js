@@ -29,18 +29,19 @@ class SonarqubeClient extends BaseClientComponent {
         this.mainWindowSender.send('findUseAlarmOnErrorCallback', data);
     }
 
-    async findModuleList() {
+    findModuleList() {
         const _this = this;
 
-        try {
-            const response = await axios.get(`http://211.63.24.41:9000/api/components/search?qualifiers=TRK`);
-            _this.mainWindowSender.send('findModuleListCallback', {
-                data: response.data,
-                availableModules: _this.getAvailableModules()
+        this.request.get('http://211.63.24.41:9000/api/components/search?qualifiers=TRK', null,
+            response => {
+                _this.mainWindowSender.send('findModuleListCallback', {
+                    data: response.data,
+                    availableModules: _this.getAvailableModules()
+                });
+            },
+            error => {
+                ShareUtil.printAxiosError(error);
             });
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
-        }
     }
 
     addAvailableModule(e, data) {

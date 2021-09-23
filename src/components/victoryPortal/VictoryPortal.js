@@ -21,7 +21,7 @@ const VictoryPortal = () => {
 
     useEffect(() => {
         if (tickTime == null) return;
-        const { minute } = UiShare.getTimeFormat(tickTime);
+        const { minute } = UiShare.getDateTimeFormat(tickTime);
         if (minute === 0) {
             findList();
         }

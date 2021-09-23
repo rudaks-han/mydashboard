@@ -22,8 +22,6 @@ const SettingModal = props => {
             clockIn: data.checked
         }
 
-        console.log(param);
-
         props.setUseAlarmClock(param);
         ipcRenderer.send('daouoffice.setUseAlarmClock', param);
     }
@@ -39,23 +37,21 @@ const SettingModal = props => {
     }
 
     const onChangeClockInBeforeTime = (e, data) => {
-
         const param = {
             ...getUseAlarmClock(),
             beforeTime: data.value
         }
-        console.log(param);
+
         props.setUseAlarmClock(param);
         ipcRenderer.send('daouoffice.setUseAlarmClock', param);
     }
 
     const onChangeClockOutAfterTime = (e, data) => {
-
         const param = {
             ...getUseAlarmClock(),
             afterTime: data.value
         }
-        console.log(param);
+
         props.setUseAlarmClock(param);
         ipcRenderer.send('daouoffice.setUseAlarmClock', param);
     }
@@ -77,7 +73,8 @@ const SettingModal = props => {
                             <Checkbox label='사용' checked={props.useAlarmClock.clockIn} onChange={onCheckUseClockInTime} />,
                             &nbsp;
                             <DropdownTime
-                                count={15}
+                                from={1}
+                                to={15}
                                 onChange={onChangeClockInBeforeTime}
                                 value={props.useAlarmClock.beforeTime}
                             /> 전 알림
@@ -89,7 +86,8 @@ const SettingModal = props => {
                             <Checkbox label='사용' checked={props.useAlarmClock.clockOut} onChange={onCheckUseClockOutTime} />
                             &nbsp;
                             <DropdownTime
-                                count={15}
+                                from={0}
+                                to={15}
                                 onChange={onChangeClockOutAfterTime}
                                 value={props.useAlarmClock.afterTime}
                             /> 후 알림
@@ -97,16 +95,6 @@ const SettingModal = props => {
                     </Form.Field>
                 </Form>
 
-                {/*<div>
-                    <div className="ui checkbox">
-                        <input type="checkbox" checked={props.useAlarmClock.clockIn} onChange={onCheckUseClockInTime} />
-                        <label>출근 시간(<span>{props.userInfo.workStartTime}</span>) 체크 알림 (5분 전)</label>
-                    </div>
-                    <div className="ui checkbox">
-                        <input type="checkbox" checked={props.useAlarmClock.clockOut} onChange={onCheckUseClockOutTime} />
-                        <label>퇴근 시간(<span>{props.userInfo.workEndTime}</span>) 체크 알림 (정시)</label>
-                    </div>
-                </div>*/}
             </Modal.Content>
             <Modal.Actions>
                 <Button color='green' onClick={() => setOpen(false)}>

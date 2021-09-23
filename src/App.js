@@ -45,11 +45,11 @@ function App() {
     const startTimer = () => {
         const timer = setIntervalAsync(
             async () => {
-                const time = UiShare.getCurrTime();
+                const time = UiShare.getCurrDate() + ' ' + UiShare.getCurrTime();
                 setTickTime(time);
             },
-            1000 * 60
-            //1000 * 5
+            //1000 * 60
+            1000 * 5
         );
 
         return () => {
@@ -64,7 +64,7 @@ function App() {
     return (
         <UserContext.Provider value={userInfo}>
             <TimerContext.Provider value={tickTime}>
-            <MainLayout />
+                <MainLayout />
             </TimerContext.Provider>
         </UserContext.Provider>
     );

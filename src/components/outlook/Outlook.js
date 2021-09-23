@@ -22,7 +22,7 @@ const Outlook = () => {
     useEffect(() => {
         if (tickTime == null) return;
         if (!authenticated) return;
-        const { minute } = UiShare.getTimeFormat(tickTime);
+        const { minute } = UiShare.getDateTimeFormat(tickTime);
         if (minute%10 === 0) {
             findList();
         }

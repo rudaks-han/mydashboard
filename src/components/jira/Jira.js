@@ -23,7 +23,7 @@ const Jira = () => {
         if (tickTime == null) return;
         if (!authenticated) return;
 
-        const { minute } = UiShare.getTimeFormat(tickTime);
+        const { minute } = UiShare.getDateTimeFormat(tickTime);
         if (minute === 0) {
             findList();
         }

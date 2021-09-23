@@ -1,9 +1,9 @@
 import React from 'react';
 import {Dropdown} from 'semantic-ui-react';
 
-const getOptions = (count) => {
+const getOptions = (from, to) => {
     let result = [];
-    for (let i=1; i<=count; i++) {
+    for (let i=from; i<=to; i++) {
         result.push({ key: i, text: `${i}분`, value: i });
     }
 
@@ -12,7 +12,7 @@ const getOptions = (count) => {
 
 const DropdownTime = props => (
     <Dropdown
-        options={getOptions(props.count)}
+        options={getOptions(props.from, props.to)}
         selection
         onChange={props.onChange}
         value={props.value}

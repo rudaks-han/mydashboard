@@ -31,7 +31,7 @@ const Jenkins = () => {
     useEffect(() => {
         if (tickTime == null) return;
         if (!authenticated) return;
-        const { hour, minute } = UiShare.getTimeFormat(tickTime);
+        const { hour, minute } = UiShare.getDateTimeFormat(tickTime);
         if (minute%10 === 0) {
             findModuleList();
         }
