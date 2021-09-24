@@ -75,6 +75,12 @@ const Sonarqube = () => {
         });
     }
 
+    const onChangeUseAlarm = (e, data) => {
+        const { checked } = data;
+        setUseAlarmOnError(checked);
+        ipcRenderer.send('sonarqube.useAlarmOnError', checked);
+    }
+
     const onChangeModuleChange = (e, data) => {
         const name = data.name;
         const key = data.value; // key
@@ -122,6 +128,7 @@ const Sonarqube = () => {
                         setUseAlarmOnError={setUseAlarmOnError}
                         useAlarmOnError={useAlarmOnError}
                         onClickRefresh={onClickRefresh}
+                        onChangeUseAlarm={onChangeUseAlarm}
                     />
                 </Card.Header>
                 <ContentLayer
