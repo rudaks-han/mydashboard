@@ -10,7 +10,6 @@ const gsCredit = require('./dev-book-list-13a6535e9dd7.json');
 const devDoc = new GoogleSpreadsheet('1DVwEPdy7Z685aYGU68Ierf8G6a39jEzzZLAoojkRydI'); // 개발팀
 const rndDoc = new GoogleSpreadsheet('1298EutL5c7NMEC-DkEDsy9MDV53nCPA93dJqUcQns9A'); // 연구소
 
-
 const TeamBook = () => {
     const [devBookList, setDevBookList] = useState(null);
     const [rndBookList, setRndBookList] = useState(null);
