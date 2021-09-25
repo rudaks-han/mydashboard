@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { ReactSortable } from "react-sortablejs";
+import {ReactSortable} from "react-sortablejs";
 import Jira from "../../components/jira/Jira";
 import Daouoffice from "../../components/daouoffice/Daouoffice";
 import Outlook from "../../components/outlook/Outlook";
@@ -7,6 +7,8 @@ import Jenkins from "../../components/jenkins/Jenkins";
 import Sonarqube from "../../components/sonarqube/Sonarqube";
 import VictoryPortal from "../../components/victoryPortal/VictoryPortal";
 import Modeloffice from "../../components/modeloffice/Modeloffice";
+import TeamBook from "../../components/teambook/TeamBook";
+
 const { ipcRenderer } = window.require('electron');
 
 const Content = () => {
@@ -18,6 +20,7 @@ const Content = () => {
         { id: 'sonarqube', name: "Sonarqube", component: <Sonarqube /> },
         { id: 'victoryPortal', name: "VictoryPortal", component: <VictoryPortal /> },
         { id: 'modeloffice', name: "Modeloffice", component: <Modeloffice /> },
+        { id: 'teambook', name: "TeamBook", component: <TeamBook /> },
     ];
 
     const [state, setState] = useState([]);
@@ -31,8 +34,18 @@ const Content = () => {
         ipcRenderer.on('findComponentSortCallback', (e, data) => {
             let componentsIds = data;
             if (!componentsIds) {
-                componentsIds = ["daouoffice", "jira", "outlook", "jenkins", "sonarqube", "victoryPortal", "modeloffice"];
+                componentsIds = [];
+                components.map(component => {
+                    componentsIds.push(component.id);
+                });
             }
+
+            components.map(component => {
+                if (!componentsIds.includes(component.id)) {
+                    componentsIds.push(component.id);
+                }
+            });
+
 
             const sortedComponents = [];
             componentsIds.map(id => {
