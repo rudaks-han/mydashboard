@@ -11,7 +11,7 @@ const RecentJobList = props => {
 
             return <List.Item key={issueKey}>
                 <Image avatar src={iconUrl} />
-                <List.Content>
+                <List.Content className='image_content'>
                     <List.Header>
                         <a href={`https://enomix.atlassian.net/browse/${issueKey}`} rel="noreferrer" target="_blank">{summary}</a>
                     </List.Header>

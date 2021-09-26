@@ -25,7 +25,29 @@ class JiraClient extends BaseClientComponent {
 
         try {
             const response = await axios.post(`https://enomix.atlassian.net/gateway/api/graphql`, data, _this.getAxiosConfig(CookieConst.jira));
-            const items = response.data.data.activities.myActivities.workedOn.nodes;
+            let items = [];
+            response.data.data.activities.myActivities.workedOn.nodes.map(node => {
+                const id = node.id;
+                const issueKey = node.object.extension.issueKey;
+                const containerName = node.object.containers[1].name
+                const timestamp = node.timestamp;
+                const name = node.object.name;
+                const type = node.object.type;
+                const url = node.object.url;
+                const iconUrl = node.object.iconUrl;
+
+                items.push({
+                    id,
+                    issueKey,
+                    containerName,
+                    timestamp,
+                    name,
+                    type,
+                    url,
+                    iconUrl
+                })
+            });
+
             _this.mainWindowSender.send('authenticated', true);
             _this.mainWindowSender.send('findRecentJobListCallback', items);
         } catch (e) {
@@ -57,7 +79,7 @@ class JiraClient extends BaseClientComponent {
                     summary,
                     projectName,
                     iconUrl
-                })
+                });
             });
             _this.mainWindowSender.send('findAssignToMeListCallback', items);
         } catch (e) {
@@ -76,7 +98,6 @@ class JiraClient extends BaseClientComponent {
             let items = [];
             if (response.data.length) {
                 response.data[0].items.map(item => {
-                    console.log(item);
                     const id = item.id;
                     const title = item.title;
                     const metadata = item.metadata;
@@ -88,8 +109,6 @@ class JiraClient extends BaseClientComponent {
                     });
                 });
             }
-            /*console.log('____ findRecentProjectList');
-            console.log(items);*/
             _this.mainWindowSender.send('findRecentProjectListCallback', items);
         } catch (e) {
             ShareUtil.printAxiosError(e);

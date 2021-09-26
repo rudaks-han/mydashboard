@@ -85,7 +85,7 @@ const TeamBook = () => {
         rowData.map(row => {
             const index = row[0].cell._row;
             const date = row[0].cell._rawData.formattedValue; // 신청일
-            const month = date.substring(0, 7); // 신청월
+            const month = date ? date.substring(0, 7): date; // 신청월
             const username = row[1].cell._rawData.formattedValue; // 신청자
             const bookName = row[3].cell._rawData.formattedValue; // 도서명
             const link = row[7].cell._rawData.formattedValue; // 링크*/

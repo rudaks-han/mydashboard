@@ -1,5 +1,5 @@
 import React from 'react';
-import { List } from 'semantic-ui-react';
+import {Image, List} from 'semantic-ui-react';
 import UiShare  from '../../UiShare';
 
 const RecentJobList = props => {
@@ -7,12 +7,11 @@ const RecentJobList = props => {
         return UiShare.displayListLoading();
     } else {
         return props.list.map(item => {
-            const issueKey = item.object.extension.issueKey;
-            const name = item.object.name;
-            const containerName = item.object.containers[1].name;
+            const { id, timestamp, issueKey, containerName, name, type, url, iconUrl } = item;
 
             return <List.Item key={issueKey}>
-                <List.Content>
+                <Image avatar src={iconUrl} />
+                <List.Content className='image_content'>
                     <List.Header>
                         <a href={`https://enomix.atlassian.net/browse/${issueKey}`} rel="noreferrer" target="_blank">{name}</a>
                     </List.Header>

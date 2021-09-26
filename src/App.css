@@ -180,6 +180,18 @@ body ::-webkit-scrollbar {
   display:block !important;;
 }
 
+.list .item {
+  position: relative;
+}
+.list .item img.avatar {
+  position: absolute;
+  left: 0;
+}
+
+.list .item .image_content {
+  padding-left: 35px !important;
+}
+
 
 /*.main-content .component {
   //min-width: 420px;

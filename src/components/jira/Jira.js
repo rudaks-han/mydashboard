@@ -50,6 +50,7 @@ const Jira = () => {
     }
 
     const findAssignToMeList = () => {
+        setAssignToMeList(null);
         ipcRenderer.send('jira.findAssignToMeList');
         ipcRenderer.removeAllListeners('jira.findAssignToMeListCallback');
         ipcRenderer.on('jira.findAssignToMeListCallback', async (e, data) => {
@@ -58,6 +59,7 @@ const Jira = () => {
     }
 
     const findRecentProjectList = () => {
+        setRecentProjectList(null);
         ipcRenderer.send('jira.findRecentProjectList');
         ipcRenderer.removeAllListeners('jira.findRecentProjectListCallback');
         ipcRenderer.on('jira.findRecentProjectListCallback', async (e, data) => {
