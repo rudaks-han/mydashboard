@@ -70,7 +70,7 @@ const SettingModal = props => {
                     <Form.Field>
                         <label>출근 시간 체크 알림 (출근 시간: {props.userInfo.workStartTime})</label>
                         <div role="listbox" className='ui active visible dropdown'>
-                            <Checkbox label='사용' checked={props.useAlarmClock.clockIn} onChange={onCheckUseClockInTime} />,
+                            <Checkbox label='사용' checked={props.useAlarmClock.clockIn} onChange={onCheckUseClockInTime} />
                             &nbsp;
                             <DropdownTime
                                 from={1}
