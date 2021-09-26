@@ -5,9 +5,6 @@ import UiShare from '../../UiShare';
 const BookList = props => {
 
     const displayListItem = () => {
-
-        console.log('props.bookList')
-        console.log(props.list)
         if (props.list == null) {
             return UiShare.displayListLoading();
         } else {

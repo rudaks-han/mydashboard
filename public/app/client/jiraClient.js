@@ -11,12 +11,14 @@ class JiraClient extends BaseClientComponent {
     }
 
     bindIpcMainListener() {
-        this.ipcMainListener.on('findList', this.findList.bind(this));
+        this.ipcMainListener.on('findRecentJobList', this.findRecentJobList.bind(this));
+        this.ipcMainListener.on('findAssignToMeList', this.findAssignToMeList.bind(this));
+        this.ipcMainListener.on('findRecentProjectList', this.findRecentProjectList.bind(this));
         this.ipcMainListener.on('openLoginPage', this.openLoginPage.bind(this));
         this.ipcMainListener.on('logout', this.openLogoutPage.bind(this));
     }
 
-    async findList() {
+    async findRecentJobList() {
         const _this = this;
         const count = 10;
         const data = {"operationName":"jira_NavigationActivity","query":"\nfragment NavigationActivityItem on ActivitiesItem {\n  id\n  timestamp\n  object {\n    id\n    name\n    localResourceId\n    type\n    url\n    iconUrl\n    containers {\n      name\n      type\n    }\n    extension {\n      ... on ActivitiesJiraIssue {\n        issueKey\n      }\n    }\n  }\n}\n\nquery jira_NavigationActivity($first: Int, $cloudID: ID!) {\n  activities {\n    myActivities {\n      workedOn(first: $first, filters: [{type: AND, arguments: {cloudIds: [$cloudID], products: [JIRA, JIRA_BUSINESS, JIRA_SOFTWARE, JIRA_OPS]}}]) {\n        nodes {\n          ...NavigationActivityItem\n        }\n      }\n    }\n  }\n}\n\n","variables":{"first":count,"cloudID":"431d1acd-ee73-4c56-b41f-d9cfeb440064"}};
@@ -25,11 +27,73 @@ class JiraClient extends BaseClientComponent {
             const response = await axios.post(`https://enomix.atlassian.net/gateway/api/graphql`, data, _this.getAxiosConfig(CookieConst.jira));
             const items = response.data.data.activities.myActivities.workedOn.nodes;
             _this.mainWindowSender.send('authenticated', true);
-            _this.mainWindowSender.send('findListCallback', items);
+            _this.mainWindowSender.send('findRecentJobListCallback', items);
         } catch (e) {
             ShareUtil.printAxiosError(e);
             _this.mainWindowSender.send('authenticated', false);
-            _this.mainWindowSender.send('findListCallback', []);
+            _this.mainWindowSender.send('findRecentJobListCallback', []);
+        }
+    }
+
+    async findAssignToMeList() {
+        const _this = this;
+        const count = 10;
+        const data = {"operationName":"navigationAssignedIssuesQuery","query":"query navigationAssignedIssuesQuery($first: Int!, $jql: String, $useIssueService: Boolean!) {\n    issues(first: $first, jql: $jql, useIssueService: $useIssueService) {\n      edges {\n        node {\n          issueId\n          issuekey {\n            stringValue\n          }\n          summary {\n            textValue\n          }\n          project {\n            id\n            name\n          }\n          status {\n            statusCategoryId\n            name\n          }\n          issuetype {\n            id\n            name\n            iconUrl\n          }\n        }\n      }\n      totalCount\n    }\n  }","variables":{"first":20,"jql":"assignee = currentUser() AND statusCategory != 3 ORDER BY statusCategory DESC, updatedDate DESC","useIssueService":true}};
+
+        try {
+            const response = await axios.post(`https://enomix.atlassian.net/rest/gira/1/`, data, _this.getAxiosConfig(CookieConst.jira));
+            let items = [];
+            response.data.data.issues.edges.map(edge => {
+                const node = edge.node;
+                const issueId = node.issueId;
+                const issueKey = node.issuekey.stringValue;
+                const summary = node.summary.textValue;
+                const projectName = node.project.name;
+                const iconUrl = node.issuetype.iconUrl;
+
+                items.push({
+                    issueId,
+                    issueKey,
+                    summary,
+                    projectName,
+                    iconUrl
+                })
+            });
+            _this.mainWindowSender.send('findAssignToMeListCallback', items);
+        } catch (e) {
+            ShareUtil.printAxiosError(e);
+            _this.mainWindowSender.send('findAssignToMeListCallback', []);
+        }
+    }
+
+    async findRecentProjectList() {
+        const _this = this;
+        const count = 10;
+
+        try {
+            const response = await axios.get(`https://enomix.atlassian.net/rest/internal/2/productsearch/search?counts=projects%3D5&type=projects`, _this.getAxiosConfig(CookieConst.jira));
+            //const items = response.data.data.activities.myActivities.workedOn.nodes;
+            let items = [];
+            if (response.data.length) {
+                response.data[0].items.map(item => {
+                    console.log(item);
+                    const id = item.id;
+                    const title = item.title;
+                    const metadata = item.metadata;
+                    const avatarUrl = item.avatarUrl;
+                    const url = item.url;
+
+                    items.push({
+                        id, title, metadata, avatarUrl, url
+                    });
+                });
+            }
+            /*console.log('____ findRecentProjectList');
+            console.log(items);*/
+            _this.mainWindowSender.send('findRecentProjectListCallback', items);
+        } catch (e) {
+            ShareUtil.printAxiosError(e);
+            _this.mainWindowSender.send('findRecentProjectListCallback', []);
         }
     }
 
@@ -53,7 +117,7 @@ class JiraClient extends BaseClientComponent {
                 this.getCookieAndStore('id.atlassian.com', CookieConst.jira, () => {
                     loginWindow.close();
                     loginWindow = null;
-                    _this.findList();
+                    _this.findRecentJobList();
                 });
             }
         })
@@ -80,7 +144,7 @@ class JiraClient extends BaseClientComponent {
                         loginWindow.close();
                         loginWindow = null;
 
-                        _this.findList();
+                        _this.findRecentJobList();
                     }
                 });
 

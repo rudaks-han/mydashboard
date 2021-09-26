@@ -11,12 +11,16 @@ import TitleLayer from "../share/TitleLayer";
 const { ipcRenderer } = window.require('electron');
 
 const Jira = () => {
-    const [list, setList] = useState(null);
+    const [recentJobList, setRecentJobList] = useState(null);
+    const [assignToMeList, setAssignToMeList] = useState(null);
+    const [recentProjectList, setRecentProjectList] = useState(null);
     const [authenticated, setAuthenticated] = useState(false);
     const tickTime = useContext(TimerContext);
 
     useEffect(() => {
-        findList();
+        findRecentJobList();
+        findAssignToMeList();
+        findRecentProjectList();
     }, []);
 
     useEffect(() => {
@@ -25,16 +29,18 @@ const Jira = () => {
 
         const { minute } = UiShare.getDateTimeFormat(tickTime);
         if (minute === 0) {
-            findList();
+            findRecentJobList();
+            findAssignToMeList();
+            findRecentProjectList();
         }
     }, [tickTime, authenticated]);
 
-    const findList = () => {
-        setList(null);
-        ipcRenderer.send('jira.findList');
-        ipcRenderer.removeAllListeners('jira.findListCallback');
-        ipcRenderer.on('jira.findListCallback', async (e, data) => {
-            setList(data);
+    const findRecentJobList = () => {
+        setRecentJobList(null);
+        ipcRenderer.send('jira.findRecentJobList');
+        ipcRenderer.removeAllListeners('jira.findRecentJobListCallback');
+        ipcRenderer.on('jira.findRecentJobListCallback', async (e, data) => {
+            setRecentJobList(data);
         });
 
         ipcRenderer.removeAllListeners('jira.authenticated');
@@ -43,8 +49,26 @@ const Jira = () => {
         });
     }
 
+    const findAssignToMeList = () => {
+        ipcRenderer.send('jira.findAssignToMeList');
+        ipcRenderer.removeAllListeners('jira.findAssignToMeListCallback');
+        ipcRenderer.on('jira.findAssignToMeListCallback', async (e, data) => {
+            setAssignToMeList(data);
+        });
+    }
+
+    const findRecentProjectList = () => {
+        ipcRenderer.send('jira.findRecentProjectList');
+        ipcRenderer.removeAllListeners('jira.findRecentProjectListCallback');
+        ipcRenderer.on('jira.findRecentProjectListCallback', async (e, data) => {
+            setRecentProjectList(data);
+        });
+    }
+
     const onClickRefresh = () => {
-        findList();
+        findRecentJobList();
+        findAssignToMeList();
+        findRecentProjectList();
     }
 
     const onClickLogin = () => {
@@ -64,7 +88,9 @@ const Jira = () => {
                 </Card.Header>
                 <ContentLayer
                     authenticated={authenticated}
-                    list={list}
+                    recentJobList={recentJobList}
+                    assignToMeList={assignToMeList}
+                    recentProjectList={recentProjectList}
                     title="Jira"
                     icon={jiraIcon}
                     onClickLogin={onClickLogin}
