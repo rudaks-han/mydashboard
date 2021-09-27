@@ -47,8 +47,8 @@ class DaouofficeClient extends BaseClientComponent {
         })
 
         loginWindow.loadURL('https://spectra.daouoffice.com/login');
-        loginWindow.webContents.on('did-finish-load', e => {
-            const url = e.sender.getURL();
+        loginWindow.webContents.on('did-finish-load', event => {
+            const url = event.sender.getURL();
             if (url.endsWith('login')) {
                 this.resetStore(CookieConst.daouoffice);
             } else {
@@ -113,8 +113,8 @@ class DaouofficeClient extends BaseClientComponent {
 
         try {
             _this.mainWindowSender.send('findUserInfoCallback', data);
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
+        } catch (error) {
+            ShareUtil.printAxiosError(error);
         }
     }
 
@@ -126,7 +126,7 @@ class DaouofficeClient extends BaseClientComponent {
             const response = await axios.get(`https://spectra.daouoffice.com/api/board/2302/posts?offset=${count}&page=0`, _this.axiosConfig());
             _this.mainWindowSender.send('authenticated', true);
             _this.mainWindowSender.send('findListCallback', response.data.data);
-        } catch (e) {
+        } catch (error) {
             _this.mainWindowSender.send('authenticated', false);
             _this.mainWindowSender.send('findListCallback', []);
         }
@@ -138,8 +138,8 @@ class DaouofficeClient extends BaseClientComponent {
         try {
             const response = await axios.get(`https://spectra.daouoffice.com/api/home/noti/new`, _this.axiosConfig());
             _this.mainWindowSender.send('findNotificationCountCallback', response.data);
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
+        } catch (error) {
+            ShareUtil.printAxiosError(error);
         }
     }
 
@@ -184,8 +184,8 @@ class DaouofficeClient extends BaseClientComponent {
                 holidayList,
                 dayOffList
             });
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
+        } catch (error) {
+            ShareUtil.printAxiosError(error);
         }
     }
 
@@ -210,8 +210,8 @@ class DaouofficeClient extends BaseClientComponent {
         try {
             const response = await axios.get(`https://spectra.daouoffice.com/api/calendar/event?timeMin=${currDate}T00%3A00%3A00.000%2B09%3A00&timeMax=${toDate}T23%3A59%3A59.999%2B09%3A00&includingAttendees=true&calendarIds%5B%5D=8452&calendarIds%5B%5D=8987&calendarIds%5B%5D=11324&calendarIds%5B%5D=11326`, _this.axiosConfig());
             _this.mainWindowSender.send('findDayoffListCallback', response.data.data);
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
+        } catch (error) {
+            ShareUtil.printAxiosError(error);
         }
     }
 
@@ -223,8 +223,8 @@ class DaouofficeClient extends BaseClientComponent {
         try {
             const response = await axios.get(`https://spectra.daouoffice.com/api/ehr/vacation/stat?baseDate=${currDate}`, _this.axiosConfig());
             _this.mainWindowSender.send('findMyDayoffListCallback', response.data.data);
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
+        } catch (error) {
+            ShareUtil.printAxiosError(error);
         }
     }
 
@@ -253,7 +253,7 @@ class DaouofficeClient extends BaseClientComponent {
         };
     }
 
-    setUseAlarmClock(e, data) {
+    setUseAlarmClock(error, data) {
         this.getStore().set(this.useAlarmClock, data);
     }
 
@@ -264,9 +264,9 @@ class DaouofficeClient extends BaseClientComponent {
         try {
             const response = await axios.post(`https://spectra.daouoffice.com/api/ehr/timeline/status/clockIn?userId=${this.getUserId()}&baseDate=${ShareUtil.getCurrDate()}`, data, _this.axiosConfig());
             _this.mainWindowSender.send('clockInCallback', response.data);
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
-            _this.mainWindowSender.send('clockInCallback', e.response.data);
+        } catch (error) {
+            ShareUtil.printAxiosError(error);
+            _this.mainWindowSender.send('clockInCallback', error.response.data);
         }
     }
 
@@ -277,7 +277,7 @@ class DaouofficeClient extends BaseClientComponent {
         try {
             const response = await axios.post(`https://spectra.daouoffice.com/api/ehr/timeline/status/clockOut?userId=${this.getUserId()}&baseDate=${ShareUtil.getCurrDate()}`, data, _this.axiosConfig());
             _this.mainWindowSender.send('clockOutCallback', response.data);
-        } catch (e) {
+        } catch (error) {
             ShareUtil.printAxiosError(error);
             _this.mainWindowSender.send('clockOutCallback', error.response.data);
         }

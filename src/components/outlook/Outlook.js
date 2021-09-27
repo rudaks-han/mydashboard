@@ -32,13 +32,13 @@ const Outlook = () => {
         setList(null);
         ipcRenderer.send('outlook.findList');
         ipcRenderer.removeAllListeners('outlook.findListCallback');
-        ipcRenderer.on('outlook.findListCallback', async (e, data) => {
+        ipcRenderer.on('outlook.findListCallback', async (event, data) => {
             setList(data);
             setUnreadCount(data.unreadCount);
         });
 
         ipcRenderer.removeAllListeners('outlook.authenticated');
-        ipcRenderer.on('outlook.authenticated', async (e, data) => {
+        ipcRenderer.on('outlook.authenticated', async (event, data) => {
             setAuthenticated(data);
         });
     }

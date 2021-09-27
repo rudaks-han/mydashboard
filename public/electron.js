@@ -41,10 +41,10 @@ app.whenReady().then(() => {
         mainWindow.load('index.html', true);
     }
 
-    mainWindow.webContents.on('did-finish-load', e => {
-        const url = e.sender.getURL();
+    mainWindow.webContents.on('did-finish-load', event => {
+        const url = event.sender.getURL();
         logger.info('[mainWindow] did-finish-load: ' + url);
-        logger.info('isAuthenticated(): ' + loginClient.isAuthenticated());
+        logger.info('loginClient.isAuthenticated(): ' + loginClient.isAuthenticated());
         logger.info('url: ' + url);
 
         if (!loginClient.isAuthenticated()) {
@@ -61,6 +61,8 @@ app.whenReady().then(() => {
                     mainWindow.load('index.html', true);
                 }
             }
+        } else {
+            logger.info('else authenticated...');
         }
     });
 
@@ -97,7 +99,7 @@ ipcMain.on(`findComponentSort`, () => {
     mainWindow.webContents.send('findComponentSortCallback', components);
 });
 
-ipcMain.on(`findStore`, (e, data) => {
+ipcMain.on(`findStore`, (event, data) => {
     if (!data || !data.key) {
         logger.warn('findStore: key not exists');
         return;
@@ -108,7 +110,7 @@ ipcMain.on(`findStore`, (e, data) => {
     mainWindow.webContents.send('findStoreCallback', response);
 });
 
-ipcMain.on(`saveStore`, (e, data) => {
+ipcMain.on(`saveStore`, (event, data) => {
     if (!data || !data.key) {
         logger.warn('findStore: key not exists');
         return;

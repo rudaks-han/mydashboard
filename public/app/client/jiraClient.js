@@ -50,8 +50,8 @@ class JiraClient extends BaseClientComponent {
 
             _this.mainWindowSender.send('authenticated', true);
             _this.mainWindowSender.send('findRecentJobListCallback', items);
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
+        } catch (error) {
+            ShareUtil.printAxiosError(error);
             _this.mainWindowSender.send('authenticated', false);
             _this.mainWindowSender.send('findRecentJobListCallback', []);
         }
@@ -82,8 +82,8 @@ class JiraClient extends BaseClientComponent {
                 });
             });
             _this.mainWindowSender.send('findAssignToMeListCallback', items);
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
+        } catch (error) {
+            ShareUtil.printAxiosError(error);
             _this.mainWindowSender.send('findAssignToMeListCallback', []);
         }
     }
@@ -110,8 +110,8 @@ class JiraClient extends BaseClientComponent {
                 });
             }
             _this.mainWindowSender.send('findRecentProjectListCallback', items);
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
+        } catch (error) {
+            ShareUtil.printAxiosError(error);
             _this.mainWindowSender.send('findRecentProjectListCallback', []);
         }
     }
@@ -130,8 +130,8 @@ class JiraClient extends BaseClientComponent {
         })
 
         loginWindow.loadURL('https://id.atlassian.com/login');
-        loginWindow.webContents.on('did-finish-load', e => {
-            const url = e.sender.getURL();
+        loginWindow.webContents.on('did-finish-load', event => {
+            const url = event.sender.getURL();
             if (url.startsWith('https://id.atlassian.com/login/authorize')) {
                 this.getCookieAndStore('id.atlassian.com', CookieConst.jira, () => {
                     loginWindow.close();
@@ -156,7 +156,7 @@ class JiraClient extends BaseClientComponent {
             height: 600
         })
         loginWindow.loadURL('https://id.atlassian.com/logout?continue=https%3A%2F%2Fenomix.atlassian.net');
-        loginWindow.webContents.on('did-finish-load', e => {
+        loginWindow.webContents.on('did-finish-load', event => {
             session.defaultSession.cookies.get({'name': 'cloud.session.token', 'domain': 'id.atlassian.com'})
                 .then(cookies => {
                     if (cookies.length === 0) {

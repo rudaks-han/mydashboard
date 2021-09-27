@@ -85,8 +85,8 @@ class ShareUtil {
         return year + '-' + month + '-' + day;
     }
 
-    static printAxiosError(e) {
-        const response = e.response;
+    static printAxiosError(error) {
+        const response = error ? error.response : '';
         if (response) {
             const errorData = {
                 status: response.status,
@@ -100,7 +100,7 @@ class ShareUtil {
             }
             ShareUtil.printlnMap('[axios error]', errorData);
         } else {
-            logger.error('response is undefined', e);
+            logger.error('response is undefined', error);
             //console.error(e);
         }
     }

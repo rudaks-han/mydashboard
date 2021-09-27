@@ -1,6 +1,6 @@
 import React from 'react';
 import {Label} from 'semantic-ui-react';
-import BuildStatusList from "./BuilStatusList";
+import BuildStatusList from "./BuildStatusList";
 import LoginLayer from "../share/LoginLayer";
 
 const ContentLayer = props => {

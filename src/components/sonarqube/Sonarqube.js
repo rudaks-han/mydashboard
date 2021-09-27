@@ -42,7 +42,7 @@ const Sonarqube = () => {
         setList(null);
         ipcRenderer.send('sonarqube.findList');
         ipcRenderer.removeAllListeners('sonarqube.findListCallback');
-        ipcRenderer.on('sonarqube.findListCallback', async (e, data) => {
+        ipcRenderer.on('sonarqube.findListCallback', async (event, data) => {
             setList(data);
             setLastUpdated(UiShare.getCurrDate() + " " + UiShare.getCurrTime());
         });
@@ -51,7 +51,7 @@ const Sonarqube = () => {
     const findModuleList = () => {
         ipcRenderer.send('sonarqube.findModuleList');
         ipcRenderer.removeAllListeners('sonarqube.findModuleList');
-        ipcRenderer.on('sonarqube.findModuleListCallback', (e, data) => {
+        ipcRenderer.on('sonarqube.findModuleListCallback', (event, data) => {
             const components = data.data.components;
             const availableModules = data.availableModules;
             const filteredComponents = filterComponents(components);
@@ -75,13 +75,13 @@ const Sonarqube = () => {
         });
     }
 
-    const onChangeUseAlarm = (e, data) => {
+    const onChangeUseAlarm = (event, data) => {
         const { checked } = data;
         setUseAlarmOnError(checked);
         ipcRenderer.send('sonarqube.useAlarmOnError', checked);
     }
 
-    const onChangeModuleChange = (e, data) => {
+    const onChangeModuleChange = (event, data) => {
         const name = data.name;
         const key = data.value; // key
         const checked = data.checked;
@@ -101,7 +101,7 @@ const Sonarqube = () => {
 
     const findUseAlarmOnError = () => {
         ipcRenderer.send('sonarqube.findUseAlarmOnError');
-        ipcRenderer.on('sonarqube.findUseAlarmOnErrorCallback', (e, data) => {
+        ipcRenderer.on('sonarqube.findUseAlarmOnErrorCallback', (event, data) => {
             setUseAlarmOnError(data);
             ipcRenderer.removeAllListeners('sonarqube.findUseAlarmOnErrorCallback');
         });

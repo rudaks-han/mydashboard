@@ -47,7 +47,7 @@ const Jenkins = () => {
 
     const findUseAlarmOnError = () => {
         ipcRenderer.send('jenkins.findUseAlarmOnError');
-        ipcRenderer.on('jenkins.findUseAlarmOnErrorCallback', (e, data) => {
+        ipcRenderer.on('jenkins.findUseAlarmOnErrorCallback', (event, data) => {
             setUseAlarmOnError(data);
             ipcRenderer.removeAllListeners('jenkins.findUseAlarmOnErrorCallback');
         });
@@ -56,7 +56,7 @@ const Jenkins = () => {
     const findModuleList = () => {
         ipcRenderer.send('jenkins.findModuleList');
         ipcRenderer.removeAllListeners('jenkins.findModuleListCallback');
-        ipcRenderer.on('jenkins.findModuleListCallback', (e, data) => {
+        ipcRenderer.on('jenkins.findModuleListCallback', (event, data) => {
             const jobs = data.data;
             const availableModules = data.availableModules;
             const filteredJobs = filterJobs(jobs);
@@ -84,13 +84,13 @@ const Jenkins = () => {
         setList(null);
         ipcRenderer.send('jenkins.findList');
         ipcRenderer.removeAllListeners('jenkins.findListCallback');
-        ipcRenderer.on('jenkins.findListCallback', (e, data) => {
+        ipcRenderer.on('jenkins.findListCallback', (event, data) => {
             setList(data);
             setLastUpdated(UiShare.getCurrDate() + " " + UiShare.getCurrTime());
         });
 
         ipcRenderer.removeAllListeners('jenkins.authenticated');
-        ipcRenderer.on('jenkins.authenticated', (e, data) => {
+        ipcRenderer.on('jenkins.authenticated', (event, data) => {
             setAuthenticated(data);
         });
     }
@@ -99,7 +99,7 @@ const Jenkins = () => {
         buildErrorMessage = msg;
     }
 
-    const onClickSetting = e => {
+    const onClickSetting = event => {
         if (clickedSetting) {
             setClickSetting(false);
         } else {
@@ -107,13 +107,13 @@ const Jenkins = () => {
         }
     }
 
-    const onChangeUseAlarm = (e, data) => {
+    const onChangeUseAlarm = (event, data) => {
         const { checked } = data;
         setUseAlarmOnError(checked);
         ipcRenderer.send('jenkins.useAlarmOnError', checked);
     }
 
-    const onChangeModuleChange = (e, data) => {
+    const onChangeModuleChange = (event, data) => {
         const { name, value, checked } = data; // value: branch
 
         if (checked) {

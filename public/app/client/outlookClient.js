@@ -30,8 +30,8 @@ class OutlookClient extends BaseClientComponent {
             const conversations = response.data.findConversation.Body.Conversations;
             _this.mainWindowSender.send('authenticated', true);
             _this.mainWindowSender.send('findListCallback', { conversations, unreadCount });
-        } catch (e) {
-            ShareUtil.printAxiosError(e);
+        } catch (error) {
+            ShareUtil.printAxiosError(error);
             _this.mainWindowSender.send('authenticated', false);
             _this.mainWindowSender.send('findListCallback', { conversations: [], unreadCount: 0 });
         }
@@ -49,8 +49,8 @@ class OutlookClient extends BaseClientComponent {
         })
 
         loginWindow.loadURL('https://mail.spectra.co.kr/owa/auth/logon.aspx');
-        loginWindow.webContents.on('did-finish-load', e => {
-            const url = e.sender.getURL();
+        loginWindow.webContents.on('did-finish-load', event => {
+            const url = event.sender.getURL();
             if (url.endsWith('/owa/')) {
                 this.getCookieAndStore('mail.spectra.co.kr', CookieConst.outlook, () => {
                     loginWindow.close();

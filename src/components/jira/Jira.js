@@ -39,12 +39,12 @@ const Jira = () => {
         setRecentJobList(null);
         ipcRenderer.send('jira.findRecentJobList');
         ipcRenderer.removeAllListeners('jira.findRecentJobListCallback');
-        ipcRenderer.on('jira.findRecentJobListCallback', async (e, data) => {
+        ipcRenderer.on('jira.findRecentJobListCallback', async (event, data) => {
             setRecentJobList(data);
         });
 
         ipcRenderer.removeAllListeners('jira.authenticated');
-        ipcRenderer.on('jira.authenticated', async (e, data) => {
+        ipcRenderer.on('jira.authenticated', async (event, data) => {
             setAuthenticated(data);
         });
     }
@@ -53,7 +53,7 @@ const Jira = () => {
         setAssignToMeList(null);
         ipcRenderer.send('jira.findAssignToMeList');
         ipcRenderer.removeAllListeners('jira.findAssignToMeListCallback');
-        ipcRenderer.on('jira.findAssignToMeListCallback', async (e, data) => {
+        ipcRenderer.on('jira.findAssignToMeListCallback', async (event, data) => {
             setAssignToMeList(data);
         });
     }
@@ -62,7 +62,7 @@ const Jira = () => {
         setRecentProjectList(null);
         ipcRenderer.send('jira.findRecentProjectList');
         ipcRenderer.removeAllListeners('jira.findRecentProjectListCallback');
-        ipcRenderer.on('jira.findRecentProjectListCallback', async (e, data) => {
+        ipcRenderer.on('jira.findRecentProjectListCallback', async (event, data) => {
             setRecentProjectList(data);
         });
     }

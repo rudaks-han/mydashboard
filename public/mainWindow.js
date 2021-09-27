@@ -36,15 +36,18 @@ class MainWindow extends BrowserWindow {
 
         //this.maximize();
         //this.webContents.openDevTools();
-        this.webContents.on('new-window', function(e, url) {
-            e.preventDefault();
+        this.webContents.on('new-window', function(event, url) {
+            event.preventDefault();
             shell.openExternal(url);
         });
     }
 
     load(url, authenticated = false) {
-        const envMode = process.env.mode;
-        logger.debug('------------- mainWindow#load -----------------');
+        let envMode = process.env.mode;
+        if (!envMode) {
+            envMode = 'production';
+        }
+        logger.info('------------- mainWindow#load -----------------');
         logger.info('# __dirname : ' + __dirname);
         logger.info('# url : ' + url);
         logger.info('# authenticated : ' + authenticated)
@@ -55,18 +58,16 @@ class MainWindow extends BrowserWindow {
         }
 
         if (url.startsWith('http')) {
-            logger.info('# loadURL : ' + url);
             this.loadURL(url);
         } else {
             if (envMode === 'dev') {
-                const path = 'http://localhost:3000';
-                logger.info('# loadURL : ' + path);
-                this.loadURL(path);
+                const url = 'http://localhost:3000';
+                logger.info('# loadURL : ' + url);
+                this.loadURL(url);
             } else {
-                const path = `${path.join(__dirname, '../build/index.html')}`;
-                logger.info('# loadFile : ' + path);
-                logger.info('# fileExists : ' + fs.exists(path));
-                this.loadFile(path);
+                const filePath = path.join(__dirname, '../build/index.html');
+                logger.info('# filePath : ' + filePath);
+                this.loadFile(filePath);
             }
         }
 
@@ -77,8 +78,8 @@ class MainWindow extends BrowserWindow {
         this.tray = new Tray(`${__dirname}/trayTemplate.png`)
         this.tray.setToolTip('Tray details')
 
-        this.tray.on('click', e => {
-            if (e.shiftKey) {
+        this.tray.on('click', event => {
+            if (event.shiftKey) {
                 app.quit()
             } else {
                 this.isVisible() ? this.hide() : this.show()

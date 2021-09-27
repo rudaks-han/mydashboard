@@ -31,7 +31,7 @@ const VictoryPortal = () => {
         setList(null);
         ipcRenderer.send('victoryPortal.findList');
         ipcRenderer.removeAllListeners('victoryPortal.findListCallback');
-        ipcRenderer.on('victoryPortal.findListCallback', async (e, data) => {
+        ipcRenderer.on('victoryPortal.findListCallback', async (event, data) => {
             setList(data);
         });
     }

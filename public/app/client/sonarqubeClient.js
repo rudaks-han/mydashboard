@@ -44,7 +44,7 @@ class SonarqubeClient extends BaseClientComponent {
             });
     }
 
-    addAvailableModule(e, data) {
+    addAvailableModule(event, data) {
         const {name, key} = data;
         const availableModules = this.getAvailableModules();
 
@@ -61,7 +61,7 @@ class SonarqubeClient extends BaseClientComponent {
         }
     }
 
-    removeAvailableModule(e, data) {
+    removeAvailableModule(event, data) {
         const {name, key} = data;
         const availableModules = this.getAvailableModules();
 
@@ -78,7 +78,7 @@ class SonarqubeClient extends BaseClientComponent {
         this.getStore().set(this.availableModuleStoreId, data);
     }
 
-    useAlarmOnError(e, data) {
+    useAlarmOnError(event, data) {
         this.getStore().set(this.useAlarmOnErrorStoreId, data);
     }
 

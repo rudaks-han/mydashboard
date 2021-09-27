@@ -253,19 +253,19 @@ const Daouoffice = () => {
         setList(null);
         ipcRenderer.send('daouoffice.findList');
         ipcRenderer.removeAllListeners('daouoffice.findListCallback');
-        ipcRenderer.on('daouoffice.findListCallback', async (e, data) => {
+        ipcRenderer.on('daouoffice.findListCallback', async (event, data) => {
             setList(data);
         });
 
         ipcRenderer.removeAllListeners('daouoffice.authenticated');
-        ipcRenderer.on('daouoffice.authenticated', async (e, data) => {
+        ipcRenderer.on('daouoffice.authenticated', async (event, data) => {
             setAuthenticated(data);
         });
     }
 
     const findUserInfo = () => {
         ipcRenderer.send('daouoffice.findUserInfo');
-        ipcRenderer.on('daouoffice.findUserInfoCallback', async (e, data) => {
+        ipcRenderer.on('daouoffice.findUserInfoCallback', async (event, data) => {
             const clockedIn = data.clockInTime ? true: false;
             const clockedOut = data.clockOutTime ? true: false;
 
@@ -282,7 +282,7 @@ const Daouoffice = () => {
     const findCalendar = () => {
         ipcRenderer.send('daouoffice.findCalendar');
         ipcRenderer.removeAllListeners('daouoffice.findCalendarCallback');
-        ipcRenderer.on('daouoffice.findCalendarCallback', async (e, data) => {
+        ipcRenderer.on('daouoffice.findCalendarCallback', async (event, data) => {
             setCalendarList(data);
         });
 
@@ -290,7 +290,7 @@ const Daouoffice = () => {
 
     const findNotificationCount = () => {
         ipcRenderer.send('daouoffice.findNotificationCount');
-        ipcRenderer.on('daouoffice.findNotificationCountCallback', async (e, data) => {
+        ipcRenderer.on('daouoffice.findNotificationCountCallback', async (event, data) => {
             setNotificationCount(data.data);
 
             ipcRenderer.removeAllListeners('daouoffice.findNotificationCountCallback');
@@ -299,7 +299,7 @@ const Daouoffice = () => {
 
     const findStore = () => {
         ipcRenderer.send('daouoffice.findStore');
-        ipcRenderer.on('daouoffice.findStoreCallback', async (e, data) => {
+        ipcRenderer.on('daouoffice.findStoreCallback', async (event, data) => {
             setUsername(data.username);
 
             const clockIn = data.useAlarmClock.clockIn || false;
@@ -319,7 +319,7 @@ const Daouoffice = () => {
     const findDayoffList = () => {
         setDayoffList(null);
         ipcRenderer.send('daouoffice.findDayoffList');
-        ipcRenderer.on('daouoffice.findDayoffListCallback', async (e, data) => {
+        ipcRenderer.on('daouoffice.findDayoffListCallback', async (event, data) => {
             const dayoffList = data.filter(item => item.type == 'company').map(item => {
                 const { id, startTime, endTime, summary, type } = item;
                 const startTimeDate = startTime.substring(0, 10);
@@ -338,7 +338,7 @@ const Daouoffice = () => {
     const findMyDayoffList = () => {
         setMyDayoffList(null);
         ipcRenderer.send('daouoffice.findMyDayoffList');
-        ipcRenderer.on('daouoffice.findMyDayoffListCallback', async (e, data) => {
+        ipcRenderer.on('daouoffice.findMyDayoffListCallback', async (event, data) => {
             setMyDayoffList(data);
             ipcRenderer.removeAllListeners('daouoffice.findMyDayoffListCallback');
         });
@@ -355,7 +355,7 @@ const Daouoffice = () => {
 
     const onClockIn = () => {
         ipcRenderer.send('daouoffice.clockIn');
-        ipcRenderer.on('daouoffice.clockInCallback', async (e, data) => {
+        ipcRenderer.on('daouoffice.clockInCallback', async (event, data) => {
             const { code, message } = data;
             if (code === '200') {
                 UiShare.showNotification('출근이 등록되었습니다.');
@@ -380,7 +380,7 @@ const Daouoffice = () => {
 
     const onClockOut = () => {
         ipcRenderer.send('daouoffice.clockOut');
-        ipcRenderer.on('daouoffice.clockOutCallback', async (e, data) => {
+        ipcRenderer.on('daouoffice.clockOutCallback', async (event, data) => {
             const { code, message } = data;
             if (code === '200') {
                 UiShare.showNotification('퇴근이 등록되었습니다.');

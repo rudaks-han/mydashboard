@@ -23,8 +23,8 @@ const TeamBook = () => {
         try {
             await doc.useServiceAccountAuth(gsCredit);
             await doc.loadInfo();
-        } catch (e) {
-            console.error('auth_error', e);
+        } catch (error) {
+            console.error('auth_error', error);
         }
     }
 

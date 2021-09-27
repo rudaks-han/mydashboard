@@ -37,8 +37,8 @@ class JenkinsClient extends BaseClientComponent {
         })
 
         loginWindow.loadURL('http://211.63.24.41:8080/login');
-        loginWindow.webContents.on('did-finish-load', e => {
-            const url = e.sender.getURL();
+        loginWindow.webContents.on('did-finish-load', event => {
+            const url = event.sender.getURL();
             if (url === 'http://211.63.24.41:8080/') {
                 this.getCookieAndStore('211.63.24.41', CookieConst.jenkins, () => {
                     loginWindow.close();
@@ -51,7 +51,7 @@ class JenkinsClient extends BaseClientComponent {
         //loginWindow.webContents.openDevTools();
     }
 
-    logout(e) {
+    logout(event) {
         const _this = this;
         this.storeMap.set(CookieConst.jenkins, '');
 
@@ -147,7 +147,7 @@ class JenkinsClient extends BaseClientComponent {
         return `http://211.63.24.41:8080/job/${moduleName}/api/json`;
     }
 
-    addAvailableModule(e, data) {
+    addAvailableModule(event, data) {
         const name = data.name;
         const branch = data.value;
         const availableModules = this.getAvailableModules();
@@ -164,7 +164,7 @@ class JenkinsClient extends BaseClientComponent {
         }
     }
 
-    removeAvailableModule(e, data) {
+    removeAvailableModule(event, data) {
         const {name, branch} = data;
         const availableModules = this.getAvailableModules();
 
@@ -172,7 +172,7 @@ class JenkinsClient extends BaseClientComponent {
         this.setAvailableModules(newAvailableModules);
     }
 
-    useAlarmOnError(e, data) {
+    useAlarmOnError(event, data) {
         this.getStore().set(this.useAlarmOnErrorStoreId, data);
     }
 

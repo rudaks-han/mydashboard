@@ -16,7 +16,7 @@ const SettingModal = props => {
         }
     }
 
-    const onCheckUseClockInTime = (e, data) => {
+    const onCheckUseClockInTime = (event, data) => {
         const param = {
             ...getUseAlarmClock(),
             clockIn: data.checked
@@ -26,7 +26,7 @@ const SettingModal = props => {
         ipcRenderer.send('daouoffice.setUseAlarmClock', param);
     }
 
-    const onCheckUseClockOutTime = (e,data) => {
+    const onCheckUseClockOutTime = (event,data) => {
         const param = {
             ...getUseAlarmClock(),
             clockOut: data.checked
@@ -36,7 +36,7 @@ const SettingModal = props => {
         ipcRenderer.send('daouoffice.setUseAlarmClock', param);
     }
 
-    const onChangeClockInBeforeTime = (e, data) => {
+    const onChangeClockInBeforeTime = (event, data) => {
         const param = {
             ...getUseAlarmClock(),
             beforeTime: data.value
@@ -46,7 +46,7 @@ const SettingModal = props => {
         ipcRenderer.send('daouoffice.setUseAlarmClock', param);
     }
 
-    const onChangeClockOutAfterTime = (e, data) => {
+    const onChangeClockOutAfterTime = (event, data) => {
         const param = {
             ...getUseAlarmClock(),
             afterTime: data.value
