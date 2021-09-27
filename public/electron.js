@@ -45,6 +45,7 @@ app.whenReady().then(() => {
         const url = e.sender.getURL();
         logger.info('[mainWindow] did-finish-load: ' + url);
         logger.info('isAuthenticated(): ' + loginClient.isAuthenticated());
+        logger.info('url: ' + url);
 
         if (!loginClient.isAuthenticated()) {
             if (url.indexOf('https://spectra.daouoffice.com/app/home') > -1) {

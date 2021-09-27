@@ -8,7 +8,7 @@ module.exports = () => {
     logger.info('Checking for updates: ' + process.env.mode);
 
     if (process.env.mode !== 'dev') {
-        autoUpdater.checkForUpdates();
+        //autoUpdater.checkForUpdates();
     }
 
     autoUpdater.on('update-available', () => {
