@@ -3,7 +3,6 @@ const { BrowserWindow, shell, Menu, Tray } = electron;
 const windowStateKeeper = require('electron-window-state')
 const path = require('path');
 const logger = require('electron-log'); // /Users/macbookpro/Library/Logs/my-dashboard
-const fs = require('fs');
 
 let mainMenu = Menu.buildFromTemplate(require('./mainMenu'))
 
@@ -52,6 +51,7 @@ class MainWindow extends BrowserWindow {
         logger.info('# url : ' + url);
         logger.info('# authenticated : ' + authenticated)
         logger.info('# envMode : ' + envMode)
+        logger.info('# version : ' + process.env.npm_package_version)
         this.authenticated = authenticated;
         if (envMode === 'dev') {
             this.webContents.openDevTools();
@@ -75,8 +75,8 @@ class MainWindow extends BrowserWindow {
     }
 
     createTray() {
-        this.tray = new Tray(`${__dirname}/trayTemplate.png`)
-        this.tray.setToolTip('Tray details')
+        this.tray = new Tray(`${__dirname}/trayTemplate.png`);
+        this.tray.setToolTip('My Dashboard');
 
         this.tray.on('click', event => {
             if (event.shiftKey) {
@@ -90,7 +90,7 @@ class MainWindow extends BrowserWindow {
             {role: 'quit'}
         ]);
 
-        this.tray.setContextMenu(trayMenu)
+        this.tray.setContextMenu(trayMenu);
     }
 }
 

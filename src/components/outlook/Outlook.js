@@ -65,7 +65,7 @@ const Outlook = () => {
                 <Card.Header>
                     <div className="ui header">
                         <img src={outlookIcon} alt="" className="header-icon"/>
-                        outlook
+                        Outlook
                     </div>
                     <RightMenu
                         authenticated={authenticated}

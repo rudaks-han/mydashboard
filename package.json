@@ -3,7 +3,7 @@
   "author": "rudaks",
   "license": "rudaks",
   "main": "public/electron.js",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "private": true,
   "homepage": ".",
   "repository": "https://github.com/rudaks-han/mydashboard",
@@ -53,13 +53,14 @@
     "react:build": "react-scripts build",
     "icons": "./node_modules/.bin/electron-icon-builder --input=./icon.png --output=./build/static",
     "build": "npm run react:build && electron-builder -mw",
-    "release": "npm run react:build && electron-builder -mw --publish=always"
+    "release": "npm run react:build && electron-builder -mw -p always"
   },
   "build": {
     "appId": "kr.pe.rudaks.mydashboard",
     "copyright": "rudaks",
     "publish": {
-      "provider": "github"
+      "provider": "github",
+      "releaseType": "release"
     },
     "files": [
       "./build/**/*",
