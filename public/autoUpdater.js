@@ -4,7 +4,7 @@ const logger = require('electron-log');
 logger.transports.file.level = 'info';
 autoUpdater.autoDownload = false;
 
-module.exports = () => {
+module.exports = (app, mainWindow) => {
     logger.info('Checking for updates: ' + process.env.mode);
 
     if (process.env.mode !== 'dev') {
@@ -14,6 +14,7 @@ module.exports = () => {
     }
 
     autoUpdater.on('update-available', () => {
+        logger.info("update-available");
         dialog.showMessageBox({
             type: 'info',
             title: 'Update Available',
@@ -21,13 +22,16 @@ module.exports = () => {
             buttons: ['업데이트', '아니오']
         }).then( result => {
             let buttonIndex = result.response;
+            logger.info("update-available buttonIndex: " + buttonIndex);
             if (buttonIndex === 0) {
+                logger.info("autoUpdater.downloadUpdate");
                 autoUpdater.downloadUpdate();
             }
         })
     });
 
     autoUpdater.on('update-downloaded', () => {
+        logger.info("update-downloaded");
         dialog.showMessageBox({
             type: 'info',
             title: 'Update ready',
@@ -35,8 +39,20 @@ module.exports = () => {
             buttons: ['업데이트', '나중에']
         }).then( result => {
             let buttonIndex = result.response;
+            logger.info("update-downloaded buttonIndex: " + buttonIndex);
             if (buttonIndex === 0) {
-                autoUpdater.quitAndInstall(false, true);
+                setImmediate(() => {
+                    app.removeAllListeners("window-all-closed")
+                    if (mainWindow != null) {
+                        mainWindow.close()
+                    }
+                    autoUpdater.quitAndInstall(false)
+                })
+
+                /*setTimeout(() => {
+                    logger.info("autoUpdater.quitAndInstall");
+                    autoUpdater.quitAndInstall(false, true);
+                }, 6000);*/
             }
         })
     })

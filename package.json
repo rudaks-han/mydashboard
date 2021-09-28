@@ -3,7 +3,7 @@
   "author": "rudaks",
   "license": "rudaks",
   "main": "public/electron.js",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "private": true,
   "homepage": ".",
   "repository": "https://github.com/rudaks-han/mydashboard",

@@ -25,10 +25,11 @@ let victoryPortalClient;
 let outlookClient;
 
 app.whenReady().then(() => {
-    setTimeout(autoUpdater, 3000);
-
     mainWindow = new MainWindow('https://spectra.daouoffice.com/login', storeMap);
 
+    setTimeout(() => {
+        autoUpdater(app, mainWindow);
+    }, 3000);
     loginClient = new LoginClient(mainWindow);
     jiraClient = new JiraClient(mainWindow);
     daouofficeClient = new DaouofficeClient(mainWindow);
