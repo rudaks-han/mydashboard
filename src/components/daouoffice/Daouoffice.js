@@ -45,6 +45,7 @@ const Daouoffice = () => {
             findNotificationCount();
         }
 
+        console.log(tickTime)
         notifyClockCheck({year, month, day, hour, minute});
     }, [tickTime, userInfo, authenticated]);
 
@@ -63,6 +64,7 @@ const Daouoffice = () => {
         const {year, month, day, hour, minute} = currTime;
 
         if (UiShare.isWeekend()) {
+            console.log('weekend');
             return;
         }
 
@@ -71,6 +73,7 @@ const Daouoffice = () => {
         }
 
         if (isUserDayoff()) {
+            console.log('user dayoff');
             return;
         }
 
@@ -87,6 +90,7 @@ const Daouoffice = () => {
         const clockInTimeHour = clockInBeforeTime.getHours();
         const clockInTimeMinute = clockInBeforeTime.getMinutes();
 
+        console.log('[showDialogClockIn]', 'hour', hour, 'minute', minute, 'clockInTimeHour', clockInTimeHour, 'clockInTimeMinute', clockInTimeMinute);
         if (hour === clockInTimeHour && minute === clockInTimeMinute) {
             setTimeout(() => {
                 let message = '출근시간을 등록하시겠습니까?';
@@ -121,6 +125,7 @@ const Daouoffice = () => {
         }
 
         if (isUserDayoff()) {
+            console.log('user dayoff');
             return;
         }
 
@@ -139,6 +144,7 @@ const Daouoffice = () => {
         const clockOutTimeHour = clockOutAfterTime.getHours();
         const clockOutTimeMinute = clockOutAfterTime.getMinutes();
 
+        console.log('[showDialogClockOut]', 'hour', hour, 'minute', minute, 'clockInTimeHour', clockOutTimeHour, 'clockInTimeMinute', clockOutTimeMinute);
         if (hour === clockOutTimeHour && minute === clockOutTimeMinute) {
             setTimeout(() => {
                 let message = '퇴근시간을 등록하시겠습니까?';
