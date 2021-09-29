@@ -21,7 +21,18 @@ module.exports = [
             {
                 label: '업데이트 확인',
                 click (item, focusedWindow) {
-                    autoUpdater().checkUpdate();
+                    if (process.platform !== 'darwin') {
+                        autoUpdater().checkUpdate();
+                    } else {
+                        dialog.showMessageBox({
+                            type: 'info',
+                            title: '업데이트',
+                            message: 'Mac OS는 자동 업데이트를 지원하지 않습니다.',
+                            buttons: ['닫기']
+                        }).then( result => {
+
+                        })
+                    }
                 }
             },
             {

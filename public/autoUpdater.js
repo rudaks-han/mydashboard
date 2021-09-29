@@ -4,7 +4,8 @@ const logger = require('electron-log');
 logger.transports.file.level = 'info';
 autoUpdater.autoDownload = false;
 
-module.exports = (app, mainWindow) => {
+module.exports = () => {
+
     logger.info('Checking for updates: ' + process.env.mode);
 
     if (process.env.mode !== 'dev') {
@@ -41,13 +42,14 @@ module.exports = (app, mainWindow) => {
             let buttonIndex = result.response;
             logger.info("update-downloaded buttonIndex: " + buttonIndex);
             if (buttonIndex === 0) {
-                setImmediate(() => {
+                autoUpdater.quitAndInstall();
+                /*setImmediate(() => {
                     app.removeAllListeners("window-all-closed")
                     if (mainWindow != null) {
                         mainWindow.close()
                     }
-                    autoUpdater.quitAndInstall(false)
-                })
+                    autoUpdater.quitAndInstall();
+                })*/
 
                 /*setTimeout(() => {
                     logger.info("autoUpdater.quitAndInstall");
@@ -55,10 +57,16 @@ module.exports = (app, mainWindow) => {
                 }, 6000);*/
             }
         })
-    })
+    });
+
+    autoUpdater.on('error', (error) => {
+        logger.error('autoUpdate error');
+        logger.error(error);
+    });
 
     return {
         checkUpdate() {
+            console.log('___ checkUpdate')
             return autoUpdater.checkForUpdates();
         }
     }

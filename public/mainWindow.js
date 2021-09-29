@@ -1,5 +1,5 @@
 const electron = require('electron');
-const { BrowserWindow, shell, Menu, Tray } = electron;
+const { BrowserWindow, shell, Menu, Tray, nativeImage } = electron;
 const windowStateKeeper = require('electron-window-state')
 const path = require('path');
 const logger = require('electron-log'); // /Users/macbookpro/Library/Logs/my-dashboard
@@ -75,7 +75,10 @@ class MainWindow extends BrowserWindow {
     }
 
     createTray() {
-        this.tray = new Tray(`${__dirname}/trayTemplate.png`);
+        const image = nativeImage.createFromPath(
+            path.join(__dirname, "tray_icon.png")
+        );
+        this.tray = new Tray(image.resize({width: 16, height: 16}));
         this.tray.setToolTip('My Dashboard');
 
         this.tray.on('click', event => {

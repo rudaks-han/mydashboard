@@ -28,7 +28,9 @@ app.whenReady().then(() => {
     mainWindow = new MainWindow('https://spectra.daouoffice.com/login', storeMap);
 
     setTimeout(() => {
-        autoUpdater(app, mainWindow);
+        if (process.platform !== 'darwin') {
+            autoUpdater(app, mainWindow);
+        }
     }, 3000);
     loginClient = new LoginClient(mainWindow);
     jiraClient = new JiraClient(mainWindow);

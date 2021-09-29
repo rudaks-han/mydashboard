@@ -2,8 +2,9 @@
   "name": "MyDashboard",
   "author": "rudaks",
   "license": "rudaks",
+  "description": "My Dashboard App",
   "main": "public/electron.js",
-  "version": "0.0.9",
+  "version": "0.0.1",
   "private": true,
   "homepage": ".",
   "repository": "https://github.com/rudaks-han/mydashboard",
@@ -52,7 +53,7 @@
     "electron:start": "wait-on http://localhost:3000 && electron --inspect=5858 .",
     "react:build": "react-scripts build",
     "icons": "./node_modules/.bin/electron-icon-builder --input=./icon.png --output=./build/static",
-    "build": "npm run react:build && electron-builder -mw",
+    "build": "npm run react:build && electron-builder -m",
     "release": "npm run react:build && electron-builder -mw -p always"
   },
   "build": {
