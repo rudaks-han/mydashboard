@@ -45,13 +45,11 @@ const Daouoffice = () => {
             findNotificationCount();
         }
 
-        console.log(tickTime)
+        console.log('tickTime : ' + tickTime);
         notifyClockCheck({year, month, day, hour, minute});
     }, [tickTime, userInfo, authenticated]);
 
     const notifyClockCheck = currTime => {
-        console.log('notifyClockCheck')
-        console.log('userInfo: ' + userInfo)
         if (userInfo == null) return;
         //currTime = {year: 2021, month: 9, day: 30, hour: 16, minute: 0};
         console.log('useAlarmClock.clockIn: ' + useAlarmClock.clockIn)
@@ -59,7 +57,7 @@ const Daouoffice = () => {
             showDialogClockIn(currTime);
         }
 
-        console.log('useAlarmClock.clockIn: ' + useAlarmClock.clockOut)
+        console.log('useAlarmClock.clockOut: ' + useAlarmClock.clockOut)
         if (useAlarmClock.clockOut) {
             showDialogClockOut(currTime);
         }
@@ -150,7 +148,7 @@ const Daouoffice = () => {
         const clockOutTimeHour = clockOutAfterTime.getHours();
         const clockOutTimeMinute = clockOutAfterTime.getMinutes();
 
-        console.log('[showDialogClockOut]', 'hour', hour, 'minute', minute, 'clockInTimeHour', clockOutTimeHour, 'clockInTimeMinute', clockOutTimeMinute);
+        console.log('[showDialogClockOut]', 'hour', hour, 'minute', minute, 'clockOutTimeHour', clockOutTimeHour, 'clockOutTimeMinute', clockOutTimeMinute);
         if (hour === clockOutTimeHour && minute === clockOutTimeMinute) {
             setTimeout(() => {
                 let message = '퇴근시간을 등록하시겠습니까?';

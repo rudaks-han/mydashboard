@@ -7,7 +7,7 @@ const CookieConst = require('../const/cookieConst');
 class DaouofficeClient extends BaseClientComponent {
     constructor(mainWindow) {
         super('daouoffice', mainWindow);
-        this.daouofficeUserId = 'daouoffice_userId'; // 7667
+        //this.daouofficeUserId = 'daouoffice_userId'; // 7667
         this.storeId = CookieConst.daouoffice;
         this.clockInTimeStoreId = 'daouoffice.clockInTime';
         this.clockOutTimeStoreId = 'daouoffice.clockOutTime';
@@ -32,7 +32,8 @@ class DaouofficeClient extends BaseClientComponent {
     }
 
     getUserId() {
-        return this.storeMap.get(this.daouofficeUserId);
+        //return this.storeMap.get(this.daouofficeUserId);
+        return this.storeMap.get("userInfo.id");
     }
 
     openLoginPage() {
@@ -56,7 +57,7 @@ class DaouofficeClient extends BaseClientComponent {
                     loginWindow.close();
                     loginWindow = null;
                     _this.findList();
-                    _this.findSession();
+                    //_this.findSession();
                     _this.findUserInfo();
                 });
             }
@@ -75,6 +76,7 @@ class DaouofficeClient extends BaseClientComponent {
         const _this = this;
         const response = await axios.get(`https://spectra.daouoffice.com/api/user/session`, _this.axiosConfig());
         const userId = response.data.data.repId;
+        console.log('userId : ' + userId)
         _this.storeMap.set(_this.daouofficeUserId, userId);
     }
 

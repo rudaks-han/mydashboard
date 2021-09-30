@@ -5,7 +5,7 @@ const logger = require('electron-log');
 class StoreMap {
     constructor() {
         this.store = new Store();
-        logger.debug("storePath : " + this.store.path);
+        logger.debug("storePath : " + this.store.path); // /Users/rudaks/Library/Application Support/MyDashboard/config.json
     }
 
     set(key, value) {
