@@ -98,7 +98,9 @@ class DaouofficeClient extends BaseClientComponent {
         };
 
         const summaryResponse = response[1];
-        const workTimeRange = summaryResponse.data.group.fixedOption.workTimeRange;
+
+        //const workTimeRange = summaryResponse.data.group.fixedOption.workTimeRange;
+        const workTimeRange = summaryResponse.data.week.dailyList[0].timelineGroup.fixedOption.workTimeRange;
         const workStartTime = workTimeRange.workStartTime;
         const workEndTime = workTimeRange.workEndTime;
 

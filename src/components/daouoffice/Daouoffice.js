@@ -50,17 +50,23 @@ const Daouoffice = () => {
     }, [tickTime, userInfo, authenticated]);
 
     const notifyClockCheck = currTime => {
+        console.log('notifyClockCheck')
+        console.log('userInfo: ' + userInfo)
         if (userInfo == null) return;
+        //currTime = {year: 2021, month: 9, day: 30, hour: 16, minute: 0};
+        console.log('useAlarmClock.clockIn: ' + useAlarmClock.clockIn)
         if (useAlarmClock.clockIn) {
             showDialogClockIn(currTime);
         }
 
+        console.log('useAlarmClock.clockIn: ' + useAlarmClock.clockOut)
         if (useAlarmClock.clockOut) {
             showDialogClockOut(currTime);
         }
     }
 
     const showDialogClockIn = currTime => {
+        console.log('showDialogClockIn')
         const {year, month, day, hour, minute} = currTime;
 
         if (UiShare.isWeekend()) {
