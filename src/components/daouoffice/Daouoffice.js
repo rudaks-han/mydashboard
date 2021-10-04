@@ -277,6 +277,7 @@ const Daouoffice = () => {
         ipcRenderer.send('daouoffice.findUserInfo');
         ipcRenderer.on('daouoffice.findUserInfoCallback', async (event, data) => {
             const clockedIn = data.clockInTime ? true: false;
+            //const clockedIn = false; // 임시
             const clockedOut = data.clockOutTime ? true: false;
 
             setUserInfo({
@@ -376,10 +377,11 @@ const Daouoffice = () => {
                 });
             } else {
                 if (code === '400') {
-                    setUserInfo({
+                    findUserInfo();
+                    /*setUserInfo({
                         ...userInfo,
                         clockedIn: true
-                    });
+                    });*/
                 }
                 UiShare.showNotification(message);
             }
@@ -401,10 +403,11 @@ const Daouoffice = () => {
                 });
             } else {
                 if (code === '400') {
-                    setUserInfo({
+                    findUserInfo();
+                    /*setUserInfo({
                         ...userInfo,
                         clockedOut: true
-                    });
+                    });*/
                 }
                 UiShare.showNotification(message);
             }
