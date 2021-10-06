@@ -39,6 +39,9 @@ const Daouoffice = () => {
         if (tickTime == null) return;
         if (!userInfo || !authenticated) return;
         const {year, month, day, hour, minute} = UiShare.getDateTimeFormat(tickTime);
+        if (hour === 1 && minute === 0) {
+            findUserInfo();
+        }
         if (minute === 0) {
             findList();
             findCalendar();
