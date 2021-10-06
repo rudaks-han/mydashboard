@@ -4,7 +4,7 @@
   "license": "rudaks",
   "description": "My Dashboard App",
   "main": "public/electron.js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "homepage": ".",
   "repository": "https://github.com/rudaks-han/mydashboard",
