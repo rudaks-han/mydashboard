@@ -66,9 +66,8 @@ const TeamBook = () => {
             const date = row[1].cell._rawData.formattedValue; // 신청일
             const bookName = row[2].cell._rawData.formattedValue; // 도서명
             const username = row[3].cell._rawData.formattedValue; // 신청자
-            const link = row[4].cell._rawData.formattedValue; // 링크*/
-
-            if (month && month.length === 7 && month.indexOf('.') > -1) {
+            const link = row[4].cell._rawData.formattedValue; // 링크
+            if (month && month.indexOf('.') > -1) {
                 bookList.push({ index, month, date, bookName, username, link})
             }
         });
