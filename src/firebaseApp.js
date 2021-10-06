@@ -25,12 +25,14 @@ class FirebaseApp {
         const {id, employeeNumber, name, position, deptName} = data;
         const userStatusDatabaseRef = this.database.ref(this.activeUsersPath + '/' + name);
         const currTime = UiShare.getCurrDate() + " " + UiShare.getCurrTime();
+        const { ip } = UiShare.getClientIp()
         const isOfflineForDatabase = {
             name,
             id,
             employeeNumber,
             position,
             deptName,
+            ip,
             state: 'offline',
             last_changed: currTime,
         };
@@ -41,6 +43,7 @@ class FirebaseApp {
             employeeNumber,
             position,
             deptName,
+            ip,
             state: 'online',
             last_changed: currTime,
         };
