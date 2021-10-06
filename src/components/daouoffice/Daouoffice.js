@@ -50,7 +50,7 @@ const Daouoffice = () => {
 
         console.log('tickTime : ' + tickTime);
         notifyClockCheck({year, month, day, hour, minute});
-    }, [tickTime, userInfo, authenticated]);
+    }, [tickTime, authenticated]);
 
     const notifyClockCheck = currTime => {
         if (userInfo == null) return;
@@ -372,12 +372,14 @@ const Daouoffice = () => {
             const { code, message } = data;
             if (code === '200') {
                 UiShare.showNotification('출근이 등록되었습니다.');
-                setUserInfo({
+                findUserInfo();
+                /*setUserInfo({
                     ...userInfo,
                     clockedIn: true,
                     clockInTime: UiShare.getCurrTime()
-                });
+                });*/
             } else {
+                UiShare.showNotification(message);
                 if (code === '400') {
                     findUserInfo();
                     /*setUserInfo({
@@ -385,7 +387,6 @@ const Daouoffice = () => {
                         clockedIn: true
                     });*/
                 }
-                UiShare.showNotification(message);
             }
 
             ipcRenderer.removeAllListeners('daouoffice.clockInCallback');
@@ -398,12 +399,14 @@ const Daouoffice = () => {
             const { code, message } = data;
             if (code === '200') {
                 UiShare.showNotification('퇴근이 등록되었습니다.');
-                setUserInfo({
+                findUserInfo();
+                /*setUserInfo({
                     ...userInfo,
                     clockedOut: true,
                     clockOutTime: UiShare.getCurrTime()
-                });
+                });*/
             } else {
+                UiShare.showNotification(message);
                 if (code === '400') {
                     findUserInfo();
                     /*setUserInfo({
@@ -411,7 +414,6 @@ const Daouoffice = () => {
                         clockedOut: true
                     });*/
                 }
-                UiShare.showNotification(message);
             }
 
             ipcRenderer.removeAllListeners('daouoffice.clockOutCallback');
