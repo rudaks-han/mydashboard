@@ -2,7 +2,8 @@ const electron = require('electron');
 const { BrowserWindow, shell, Menu, Tray, nativeImage } = electron;
 const windowStateKeeper = require('electron-window-state')
 const path = require('path');
-const logger = require('electron-log'); // /Users/macbookpro/Library/Logs/my-dashboard
+const logger = require('electron-log');
+const ShareUtil = require("./app/lib/shareUtil"); // /Users/macbookpro/Library/Logs/my-dashboard
 
 let mainMenu = Menu.buildFromTemplate(require('./mainMenu'))
 
@@ -32,6 +33,7 @@ class MainWindow extends BrowserWindow {
         Menu.setApplicationMenu(mainMenu);
 
         this.createTray();
+        this.startTimer();
 
         //this.maximize();
         //this.webContents.openDevTools();
@@ -94,6 +96,26 @@ class MainWindow extends BrowserWindow {
         ]);
 
         this.tray.setContextMenu(trayMenu);
+    }
+
+    startTimer() {
+        const interval = 1000 * 60;
+        //const interval = 1000 * 2;
+        setInterval(() => {
+            if (!this.authenticated) {
+                console.log('startTimer: unauthorized');
+                return;
+            }
+
+            const time = ShareUtil.getCurrDate() + ' ' + ShareUtil.getCurrTime();
+
+            this.webContents.send(
+                'mainWindow.polling',
+                time
+            );
+
+            console.log('polling: ' + time);
+        }, interval);
     }
 }
 

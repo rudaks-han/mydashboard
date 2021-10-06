@@ -52,19 +52,18 @@ const Daouoffice = () => {
     const notifyClockCheck = currTime => {
         if (userInfo == null) return;
         //currTime = {year: 2021, month: 9, day: 30, hour: 16, minute: 0};
-        console.log('useAlarmClock.clockIn: ' + useAlarmClock.clockIn)
+        //console.log('useAlarmClock.clockIn: ' + useAlarmClock.clockIn)
         if (useAlarmClock.clockIn) {
             showDialogClockIn(currTime);
         }
 
-        console.log('useAlarmClock.clockOut: ' + useAlarmClock.clockOut)
+        //console.log('useAlarmClock.clockOut: ' + useAlarmClock.clockOut)
         if (useAlarmClock.clockOut) {
             showDialogClockOut(currTime);
         }
     }
 
     const showDialogClockIn = currTime => {
-        console.log('showDialogClockIn')
         const {year, month, day, hour, minute} = currTime;
 
         if (UiShare.isWeekend()) {
@@ -94,7 +93,7 @@ const Daouoffice = () => {
         const clockInTimeHour = clockInBeforeTime.getHours();
         const clockInTimeMinute = clockInBeforeTime.getMinutes();
 
-        console.log('[showDialogClockIn]', 'hour', hour, 'minute', minute, 'clockInTimeHour', clockInTimeHour, 'clockInTimeMinute', clockInTimeMinute);
+        //console.log('[showDialogClockIn]', 'hour', hour, 'minute', minute, 'clockInTimeHour', clockInTimeHour, 'clockInTimeMinute', clockInTimeMinute);
         if (hour === clockInTimeHour && minute === clockInTimeMinute) {
             setTimeout(() => {
                 let message = '출근시간을 등록하시겠습니까?';
@@ -148,7 +147,7 @@ const Daouoffice = () => {
         const clockOutTimeHour = clockOutAfterTime.getHours();
         const clockOutTimeMinute = clockOutAfterTime.getMinutes();
 
-        console.log('[showDialogClockOut]', 'hour', hour, 'minute', minute, 'clockOutTimeHour', clockOutTimeHour, 'clockOutTimeMinute', clockOutTimeMinute);
+        //console.log('[showDialogClockOut]', 'hour', hour, 'minute', minute, 'clockOutTimeHour', clockOutTimeHour, 'clockOutTimeMinute', clockOutTimeMinute);
         if (hour === clockOutTimeHour && minute === clockOutTimeMinute) {
             setTimeout(() => {
                 let message = '퇴근시간을 등록하시겠습니까?';

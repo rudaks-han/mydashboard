@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {MainLayout} from "./layouts/MainLayout";
 import UserContext from "./UserContext";
 import FirebaseApp from './firebaseApp';
-import UiShare from "./UiShare";
-import { setIntervalAsync, clearIntervalAsync } from 'set-interval-async/dynamic'
 import TimerContext from "./TimerContext";
 
 const { ipcRenderer } = window.require('electron');
@@ -43,22 +41,9 @@ function App() {
     }
 
     const startTimer = () => {
-        const timer = setIntervalAsync(
-            async () => {
-                const time = UiShare.getCurrDate() + ' ' + UiShare.getCurrTime();
-                setTickTime(time);
-            },
-            1000 * 60
-            //1000 * 5
-        );
-
-        return () => {
-            (async () => {
-                if (timer) {
-                await clearIntervalAsync(timer);
-            }
-        })();
-        };
+        ipcRenderer.on('mainWindow.polling', (e, data) => {
+            setTickTime(data);
+        })
     }
 
     return (
